@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Assignment Submissions</title>
+</head>
+
+<body>
+
+    <h1>Assignment Submissions</h1>
+
+    <h2>{{ assignment.title }}</h2>
+
+    <p>
+        {{ assignment.description }}
+    </p>
+
+    <p>
+        <strong>Subject:</strong>
+        {{ assignment.group.subject }}
+    </p>
+
+    <p>
+        <strong>Due date:</strong>
+        {{ assignment.due_date }}
+    </p>
+
+    <hr>
+
+    {% for submission in submissions %}
+
+        <h2>{{ submission.student }}</h2>
+
+        <p>
+            <strong>Answer:</strong>
+        </p>
+
+        <p>
+            {{ submission.answer }}
+        </p>
+
+        {% if submission.submitted_at %}
+            <p>
+                <strong>Submitted:</strong>
+                {{ submission.submitted_at }}
+            </p>
+        {% else %}
+            <p>
+                Not submitted yet.
+            </p>
+        {% endif %}
+
+        <hr>
+
+    {% empty %}
+
+        <p>
+            No students have submitted this assignment yet.
+        </p>
+
+    {% endfor %}
+
+    <br>
+
+    <a href="{% url 'teacher_assignments' %}">
+        Back to My Assignments
+    </a>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Assignments</title>
+</head>
+<body>
+
+<h1>My Assignments</h1>
+
+<p>
+    Student: {{ user.get_full_name|default:user.username }}
+</p>
+
+<hr>
+
+{% if assignments %}
+
+    {% for assignment in assignments %}
+
+        <div>
+            <h2>{{ assignment.title }}</h2>
+
+            <p>
+                {{ assignment.description }}
+            </p>
+
+            <p>
+                <strong>Subject:</strong>
+                {{ assignment.group.subject }}
+            </p>
+
+            <p>
+                <strong>Teacher:</strong>
+                {{ assignment.teacher.get_full_name|default:assignment.teacher.username }}
+            </p>
+
+            <p>
+                <strong>Due date:</strong>
+                {{ assignment.due_date }}
+            </p>
+
+            <a href="{% url 'submit_assignment' assignment.id %}">
+                Open Assignment
+            </a>
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No assignments available.</p>
+
+{% endif %}
+
+<a href="{% url 'dashboard' %}">
+    Back to Dashboard
+</a>
+
+<br><br>
+
+<a href="{% url 'logout' %}">
+    Logout
+</a>
+
+</body>
+</html>

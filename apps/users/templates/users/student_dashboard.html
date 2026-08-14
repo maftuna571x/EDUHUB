@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+</head>
+<body>
+
+<h1>Student Dashboard</h1>
+
+<h2>
+    Welcome, {{ user.get_full_name|default:user.username }}
+</h2>
+
+<p>
+    Role: Student
+</p>
+
+<hr>
+
+<h3>Student Panel</h3>
+
+<ul>
+    <li>
+        <a href="{% url 'student_assignments' %}">
+            My Assignments
+        </a>
+    </li>
+
+    <li>
+        <a href="#">
+            My Grades
+        </a>
+    </li>
+</ul>
+
+<hr>
+
+<a href="{% url 'logout' %}">
+    Logout
+</a>
+
+</body>
+</html>

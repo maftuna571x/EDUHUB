@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ assignment.title }}</title>
+</head>
+
+<body>
+
+    <h1>{{ assignment.title }}</h1>
+
+    <p>{{ assignment.description }}</p>
+
+    <p>
+        <strong>Subject:</strong>
+        {{ assignment.group.subject }}
+    </p>
+
+    <p>
+        <strong>Teacher:</strong>
+        {{ assignment.teacher }}
+    </p>
+
+    <p>
+        <strong>Due date:</strong>
+        {{ assignment.due_date }}
+    </p>
+
+    <hr>
+
+    {% if submitted %}
+        <h2>✅ Assignment submitted successfully!</h2>
+
+        <p>
+            Your answer has been saved.
+        </p>
+    {% endif %}
+
+    <h2>Your Answer</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <textarea
+            name="answer"
+            rows="10"
+            cols="70"
+            placeholder="Write your answer here..."
+        >{% if submission %}{{ submission.answer }}{% endif %}</textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Submit Assignment
+        </button>
+    </form>
+
+    {% if submission %}
+        <hr>
+
+        <h2>Saved Answer</h2>
+
+        <p>{{ submission.answer }}</p>
+
+        {% if submission.submitted_at %}
+            <p>
+                <strong>Submitted:</strong>
+                {{ submission.submitted_at }}
+            </p>
+        {% endif %}
+    {% endif %}
+
+    <br>
+
+    <a href="{% url 'student_assignments' %}">
+        Back to Assignments
+    </a>
+
+</body>
+</html>

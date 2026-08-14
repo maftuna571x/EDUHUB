@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Assignment</title>
+</head>
+
+<body>
+
+    <h1>Create Assignment</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <p>
+            <label for="title">Title:</label>
+            <br>
+            <input
+                type="text"
+                id="title"
+                name="title"
+                required
+            >
+        </p>
+
+        <p>
+            <label for="description">Description:</label>
+            <br>
+            <textarea
+                id="description"
+                name="description"
+                rows="6"
+                cols="50"
+            ></textarea>
+        </p>
+
+        <p>
+            <label for="group">Group:</label>
+            <br>
+
+            <select
+                id="group"
+                name="group"
+                required
+            >
+                <option value="">
+                    Select a group
+                </option>
+
+                {% for group in groups %}
+                    <option value="{{ group.id }}">
+                        {{ group.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="due_date">Due date:</label>
+            <br>
+
+            <input
+                type="datetime-local"
+                id="due_date"
+                name="due_date"
+                required
+            >
+        </p>
+
+        <button type="submit">
+            Create Assignment
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'teacher_assignments' %}">
+        Back to My Assignments
+    </a>
+
+</body>
+</html>

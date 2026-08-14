@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assignments</title>
+</head>
+
+<body>
+
+    <h1>My Assignments</h1>
+
+    {% for assignment in assignments %}
+
+        <h2>{{ assignment.title }}</h2>
+
+        <p>{{ assignment.description }}</p>
+
+        <p>
+            <strong>Group:</strong>
+            {{ assignment.group.name }}
+        </p>
+
+        <p>
+            <strong>Subject:</strong>
+            {{ assignment.group.subject }}
+        </p>
+
+        <p>
+            <strong>Due date:</strong>
+            {{ assignment.due_date }}
+        </p>
+
+        <p>
+            <a href="{% url 'assignment_submissions' assignment.id %}">
+                View Submissions
+            </a>
+        </p>
+
+        <hr>
+
+    {% empty %}
+
+        <p>No assignments yet.</p>
+
+    {% endfor %}
+
+    <a href="{% url 'dashboard' %}">
+        Back to Dashboard
+    </a>
+
+</body>
+</html>
