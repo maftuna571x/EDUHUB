@@ -1,0 +1,641 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}LingoRise{% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ==================== SIDEBAR ==================== -->
+
+    <aside class="sidebar">
+
+        <!-- BRAND -->
+        <div class="brand">
+
+            <div class="brand-icon">
+                LR
+            </div>
+
+            <div class="brand-info">
+                <div class="brand-name">
+                    LingoRise
+                </div>
+
+                <div class="brand-tagline">
+                    Learn. Rise.
+                </div>
+            </div>
+
+        </div>
+
+
+<nav class="sidebar-nav">
+
+    {% if user.role == "TEACHER" %}
+
+        <!-- ==================== TEACHER MAIN ==================== -->
+
+        <div class="nav-section">
+
+            <button
+                type="button"
+                class="nav-section-toggle"
+                onclick="toggleSection('teacher-main-section', this)"
+            >
+                <span>MAIN</span>
+                <span class="section-arrow">⌄</span>
+            </button>
+
+            <div
+                class="nav-section-items open"
+                id="teacher-main-section"
+            >
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">▤</span>
+                    <span>My Classes</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">👨‍🎓</span>
+                    <span>Students</span>
+                </a>
+
+                <a
+                    href="{% url 'teacher_assignments' %}"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">✓</span>
+                    <span>Assignments</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">★</span>
+                    <span>Grades</span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================== TEACHER COMMUNITY ==================== -->
+
+        <div class="nav-section">
+
+            <button
+                type="button"
+                class="nav-section-toggle"
+                onclick="toggleSection('teacher-community-section', this)"
+            >
+                <span>COMMUNITY</span>
+                <span class="section-arrow">⌄</span>
+            </button>
+
+            <div
+                class="nav-section-items open"
+                id="teacher-community-section"
+            >
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">◌</span>
+                    <span>Messages</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">◎</span>
+                    <span>Community</span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+    {% elif user.role == "STUDENT" %}
+
+        <!-- ==================== STUDENT MAIN ==================== -->
+
+        <div class="nav-section">
+
+            <button
+                type="button"
+                class="nav-section-toggle"
+                onclick="toggleSection('main-section', this)"
+            >
+                <span>MAIN</span>
+                <span class="section-arrow">⌄</span>
+            </button>
+
+            <div
+                class="nav-section-items open"
+                id="main-section"
+            >
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">▣</span>
+                    <span>My Courses</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">▤</span>
+                    <span>My Classes</span>
+                </a>
+
+                <a
+                    href="{% url 'student_assignments' %}"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">✓</span>
+                    <span>Homework</span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================== STUDENT COMMUNITY ==================== -->
+
+        <div class="nav-section">
+
+            <button
+                type="button"
+                class="nav-section-toggle"
+                onclick="toggleSection('community-section', this)"
+            >
+                <span>COMMUNITY</span>
+                <span class="section-arrow">⌄</span>
+            </button>
+
+            <div
+                class="nav-section-items open"
+                id="community-section"
+            >
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">◌</span>
+                    <span>Messages</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">◎</span>
+                    <span>Community</span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================== STUDENT SELF STUDY ==================== -->
+
+        <div class="nav-section">
+
+            <button
+                type="button"
+                class="nav-section-toggle"
+                onclick="toggleSection('self-study-section', this)"
+            >
+                <span>SELF STUDY</span>
+                <span class="section-arrow">⌄</span>
+            </button>
+
+            <div
+                class="nav-section-items open"
+                id="self-study-section"
+            >
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">A</span>
+                    <span>Vocabulary</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">◇</span>
+                    <span>Flashcards</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">?</span>
+                    <span>Vocabulary Quiz</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">G</span>
+                    <span>Grammar</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">◖</span>
+                    <span>Listening</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">▤</span>
+                    <span>Reading</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">◉</span>
+                    <span>Speaking</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">★</span>
+                    <span>Practice Tests</span>
+                </a>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</nav>
+
+
+        <!-- ==================== SIDEBAR BOTTOM ==================== -->
+
+        <div class="sidebar-bottom">
+
+<!-- ==================== ADMIN NAVIGATION ==================== -->
+
+{% if user.role == "ADMIN" %}
+
+<div class="nav-section">
+
+    <div class="nav-section-title">
+        MAIN
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="nav-item">
+        <span class="nav-icon">⌂</span>
+        <span>Dashboard</span>
+    </a>
+
+</div>
+
+
+<div class="nav-section">
+
+    <div class="nav-section-title">
+        MANAGEMENT
+    </div>
+
+    <a href="/admin/users/user/" class="nav-item">
+        <span class="nav-icon">👨‍🎓</span>
+        <span>Students</span>
+    </a>
+
+    <a href="/admin/users/user/" class="nav-item">
+        <span class="nav-icon">👨‍🏫</span>
+        <span>Teachers</span>
+    </a>
+
+    <a href="/admin/school/group/" class="nav-item">
+        <span class="nav-icon">🏫</span>
+        <span>Groups</span>
+    </a>
+
+    <a href="/admin/school/subject/" class="nav-item">
+        <span class="nav-icon">📚</span>
+        <span>Subjects</span>
+    </a>
+
+    <a href="/admin/school/classroom/" class="nav-item">
+        <span class="nav-icon">🏢</span>
+        <span>Classrooms</span>
+    </a>
+
+</div>
+
+
+<div class="nav-section">
+
+    <div class="nav-section-title">
+        ACADEMIC
+    </div>
+
+    <a href="/admin/school/assignment/" class="nav-item">
+        <span class="nav-icon">📝</span>
+        <span>Assignments</span>
+    </a>
+
+    <a href="/admin/school/grade/" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Grades</span>
+    </a>
+
+</div>
+
+
+<div class="nav-section">
+
+    <div class="nav-section-title">
+        SYSTEM
+    </div>
+
+    <a href="/admin/" class="nav-item">
+        <span class="nav-icon">⚙</span>
+        <span>Admin Panel</span>
+    </a>
+
+</div>
+
+{% else %}
+
+<!-- SETTINGS -->
+
+<a
+    href="#"
+    class="nav-item"
+>
+
+    <span class="nav-icon">
+        ⚙
+    </span>
+
+    <span>
+        Settings
+    </span>
+
+</a>
+
+{% endif %}
+
+
+
+            <!-- USER PROFILE -->
+
+            <div class="user-profile">
+
+                <div class="user-avatar">
+
+                    {{ user.username|first|upper }}
+
+                </div>
+
+
+                <div class="user-info">
+
+                    <div class="user-name">
+
+                        {{ user.get_full_name|default:user.username }}
+
+                    </div>
+
+
+                    <div class="user-role">
+
+                        {{ user.role|default:"User" }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- LOGOUT -->
+
+        <button
+            type="button"
+            class="logout"
+            onclick="openLogoutModal()"
+        >
+            <span class="nav-icon">
+                ↪
+            </span>
+
+            <span>
+                Logout
+            </span>
+        </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="page-heading">
+
+                {% block page_title %}
+
+                    Dashboard
+
+                {% endblock %}
+
+            </div>
+
+
+            <button
+                type="button"
+                class="notification-button"
+            >
+                🔔
+            </button>
+
+        </header>
+
+
+
+        <!-- PAGE CONTENT -->
+
+        <section class="page-content">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- ==================== COLLAPSIBLE SIDEBAR SCRIPT ==================== -->
+
+<script>
+
+function toggleSection(sectionId, button) {
+
+    const section = document.getElementById(sectionId);
+
+    const arrow = button.querySelector(".section-arrow");
+
+
+    if (section.classList.contains("open")) {
+
+        section.classList.remove("open");
+        section.classList.add("closed");
+
+        arrow.classList.add("rotated");
+
+    } else {
+
+        section.classList.remove("closed");
+        section.classList.add("open");
+
+        arrow.classList.remove("rotated");
+
+    }
+
+}
+
+</script>
+
+<!-- ==================== LOGOUT MODAL ==================== -->
+
+<div
+    class="logout-modal"
+    id="logout-modal"
+    onclick="closeLogoutModal(event)"
+>
+
+    <div
+        class="logout-modal-card"
+        onclick="event.stopPropagation()"
+    >
+
+        <div class="logout-modal-icon">
+            ↪
+        </div>
+
+        <h2>
+            Ready to leave?
+        </h2>
+
+        <p>
+            Are you sure you want to log out of LingoRise?
+        </p>
+
+        <div class="logout-modal-actions">
+
+            <button
+                type="button"
+                class="logout-cancel"
+                onclick="closeLogoutModal()"
+            >
+                Cancel
+            </button>
+
+            <a
+                href="{% url 'logout' %}"
+                class="logout-confirm"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function openLogoutModal() {
+    const modal = document.getElementById("logout-modal");
+
+    modal.classList.add("show");
+}
+
+
+function closeLogoutModal(event) {
+
+    if (
+        event &&
+        event.target !== event.currentTarget
+    ) {
+        return;
+    }
+
+    const modal = document.getElementById("logout-modal");
+
+    modal.classList.remove("show");
+}
+
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+        closeLogoutModal();
+    }
+
+});
+
+</script>
+</body>
+
+</html>

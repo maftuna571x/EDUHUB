@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 from apps.school import views as school_views
 from apps.users import views as user_views
 
@@ -57,6 +58,11 @@ urlpatterns = [
         school_views.teacher_assignments,
         name="teacher_assignments",
     ),
+    path(
+        "teacher/dashboard/",
+        school_views.teacher_dashboard,
+        name="teacher_dashboard",
+    ),
 
     # Student
     path(
@@ -75,4 +81,28 @@ urlpatterns = [
         school_views.assignment_submissions,
         name="assignment_submissions",
     ),
+    path(
+        "student/grades/",
+        school_views.student_grades,
+        name="student_grades",
+    ),
+        # Admin
+    path(
+        "admin/students/",
+        user_views.admin_students,
+        name="admin_students",
+    ),
+
+    path(
+        "admin/students/create/",
+        user_views.admin_create_student,
+        name="admin_create_student",
+    ),
 ]
+
+
+
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT,
+)

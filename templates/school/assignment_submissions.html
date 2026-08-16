@@ -1,72 +1,263 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Assignment Submissions</title>
-</head>
+{% block title %}{{ assignment.title }} — Submissions{% endblock %}
 
-<body>
+{% block page_title %}
+    Assignment Submissions
+{% endblock %}
 
-    <h1>Assignment Submissions</h1>
+{% block content %}
 
-    <h2>{{ assignment.title }}</h2>
+<div class="submissions-page">
 
-    <p>
-        {{ assignment.description }}
-    </p>
+    <!-- HEADER -->
+    <div class="assignment-hero">
 
-    <p>
-        <strong>Subject:</strong>
-        {{ assignment.group.subject }}
-    </p>
+        <div class="hero-left">
+            <div class="hero-label">ASSIGNMENT</div>
 
-    <p>
-        <strong>Due date:</strong>
-        {{ assignment.due_date }}
-    </p>
+            <h1>{{ assignment.title }}</h1>
 
-    <hr>
+            {% if assignment.description %}
+                <p>{{ assignment.description }}</p>
+            {% endif %}
+        </div>
 
-    {% for submission in submissions %}
+        <div class="hero-info">
 
-        <h2>{{ submission.student }}</h2>
+            <div>
+                <span>SUBJECT</span>
+                <strong>{{ assignment.group.subject.name }}</strong>
+            </div>
 
-        <p>
-            <strong>Answer:</strong>
-        </p>
+            <div>
+                <span>GROUP</span>
+                <strong>{{ assignment.group.name }}</strong>
+            </div>
 
-        <p>
-            {{ submission.answer }}
-        </p>
+            <div>
+                <span>DUE DATE</span>
+                <strong>{{ assignment.due_date }}</strong>
+            </div>
 
-        {% if submission.submitted_at %}
+        </div>
+
+    </div>
+
+
+    <!-- TITLE -->
+    <div class="submissions-title">
+
+        <div>
+            <h2>Student Submissions</h2>
+            <p>Review the work submitted by your students.</p>
+        </div>
+
+        <div class="submission-number">
+            {{ submissions|length }}
+            <small>submissions</small>
+        </div>
+
+    </div>
+
+
+    <!-- SUBMISSIONS -->
+    {% if submissions %}
+
+        <div class="submission-list">
+
+            {% for submission in submissions %}
+
+                <div class="submission-card">
+
+                    <!-- STUDENT -->
+                    <div class="student-header">
+
+                        <div class="student-avatar">
+                            {{ submission.student.username|first|upper }}
+                        </div>
+
+                        <div class="student-details">
+
+                            <h3>
+                                {{ submission.student.get_full_name|default:submission.student.username }}
+                            </h3>
+
+                            <span>
+                                @{{ submission.student.username }}
+                            </span>
+
+                        </div>
+
+                        <div class="submitted-badge">
+                            <span></span>
+                            Submitted
+                        </div>
+
+                    </div>
+
+
+                    <!-- BODY -->
+                    <div class="submission-body">
+
+                        <!-- ANSWER -->
+                        <div class="submission-field">
+
+                            <div class="field-title">
+                                <span class="field-icon">✦</span>
+                                Answer
+                            </div>
+
+                            {% if submission.answer %}
+
+                                <div class="answer-box">
+                                    {{ submission.answer }}
+                                </div>
+
+                            {% else %}
+
+                                <div class="empty-answer">
+                                    No text answer submitted.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- LINK -->
+                        <div class="submission-field">
+
+                            <div class="field-title">
+                                <span class="field-icon">↗</span>
+                                Link
+                            </div>
+
+                            {% if submission.link %}
+
+                                <a
+                                    href="{{ submission.link }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="link-box"
+                                >
+                                    <span>🔗</span>
+                                    <span>{{ submission.link }}</span>
+                                    <b>↗</b>
+                                </a>
+
+                            {% else %}
+
+                                <div class="empty-field">
+                                    No link submitted.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- FILE -->
+                        <div class="submission-field">
+
+                            <div class="field-title">
+                                <span class="field-icon">▣</span>
+                                File
+                            </div>
+
+                            {% if submission.file %}
+
+                                <a
+                                    href="{{ submission.file.url }}"
+                                    target="_blank"
+                                    class="file-box"
+                                >
+
+                                    <div class="file-symbol">
+                                        📄
+                                    </div>
+
+                                    <div class="file-text">
+
+                                        <strong>
+                                            Uploaded file
+                                        </strong>
+
+                                        <span>
+                                            Click to open the submitted document
+                                        </span>
+
+                                    </div>
+
+                                    <div class="file-open">
+                                        Open →
+                                    </div>
+
+                                </a>
+
+                            {% else %}
+
+                                <div class="empty-field">
+                                    No file submitted.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FOOTER -->
+                    {% if submission.submitted_at %}
+
+                        <div class="submission-footer">
+
+                            <span class="footer-icon">◷</span>
+
+                            Submitted on
+                            <strong>
+                                {{ submission.submitted_at }}
+                            </strong>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <div class="no-submissions">
+
+            <div class="no-submissions-icon">
+                📭
+            </div>
+
+            <h3>No submissions yet</h3>
+
             <p>
-                <strong>Submitted:</strong>
-                {{ submission.submitted_at }}
+                Your students haven't submitted this assignment yet.
             </p>
-        {% else %}
-            <p>
-                Not submitted yet.
-            </p>
-        {% endif %}
 
-        <hr>
+        </div>
 
-    {% empty %}
+    {% endif %}
 
-        <p>
-            No students have submitted this assignment yet.
-        </p>
 
-    {% endfor %}
-
-    <br>
-
-    <a href="{% url 'teacher_assignments' %}">
-        Back to My Assignments
+    <!-- BACK -->
+    <a
+        href="{% url 'teacher_assignments' %}"
+        class="back-link"
+    >
+        ← Back to My Assignments
     </a>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

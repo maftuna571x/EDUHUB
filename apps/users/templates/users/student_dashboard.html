@@ -1,44 +1,191 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student Dashboard</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Student Dashboard</h1>
+{% block title %}
+    Dashboard | LingoRise
+{% endblock %}
 
-<h2>
-    Welcome, {{ user.get_full_name|default:user.username }}
-</h2>
+{% block page_title %}
+    Dashboard
+{% endblock %}
 
-<p>
-    Role: Student
-</p>
+{% block content %}
 
-<hr>
+<div class="dashboard">
 
-<h3>Student Panel</h3>
+    <!-- Welcome -->
 
-<ul>
-    <li>
-        <a href="{% url 'student_assignments' %}">
-            My Assignments
-        </a>
-    </li>
+    <div class="welcome-section">
 
-    <li>
-        <a href="#">
-            My Grades
-        </a>
-    </li>
-</ul>
+        <div>
+            <p class="welcome-label">
+                STUDENT DASHBOARD
+            </p>
 
-<hr>
+            <h1>
+                Welcome back,
+                {{ user.get_full_name|default:user.username }} 👋
+            </h1>
 
-<a href="{% url 'logout' %}">
-    Logout
-</a>
+            <p>
+                Keep learning, keep growing, and keep rising.
+            </p>
+        </div>
 
-</body>
-</html>
+    </div>
+
+
+    <!-- Overview cards -->
+
+    <div class="dashboard-grid">
+
+        <!-- Current Course -->
+
+        <div class="dashboard-card">
+
+            <div class="card-icon">
+                📚
+            </div>
+
+            <div>
+
+                <span class="card-label">
+                    Current Course
+                </span>
+
+                <h3>
+                    English
+                </h3>
+
+                <p>
+                    Continue your learning journey
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Progress -->
+
+        <div class="dashboard-card">
+
+            <div class="card-icon">
+                📈
+            </div>
+
+            <div>
+
+                <span class="card-label">
+                    Progress
+                </span>
+
+                <h3>
+                    0%
+                </h3>
+
+                <p>
+                    Your learning progress
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Classes -->
+
+        <div class="dashboard-card">
+
+            <div class="card-icon">
+                🏫
+            </div>
+
+            <div>
+
+                <span class="card-label">
+                    My Classes
+                </span>
+
+                <h3>
+                    View Classes
+                </h3>
+
+                <p>
+                    Check your groups and lessons
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Homework -->
+
+        <div class="dashboard-card">
+
+            <div class="card-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <span class="card-label">
+                    Homework
+                </span>
+
+                <h3>
+                    Assignments
+                </h3>
+
+                <p>
+                    Complete your homework
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Recent activity -->
+
+    <div class="dashboard-section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>
+                    Recent Activity
+                </h2>
+
+                <p>
+                    Your latest learning activity
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                ✨
+            </div>
+
+            <h3>
+                Start your learning journey
+            </h3>
+
+            <p>
+                Your courses, assignments and progress
+                will appear here.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

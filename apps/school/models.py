@@ -176,8 +176,21 @@ class AssignmentSubmission(models.Model):
         related_name="assignment_submissions",
     )
 
+    # Student's text answer
     answer = models.TextField(
         blank=True,
+    )
+
+    # Optional external link
+    link = models.URLField(
+        blank=True,
+    )
+
+    # Optional uploaded file
+    file = models.FileField(
+        upload_to="assignment_submissions/",
+        blank=True,
+        null=True,
     )
 
     submitted_at = models.DateTimeField(

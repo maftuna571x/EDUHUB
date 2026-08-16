@@ -1,86 +1,192 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Create Assignment</title>
-</head>
+{% block title %}Create Assignment | LingoRise{% endblock %}
 
-<body>
+{% block page_title %}
+    Create Assignment
+{% endblock %}
 
-    <h1>Create Assignment</h1>
+{% block content %}
 
-    <form method="POST">
+<div class="create-assignment-page">
 
-        {% csrf_token %}
+    <!-- HEADER -->
+    <div class="assignment-header">
 
-        <p>
-            <label for="title">Title:</label>
-            <br>
-            <input
-                type="text"
-                id="title"
-                name="title"
-                required
-            >
-        </p>
+        <div>
+            <div class="assignment-eyebrow">
+                TEACHER WORKSPACE
+            </div>
 
-        <p>
-            <label for="description">Description:</label>
-            <br>
-            <textarea
-                id="description"
-                name="description"
-                rows="6"
-                cols="50"
-            ></textarea>
-        </p>
+            <h1>Create Assignment</h1>
 
-        <p>
-            <label for="group">Group:</label>
-            <br>
+            <p>
+                Create a new task for your students and set a deadline.
+            </p>
+        </div>
 
-            <select
-                id="group"
-                name="group"
-                required
-            >
-                <option value="">
-                    Select a group
-                </option>
+        <div class="assignment-header-icon">
+            ✓
+        </div>
 
-                {% for group in groups %}
-                    <option value="{{ group.id }}">
-                        {{ group.name }}
-                    </option>
-                {% endfor %}
-            </select>
-        </p>
+    </div>
 
-        <p>
-            <label for="due_date">Due date:</label>
-            <br>
 
-            <input
-                type="datetime-local"
-                id="due_date"
-                name="due_date"
-                required
-            >
-        </p>
+    <!-- FORM CARD -->
+    <div class="assignment-form-card">
 
-        <button type="submit">
-            Create Assignment
-        </button>
+        <form method="post">
 
-    </form>
+            {% csrf_token %}
 
-    <br>
 
-    <a href="{% url 'teacher_assignments' %}">
-        Back to My Assignments
-    </a>
+            <!-- TITLE -->
+            <div class="form-group">
 
-</body>
-</html>
+                <label for="title">
+                    Assignment Title
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="e.g. English Essay"
+                    required
+                >
+
+                <small>
+                    Give your assignment a clear and meaningful title.
+                </small>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="6"
+                    placeholder="Write instructions for your students..."
+                ></textarea>
+
+                <small>
+                    Explain what students need to complete.
+                </small>
+
+            </div>
+
+
+            <!-- GROUP + DATE -->
+            <div class="form-row">
+
+
+                <!-- GROUP -->
+                <div class="form-group">
+
+                    <label for="group">
+                        Group
+                    </label>
+
+                    <select
+                        id="group"
+                        name="group"
+                        required
+                    >
+
+                        <option value="">
+                            Select a group
+                        </option>
+
+                        {% for group in groups %}
+
+                            <option value="{{ group.id }}">
+                                {{ group.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <small>
+                        Choose the group receiving this assignment.
+                    </small>
+
+                </div>
+
+
+                <!-- DUE DATE -->
+                <div class="form-group">
+
+                    <label for="due_date">
+                        Due Date
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="due_date"
+                        name="due_date"
+                        required
+                    >
+
+                    <small>
+                        Set the submission deadline.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'teacher_assignments' %}"
+                    class="secondary-button"
+                >
+                    ← Back
+                </a>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    <span>✓</span>
+                    Create Assignment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- TIP -->
+    <div class="assignment-tip">
+
+        <div class="tip-icon">
+            ✦
+        </div>
+
+        <div>
+            <strong>Tip</strong>
+
+            <p>
+                Keep your instructions clear and specific so students
+                know exactly what they need to submit.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

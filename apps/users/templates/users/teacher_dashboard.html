@@ -1,42 +1,215 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Teacher Dashboard</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Teacher Dashboard</h1>
+{% block title %}
+    Teacher Dashboard | LingoRise
+{% endblock %}
 
-<h2>
-    Welcome, {{ user.get_full_name|default:user.username }}
-</h2>
+{% block page_title %}
+    Dashboard
+{% endblock %}
 
-<p>
-    Role: Teacher
-</p>
+{% block content %}
 
-<hr>
+<div class="dashboard-header">
 
-<h3>Teacher Panel</h3>
+    <div>
+        <span class="dashboard-label">
+            TEACHER DASHBOARD
+        </span>
 
-<ul>
-    <li>
-        <a href="{% url 'create_assignment' %}">
-            Create Assignment
-        </a>
-    </li>
+        <h1>
+            Welcome back, {{ user.get_full_name|default:user.username }} 👋
+        </h1>
 
-    <li>
-        <a href="{% url 'teacher_assignments' %}">
-            My Assignments
-        </a>
-    </li>
-</ul>
+        <p>
+            Manage your classes, students and assignments.
+        </p>
+    </div>
 
-<a href="{% url 'logout' %}">
-    Logout
-</a>
+</div>
 
-</body>
-</html>
+
+<!-- STATISTICS -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🏫
+        </div>
+
+        <div>
+            <span>My Classes</span>
+            <strong>{{ groups|length }}</strong>
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            👨‍🎓
+        </div>
+
+        <div>
+            <span>Students</span>
+            <strong>{{ total_students }}</strong>
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ✓
+        </div>
+
+        <div>
+            <span>Assignments</span>
+            <strong>{{ total_assignments }}</strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MY CLASSES -->
+
+<div class="dashboard-section">
+
+    <div class="section-heading">
+
+        <div>
+            <h2>My Classes</h2>
+
+            <p>
+                Your active teaching groups
+            </p>
+        </div>
+
+    </div>
+
+
+    {% if groups %}
+
+        <div class="course-grid">
+
+            {% for group in groups %}
+
+                <div class="course-card">
+
+                    <div class="course-card-top">
+
+                        <span class="course-badge">
+                            {{ group.subject.name }}
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        {{ group.name }}
+                    </h3>
+
+
+                    <p>
+                        Classroom:
+                        {{ group.classroom.name }}
+                    </p>
+
+
+                    <p>
+                        Students:
+                        {{ group.students.count }}
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-card">
+            You don't have any active classes yet.
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- RECENT ASSIGNMENTS -->
+
+<div class="dashboard-section">
+
+    <div class="section-heading">
+
+        <div>
+            <h2>Recent Assignments</h2>
+
+            <p>
+                Your latest assignments
+            </p>
+        </div>
+
+    </div>
+
+
+    {% if assignments %}
+
+        <div class="assignment-list">
+
+            {% for assignment in assignments %}
+
+                <div class="assignment-card">
+
+                    <div>
+
+                        <h3>
+                            {{ assignment.title }}
+                        </h3>
+
+                        <p>
+                            {{ assignment.group.name }}
+                            ·
+                            {{ assignment.group.subject.name }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="assignment-date">
+
+                        <span>
+                            Due date
+                        </span>
+
+                        <strong>
+                            {{ assignment.due_date }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-card">
+            No assignments yet.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add Student | LingoRise
+{% endblock %}
+
+{% block page_title %}
+    Add Student
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-page">
+
+    <div class="admin-page-header">
+
+        <div>
+            <span class="admin-kicker">
+                STUDENT MANAGEMENT
+            </span>
+
+            <h1>
+                Add New Student
+            </h1>
+
+            <p>
+                Create a new student account for LingoRise.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'admin_students' %}"
+            class="admin-secondary-button"
+        >
+            ← Students
+        </a>
+
+    </div>
+
+
+    <div class="admin-form-card">
+
+        {% if error %}
+            <div class="admin-form-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <div class="form-section">
+
+                <div class="form-section-heading">
+                    <h2>
+                        Personal Information
+                    </h2>
+
+                    <p>
+                        Basic information about the student.
+                    </p>
+                </div>
+
+
+                <div class="admin-form-grid">
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            First name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="first_name"
+                            value="{{ first_name|default:'' }}"
+                            placeholder="Ali"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Last name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="last_name"
+                            value="{{ last_name|default:'' }}"
+                            placeholder="Valiyev"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ email|default:'' }}"
+                            placeholder="student@example.com"
+                        >
+
+                    </div>
+
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            value="{{ phone|default:'' }}"
+                            placeholder="+998 ..."
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-section">
+
+                <div class="form-section-heading">
+
+                    <h2>
+                        Account Information
+                    </h2>
+
+                    <p>
+                        These credentials will be used to sign in.
+                    </p>
+
+                </div>
+
+
+                <div class="admin-form-grid">
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            name="username"
+                            value="{{ username|default:'' }}"
+                            placeholder="ali.valiyev"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div></div>
+
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Create password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Confirm password
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password_confirm"
+                            placeholder="Repeat password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-form-actions">
+
+                <a
+                    href="{% url 'admin_students' %}"
+                    class="admin-secondary-button"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="admin-primary-button"
+                >
+                    Create Student →
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

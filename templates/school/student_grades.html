@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Grades</title>
+</head>
+
+<body>
+
+<h1>My Grades</h1>
+
+{% if grades %}
+
+    {% for grade in grades %}
+
+        <div>
+
+            <h2>
+                {{ grade.subject.name }}
+            </h2>
+
+            {% if grade.assignment %}
+                <p>
+                    <strong>Assignment:</strong>
+                    {{ grade.assignment.title }}
+                </p>
+            {% endif %}
+
+            <p>
+                <strong>Teacher:</strong>
+                {{ grade.teacher.get_full_name|default:grade.teacher.username }}
+            </p>
+
+            <p>
+                <strong>Score:</strong>
+                {{ grade.score }}
+            </p>
+
+            <p>
+                <strong>Given:</strong>
+                {{ grade.created_at }}
+            </p>
+
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>
+        You don't have any grades yet.
+    </p>
+
+{% endif %}
+
+<a href="{% url 'dashboard' %}">
+    Back to Dashboard
+</a>
+
+</body>
+
+</html>

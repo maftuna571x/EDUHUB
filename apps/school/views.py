@@ -7,6 +7,7 @@ from apps.users.models import User
 from .models import (
     Assignment,
     AssignmentSubmission,
+    Grade,
     Group,
 )
 
@@ -131,16 +132,33 @@ def submit_assignment(request, assignment_id):
     submitted = False
 
     if request.method == "POST":
-        answer = request.POST.get("answer", "").strip()
+        answer = request.POST.get(
+            "answer",
+            "",
+        ).strip()
 
-        submission, created = AssignmentSubmission.objects.update_or_create(
-            assignment=assignment,
-            student=request.user,
-            defaults={
-                "answer": answer,
-                "submitted_at": timezone.now(),
-            },
+        link = request.POST.get(
+            "link",
+            "",
+        ).strip()
+
+        uploaded_file = request.FILES.get("file")
+
+        submission, created = (
+            AssignmentSubmission.objects.update_or_create(
+                assignment=assignment,
+                student=request.user,
+                defaults={
+                    "answer": answer,
+                    "link": link,
+                    "submitted_at": timezone.now(),
+                },
+            )
         )
+
+        if uploaded_file:
+            submission.file = uploaded_file
+            submission.save()
 
         submitted = True
 
@@ -153,10 +171,6 @@ def submit_assignment(request, assignment_id):
             "submitted": submitted,
         },
     )
-
-
-
-
 
 
 @login_required
@@ -173,9 +187,12 @@ def assignment_submissions(request, assignment_id):
 
     submissions = (
         AssignmentSubmission.objects
-        .filter(assignment=assignment)
-        .select_related("student")
-        .order_by("-submitted_at")
+        .filter(
+            assignment=assignment,
+        )
+        .select_related(
+            "student",
+        )
     )
 
     return render(
@@ -184,5 +201,89 @@ def assignment_submissions(request, assignment_id):
         {
             "assignment": assignment,
             "submissions": submissions,
+        },
+    )
+
+
+
+
+@login_required
+def student_grades(request):
+    if request.user.role != User.Role.STUDENT:
+        return redirect("dashboard")
+
+    grades = (
+        Grade.objects
+        .filter(
+            student=request.user,
+        )
+        .select_related(
+            "subject",
+            "assignment",
+            "teacher",
+        )
+        .order_by("-created_at")
+    )
+
+    return render(
+        request,
+        "school/student_grades.html",
+        {
+            "grades": grades,
+        },
+    )
+
+
+
+
+@login_required
+def teacher_dashboard(request):
+    if request.user.role != User.Role.TEACHER:
+        return redirect("dashboard")
+
+    groups = (
+        Group.objects
+        .filter(
+            teacher=request.user,
+            is_active=True,
+        )
+        .select_related(
+            "subject",
+            "classroom",
+        )
+        .prefetch_related("students")
+    )
+
+    assignments = (
+        Assignment.objects
+        .filter(
+            teacher=request.user,
+            is_active=True,
+        )
+        .select_related(
+            "group",
+            "group__subject",
+        )
+        .order_by("-created_at")[:5]
+    )
+
+    total_students = sum(
+        group.students.count()
+        for group in groups
+    )
+
+    total_assignments = Assignment.objects.filter(
+        teacher=request.user,
+        is_active=True,
+    ).count()
+
+    return render(
+        request,
+        "users/teacher_dashboard.html",
+        {
+            "groups": groups,
+            "assignments": assignments,
+            "total_students": total_students,
+            "total_assignments": total_assignments,
         },
     )

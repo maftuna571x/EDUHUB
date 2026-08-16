@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard | LingoRise
+{% endblock %}
+
+{% block page_title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <div class="welcome-section">
+        <div>
+            <p class="welcome-label">ADMIN DASHBOARD</p>
+
+            <h1>
+                Welcome back,
+                {{ user.get_full_name|default:user.username }} 👋
+            </h1>
+
+            <p>
+                Manage LingoRise and keep everything running smoothly.
+            </p>
+        </div>
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+            <div class="card-icon">👨‍🎓</div>
+
+            <div>
+                <span class="card-label">Students</span>
+                <h3>{{ total_students }}</h3>
+                <p>Registered students</p>
+            </div>
+        </div>
+
+
+        <div class="dashboard-card">
+            <div class="card-icon">👨‍🏫</div>
+
+            <div>
+                <span class="card-label">Teachers</span>
+                <h3>{{ total_teachers }}</h3>
+                <p>Active teachers</p>
+            </div>
+        </div>
+
+
+        <div class="dashboard-card">
+            <div class="card-icon">🏫</div>
+
+            <div>
+                <span class="card-label">Groups</span>
+                <h3>{{ total_groups }}</h3>
+                <p>Learning groups</p>
+            </div>
+        </div>
+
+
+        <div class="dashboard-card">
+            <div class="card-icon">✓</div>
+
+            <div>
+                <span class="card-label">Assignments</span>
+                <h3>{{ total_assignments }}</h3>
+                <p>Total assignments</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ADMIN FUNCTIONS -->
+
+    <div class="dashboard-section">
+
+        <div class="section-header">
+            <div>
+                <h2>Administration</h2>
+                <p>Manage your LingoRise platform</p>
+            </div>
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <a href="/admin/" class="dashboard-card admin-action-card">
+                <div class="card-icon">⚙️</div>
+
+                <div>
+                    <span class="card-label">SYSTEM</span>
+                    <h3>Admin Panel</h3>
+                    <p>Open Django administration →</p>
+                </div>
+            </a>
+
+
+            <a href="/admin/users/user/add/"
+               class="dashboard-card admin-action-card">
+
+                <div class="card-icon">👨‍🎓</div>
+
+                <div>
+                    <span class="card-label">STUDENTS</span>
+                    <h3>Add Student</h3>
+                    <p>Create a new student account →</p>
+                </div>
+
+            </a>
+
+
+            <a href="/admin/users/user/"
+               class="dashboard-card admin-action-card">
+
+                <div class="card-icon">👥</div>
+
+                <div>
+                    <span class="card-label">USERS</span>
+                    <h3>Manage Users</h3>
+                    <p>View and manage accounts →</p>
+                </div>
+
+            </a>
+
+
+            <a href="/admin/school/group/"
+               class="dashboard-card admin-action-card">
+
+                <div class="card-icon">🏫</div>
+
+                <div>
+                    <span class="card-label">GROUPS</span>
+                    <h3>Manage Groups</h3>
+                    <p>Manage learning groups →</p>
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-section">
+
+        <div class="section-header">
+            <div>
+                <h2>Quick Management</h2>
+                <p>Important LingoRise administration tools</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+
+            <a href="/admin/school/assignment/"
+               class="dashboard-card admin-action-card">
+
+                <div class="card-icon">📚</div>
+
+                <div>
+                    <span class="card-label">ACADEMIC</span>
+                    <h3>Assignments</h3>
+                    <p>Manage assignments →</p>
+                </div>
+
+            </a>
+
+
+            <a href="/admin/school/subject/"
+               class="dashboard-card admin-action-card">
+
+                <div class="card-icon">📖</div>
+
+                <div>
+                    <span class="card-label">ACADEMIC</span>
+                    <h3>Subjects</h3>
+                    <p>Manage subjects →</p>
+                </div>
+
+            </a>
+
+
+            <a href="/admin/school/grade/"
+               class="dashboard-card admin-action-card">
+
+                <div class="card-icon">📊</div>
+
+                <div>
+                    <span class="card-label">RESULTS</span>
+                    <h3>Grades</h3>
+                    <p>Manage student grades →</p>
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,42 +1,538 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <title>Login</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | LingoRise</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: #f4f6fb;
+            color: #111827;
+        }
+
+
+        /* =========================
+           PAGE
+        ========================= */
+
+        .login-page {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 40px 20px;
+
+            position: relative;
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(99, 102, 241, 0.14),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(59, 130, 246, 0.12),
+                    transparent 32%
+                ),
+                #f8fafc;
+        }
+
+
+        /* Background decoration */
+
+        .background-circle-one {
+            position: absolute;
+
+            width: 420px;
+            height: 420px;
+
+            top: -220px;
+            right: -160px;
+
+            border-radius: 50%;
+
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .background-circle-two {
+            position: absolute;
+
+            width: 350px;
+            height: 350px;
+
+            bottom: -200px;
+            left: -150px;
+
+            border-radius: 50%;
+
+            background: rgba(14, 165, 233, 0.06);
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .login-card {
+            position: relative;
+            z-index: 2;
+
+            width: 100%;
+            max-width: 450px;
+
+            padding: 42px;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 24px;
+
+            box-shadow:
+                0 25px 70px rgba(15, 23, 42, 0.10),
+                0 5px 20px rgba(15, 23, 42, 0.04);
+        }
+
+
+        /* =========================
+           BRAND
+        ========================= */
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 42px;
+        }
+
+        .brand-logo {
+            width: 54px;
+            height: 54px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 16px;
+
+            background: #111827;
+
+            color: white;
+
+            font-size: 17px;
+            font-weight: 800;
+
+            letter-spacing: 0.5px;
+
+            box-shadow:
+                0 8px 20px rgba(17, 24, 39, 0.18);
+        }
+
+        .brand-name {
+            margin: 0;
+
+            font-size: 23px;
+            font-weight: 800;
+
+            letter-spacing: -0.5px;
+
+            color: #111827;
+        }
+
+        .brand-tagline {
+            margin: 3px 0 0;
+
+            font-size: 13px;
+
+            color: #64748b;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .welcome-label {
+            margin: 0 0 10px;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            color: #6366f1;
+        }
+
+        .login-title {
+            margin: 0;
+
+            font-size: 31px;
+            line-height: 1.2;
+
+            letter-spacing: -1px;
+
+            color: #0f172a;
+        }
+
+        .login-description {
+            margin: 12px 0 30px;
+
+            font-size: 14px;
+            line-height: 1.6;
+
+            color: #64748b;
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-message {
+            margin-bottom: 20px;
+
+            padding: 13px 15px;
+
+            border-radius: 12px;
+
+            border: 1px solid #fecaca;
+
+            background: #fff1f2;
+
+            color: #b91c1c;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            color: #334155;
+        }
+
+        .form-input {
+            width: 100%;
+
+            height: 50px;
+
+            padding: 0 15px;
+
+            border: 1px solid #dbe2ea;
+
+            border-radius: 12px;
+
+            outline: none;
+
+            background: #f8fafc;
+
+            color: #111827;
+
+            font-size: 14px;
+
+            transition: all 0.2s ease;
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-input:hover {
+            background: white;
+
+            border-color: #cbd5e1;
+        }
+
+        .form-input:focus {
+            background: white;
+
+            border-color: #6366f1;
+
+            box-shadow:
+                0 0 0 4px rgba(99, 102, 241, 0.10);
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .login-button {
+            width: 100%;
+
+            height: 50px;
+
+            margin-top: 4px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background: #111827;
+
+            color: white;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+        }
+
+        .login-button:hover {
+            background: #1f2937;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 25px rgba(15, 23, 42, 0.16);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .login-footer {
+            margin-top: 30px;
+
+            padding-top: 22px;
+
+            border-top: 1px solid #eef2f7;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            color: #94a3b8;
+        }
+
+        .login-footer strong {
+            color: #64748b;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 520px) {
+
+            .login-page {
+                padding: 20px 14px;
+            }
+
+            .login-card {
+                padding: 30px 24px;
+
+                border-radius: 20px;
+            }
+
+            .brand {
+                margin-bottom: 32px;
+            }
+
+            .login-title {
+                font-size: 27px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
 
-<h1>EDUHUB Login</h1>
+    <main class="login-page">
 
-{% if error %}
-    <p>{{ error }}</p>
-{% endif %}
+        <div class="background-circle-one"></div>
+        <div class="background-circle-two"></div>
 
-<form method="post">
-    {% csrf_token %}
 
-    <label>Username:</label>
-    <input
-        type="text"
-        name="username"
-        required
-    >
+        <section class="login-card">
 
-    <br><br>
 
-    <label>Password:</label>
-    <input
-        type="password"
-        name="password"
-        required
-    >
+            <!-- BRAND -->
 
-    <br><br>
+            <div class="brand">
 
-    <button type="submit">
-        Login
-    </button>
-</form>
+                <div class="brand-logo">
+                    LR
+                </div>
+
+                <div>
+
+                    <h1 class="brand-name">
+                        LingoRise
+                    </h1>
+
+                    <p class="brand-tagline">
+                        Learn. Rise.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- HEADER -->
+
+            <p class="welcome-label">
+                WELCOME BACK
+            </p>
+
+            <h2 class="login-title">
+                Sign in to your account
+            </h2>
+
+            <p class="login-description">
+                Continue your learning journey with LingoRise.
+            </p>
+
+
+            <!-- ERROR -->
+
+            {% if error %}
+
+                <div class="error-message">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- FORM -->
+
+            <form method="post">
+
+                {% csrf_token %}
+
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="username"
+                    >
+                        Username
+                    </label>
+
+                    <input
+                        class="form-input"
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="password"
+                    >
+                        Password
+                    </label>
+
+                    <input
+                        class="form-input"
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    class="login-button"
+                    type="submit"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <!-- FOOTER -->
+
+            <div class="login-footer">
+
+                <strong>LingoRise</strong>
+
+                &nbsp;•&nbsp;
+
+                Learn. Rise.
+
+            </div>
+
+
+        </section>
+
+    </main>
 
 </body>
+
 </html>

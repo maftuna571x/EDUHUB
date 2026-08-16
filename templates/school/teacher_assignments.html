@@ -1,53 +1,293 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Assignments</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}
+    Assignments | LingoRise
+{% endblock %}
 
-    <h1>My Assignments</h1>
+{% block page_title %}
+    Assignments
+{% endblock %}
 
-    {% for assignment in assignments %}
+{% block content %}
 
-        <h2>{{ assignment.title }}</h2>
+<div class="assignments-page">
 
-        <p>{{ assignment.description }}</p>
+    <!-- HEADER -->
 
-        <p>
-            <strong>Group:</strong>
-            {{ assignment.group.name }}
-        </p>
+    <div class="assignments-header">
 
-        <p>
-            <strong>Subject:</strong>
-            {{ assignment.group.subject }}
-        </p>
+        <div class="assignments-heading">
 
-        <p>
-            <strong>Due date:</strong>
-            {{ assignment.due_date }}
-        </p>
+            <div class="eyebrow">
+                TEACHING
+            </div>
 
-        <p>
-            <a href="{% url 'assignment_submissions' assignment.id %}">
-                View Submissions
+            <h1>
+                Assignments
+            </h1>
+
+            <p>
+                Create, manage and review assignments for your students.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'create_assignment' %}"
+            class="create-assignment-btn"
+        >
+            <span class="btn-icon">＋</span>
+            <span>Create Assignment</span>
+        </a>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="assignment-stats">
+
+        <div class="assignment-stat-card">
+
+            <div class="stat-icon purple">
+                ✓
+            </div>
+
+            <div class="stat-info">
+
+                <span class="stat-label">
+                    Total Assignments
+                </span>
+
+                <strong>
+                    {{ assignments|length }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="assignment-stat-card">
+
+            <div class="stat-icon blue">
+                👥
+            </div>
+
+            <div class="stat-info">
+
+                <span class="stat-label">
+                    Active Classes
+                </span>
+
+                <strong>
+                    {{ assignments|length }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="assignment-stat-card">
+
+            <div class="stat-icon green">
+                ◷
+            </div>
+
+            <div class="stat-info">
+
+                <span class="stat-label">
+                    Recent Work
+                </span>
+
+                <strong>
+                    {{ assignments|length }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ASSIGNMENTS -->
+
+    <div class="section-heading">
+
+        <div>
+            <h2>
+                Your Assignments
+            </h2>
+
+            <p>
+                Manage your latest assignments
+            </p>
+        </div>
+
+    </div>
+
+
+    {% if assignments %}
+
+        <div class="assignment-grid">
+
+            {% for assignment in assignments %}
+
+                <article class="modern-assignment-card">
+
+                    <div class="assignment-card-top">
+
+                        <div class="assignment-type">
+                            ASSIGNMENT
+                        </div>
+
+                        <div class="assignment-menu">
+                            ⋮
+                        </div>
+
+                    </div>
+
+
+                    <div class="assignment-card-main">
+
+                        <h3>
+                            {{ assignment.title }}
+                        </h3>
+
+                        {% if assignment.description %}
+
+                            <p class="assignment-description">
+                                {{ assignment.description }}
+                            </p>
+
+                        {% else %}
+
+                            <p class="assignment-description muted">
+                                No description provided.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="assignment-meta">
+
+                        <div class="meta-item">
+
+                            <span class="meta-icon">
+                                📚
+                            </span>
+
+                            <div>
+                                <small>
+                                    Subject
+                                </small>
+
+                                <strong>
+                                    {{ assignment.group.subject.name }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="meta-item">
+
+                            <span class="meta-icon">
+                                👥
+                            </span>
+
+                            <div>
+                                <small>
+                                    Group
+                                </small>
+
+                                <strong>
+                                    {{ assignment.group.name }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="meta-item">
+
+                            <span class="meta-icon">
+                                ⏰
+                            </span>
+
+                            <div>
+                                <small>
+                                    Due date
+                                </small>
+
+                                <strong>
+                                    {{ assignment.due_date }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="assignment-card-footer">
+
+                        <span class="assignment-status">
+                            <span class="status-dot"></span>
+                            Active
+                        </span>
+
+
+                        <a
+                            href="{% url 'assignment_submissions' assignment.id %}"
+                            class="open-assignment-btn"
+                        >
+                            View Submissions
+                            <span>→</span>
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="assignment-empty">
+
+            <div class="empty-illustration">
+                ✓
+            </div>
+
+            <h2>
+                No assignments yet
+            </h2>
+
+            <p>
+                Create your first assignment and start giving work
+                to your students.
+            </p>
+
+            <a
+                href="{% url 'create_assignment' %}"
+                class="create-assignment-btn"
+            >
+                <span class="btn-icon">＋</span>
+                Create Assignment
             </a>
-        </p>
 
-        <hr>
+        </div>
 
-    {% empty %}
+    {% endif %}
 
-        <p>No assignments yet.</p>
+</div>
 
-    {% endfor %}
-
-    <a href="{% url 'dashboard' %}">
-        Back to Dashboard
-    </a>
-
-</body>
-</html>
+{% endblock %}

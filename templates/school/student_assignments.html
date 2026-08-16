@@ -1,69 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Assignments</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>My Assignments</h1>
+{% block title %}
+    My Assignments | LingoRise
+{% endblock %}
 
-<p>
-    Student: {{ user.get_full_name|default:user.username }}
-</p>
+{% block content %}
 
-<hr>
+<div class="assignments-page">
 
-{% if assignments %}
-
-    {% for assignment in assignments %}
+    <div class="assignments-top">
 
         <div>
-            <h2>{{ assignment.title }}</h2>
+            <span class="assignments-kicker">
+                STUDENT WORKSPACE
+            </span>
+
+            <h1>My Assignments</h1>
 
             <p>
-                {{ assignment.description }}
+                View your homework, deadlines and learning tasks.
             </p>
-
-            <p>
-                <strong>Subject:</strong>
-                {{ assignment.group.subject }}
-            </p>
-
-            <p>
-                <strong>Teacher:</strong>
-                {{ assignment.teacher.get_full_name|default:assignment.teacher.username }}
-            </p>
-
-            <p>
-                <strong>Due date:</strong>
-                {{ assignment.due_date }}
-            </p>
-
-            <a href="{% url 'submit_assignment' assignment.id %}">
-                Open Assignment
-            </a>
         </div>
 
-        <hr>
+        <div class="assignments-total">
+            <strong>{{ assignments|length }}</strong>
+            <span>Total tasks</span>
+        </div>
 
-    {% endfor %}
+    </div>
 
-{% else %}
 
-    <p>No assignments available.</p>
+    {% if assignments %}
 
-{% endif %}
+    <div class="assignments-list">
 
-<a href="{% url 'dashboard' %}">
-    Back to Dashboard
-</a>
+        {% for assignment in assignments %}
 
-<br><br>
+        <div class="assignment-card">
 
-<a href="{% url 'logout' %}">
-    Logout
-</a>
+            <div class="assignment-card-top">
 
-</body>
-</html>
+                <div class="assignment-index">
+                    {{ forloop.counter|stringformat:"02d" }}
+                </div>
+
+                <span class="assignment-subject">
+                    {{ assignment.group.subject.name }}
+                </span>
+
+            </div>
+
+
+            <div class="assignment-content">
+
+                <h2>
+                    {{ assignment.title }}
+                </h2>
+
+                <p>
+                    {{ assignment.description }}
+                </p>
+
+            </div>
+
+
+            <div class="assignment-details">
+
+                <div class="assignment-detail">
+
+                    <span>TEACHER</span>
+
+                    <strong>
+                        {{ assignment.teacher.get_full_name|default:assignment.teacher.username }}
+                    </strong>
+
+                </div>
+
+
+                <div class="assignment-detail">
+
+                    <span>DUE DATE</span>
+
+                    <strong>
+                        {{ assignment.due_date|date:"M d, Y" }}
+                    </strong>
+
+                    <small>
+                        {{ assignment.due_date|date:"H:i" }}
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{% url 'submit_assignment' assignment.id %}"
+                class="assignment-button"
+            >
+                <span>Open assignment</span>
+                <b>→</b>
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="assignments-empty">
+
+        <div>✓</div>
+
+        <h2>No assignments yet</h2>
+
+        <p>
+            Your teacher hasn't assigned any work yet.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

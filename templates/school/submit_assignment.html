@@ -1,82 +1,280 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>{{ assignment.title }}</title>
-</head>
+{% block title %}
+    {{ assignment.title }} | LingoRise
+{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>{{ assignment.title }}</h1>
+<div class="submit-page">
 
-    <p>{{ assignment.description }}</p>
+    <!-- Header -->
 
-    <p>
-        <strong>Subject:</strong>
-        {{ assignment.group.subject }}
-    </p>
+    <div class="submit-header">
 
-    <p>
-        <strong>Teacher:</strong>
-        {{ assignment.teacher }}
-    </p>
+        <div>
 
-    <p>
-        <strong>Due date:</strong>
-        {{ assignment.due_date }}
-    </p>
+            <a
+                href="{% url 'student_assignments' %}"
+                class="back-link"
+            >
+                ← Back to assignments
+            </a>
 
-    <hr>
+            <span class="submit-kicker">
+                STUDENT WORKSPACE
+            </span>
 
-    {% if submitted %}
-        <h2>✅ Assignment submitted successfully!</h2>
+            <h1>
+                {{ assignment.title }}
+            </h1>
 
-        <p>
-            Your answer has been saved.
-        </p>
-    {% endif %}
-
-    <h2>Your Answer</h2>
-
-    <form method="post">
-        {% csrf_token %}
-
-        <textarea
-            name="answer"
-            rows="10"
-            cols="70"
-            placeholder="Write your answer here..."
-        >{% if submission %}{{ submission.answer }}{% endif %}</textarea>
-
-        <br><br>
-
-        <button type="submit">
-            Submit Assignment
-        </button>
-    </form>
-
-    {% if submission %}
-        <hr>
-
-        <h2>Saved Answer</h2>
-
-        <p>{{ submission.answer }}</p>
-
-        {% if submission.submitted_at %}
             <p>
-                <strong>Submitted:</strong>
-                {{ submission.submitted_at }}
+                Complete this assignment and submit your work below.
             </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Assignment information -->
+
+    <div class="assignment-info-card">
+
+        <div class="info-top">
+
+            <div class="info-subject">
+                {{ assignment.group.subject.name }}
+            </div>
+
+            {% if submitted %}
+                <div class="submission-status success">
+                    ✓ Submitted
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="assignment-description">
+
+            <span>ASSIGNMENT DESCRIPTION</span>
+
+            <p>
+                {{ assignment.description|default:"No description provided." }}
+            </p>
+
+        </div>
+
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span>TEACHER</span>
+
+                <strong>
+                    {{ assignment.teacher.get_full_name|default:assignment.teacher.username }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>DUE DATE</span>
+
+                <strong>
+                    {{ assignment.due_date|date:"M d, Y" }}
+                </strong>
+
+                <small>
+                    {{ assignment.due_date|date:"H:i" }}
+                </small>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>GROUP</span>
+
+                <strong>
+                    {{ assignment.group.name }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Submission -->
+
+    <div class="submission-card">
+
+        <div class="submission-heading">
+
+            <div>
+                <span>YOUR WORK</span>
+
+                <h2>
+                    Submit your answer
+                </h2>
+
+                <p>
+                    You can submit a written answer, a link, or a file.
+                </p>
+            </div>
+
+        </div>
+
+
+        {% if submitted %}
+
+            <div class="success-message">
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <strong>
+                        Assignment submitted successfully
+                    </strong>
+
+                    <p>
+                        Your latest submission has been saved.
+                    </p>
+                </div>
+
+            </div>
+
         {% endif %}
-    {% endif %}
 
-    <br>
 
-    <a href="{% url 'student_assignments' %}">
-        Back to Assignments
-    </a>
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            class="submission-form"
+        >
 
-</body>
-</html>
+            {% csrf_token %}
+
+
+            <!-- Answer -->
+
+            <div class="submit-field">
+
+                <label for="answer">
+                    Your answer
+                </label>
+
+                <textarea
+                    id="answer"
+                    name="answer"
+                    rows="8"
+                    placeholder="Write your answer here..."
+                >{% if submission %}{{ submission.answer }}{% endif %}</textarea>
+
+            </div>
+
+
+            <!-- Link -->
+
+            <div class="submit-field">
+
+                <label for="link">
+                    Link
+                    <span>Optional</span>
+                </label>
+
+                <input
+                    type="url"
+                    id="link"
+                    name="link"
+                    placeholder="https://..."
+                    value="{% if submission %}{{ submission.link }}{% endif %}"
+                >
+
+            </div>
+
+
+            <!-- File -->
+
+            <div class="submit-field">
+
+                <label for="file">
+                    Upload file
+                    <span>Optional</span>
+                </label>
+
+                <div class="file-input">
+
+                    <input
+                        type="file"
+                        id="file"
+                        name="file"
+                    >
+
+                    <label for="file">
+                        Choose a file
+                    </label>
+
+                </div>
+
+                {% if submission and submission.file %}
+
+                    <div class="current-file">
+
+                        <span>Current file</span>
+
+                        <a
+                            href="{{ submission.file.url }}"
+                            target="_blank"
+                        >
+                            View uploaded file →
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Submit -->
+
+            <div class="submission-actions">
+
+                <a
+                    href="{% url 'student_assignments' %}"
+                    class="cancel-button"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="submit-button"
+                >
+                    {% if submitted %}
+                        Update submission
+                    {% else %}
+                        Submit assignment
+                    {% endif %}
+
+                    <span>→</span>
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
