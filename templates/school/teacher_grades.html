@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Grades | LingoRise{% endblock %}
+
+{% block page_title %}
+    Grades
+{% endblock %}
+
+{% block content %}
+
+<div class="teacher-page">
+
+    <section class="dashboard-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-eyebrow">
+                <span class="hero-dot"></span>
+                LINGORISE · ACADEMIC
+            </div>
+
+            <h1>
+                Student
+                <span>Grades</span>
+                📊
+            </h1>
+
+            <p>
+                View and manage grades for your students.
+            </p>
+
+        </div>
+
+        <div class="hero-decoration">
+            <div class="hero-glow"></div>
+            <div class="hero-symbol">✦</div>
+        </div>
+
+    </section>
+
+
+    <section class="dashboard-panel">
+
+        <div class="panel-header">
+
+            <div>
+                <div class="panel-label">
+                    GRADES
+                </div>
+
+                <h2>
+                    Student Results
+                </h2>
+
+                <p>
+                    Grades you have given to your students.
+                </p>
+            </div>
+
+        </div>
+
+
+        {% if grades %}
+
+            <div class="assignments-container">
+
+                {% for grade in grades %}
+
+                    <div class="modern-assignment-card">
+
+                        <div class="assignment-check">
+                            {{ grade.student.username|first|upper }}
+                        </div>
+
+                        <div class="assignment-details">
+
+                            <h3>
+                                {{ grade.student.get_full_name|default:grade.student.username }}
+                            </h3>
+
+                            <div class="assignment-group">
+                                {{ grade.subject.name }}
+                            </div>
+
+                            <div class="assignment-due">
+
+                                <span class="due-label">
+                                    Score
+                                </span>
+
+                                <span>
+                                    {{ grade.score }}
+                                </span>
+
+                            </div>
+
+                            <div class="assignment-due">
+
+                                <span class="due-label">
+                                    Date
+                                </span>
+
+                                <span>
+                                    {{ grade.created_at|date:"M d, Y • H:i" }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="dashboard-empty">
+
+                <div class="empty-circle">
+                    📊
+                </div>
+
+                <h3>
+                    No grades yet
+                </h3>
+
+                <p>
+                    Grades you give to students will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

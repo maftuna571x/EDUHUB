@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Students | LingoRise{% endblock %}
+
+{% block page_title %}
+    Students
+{% endblock %}
+
+{% block content %}
+
+<div class="teacher-page">
+
+    <section class="dashboard-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-eyebrow">
+                <span class="hero-dot"></span>
+                LINGORISE · STUDENTS
+            </div>
+
+            <h1>
+                Your
+                <span>Students</span>
+                👨‍🎓
+            </h1>
+
+            <p>
+                View and manage the students in your teaching groups.
+            </p>
+
+        </div>
+
+        <div class="hero-decoration">
+            <div class="hero-glow"></div>
+            <div class="hero-symbol">✦</div>
+        </div>
+
+    </section>
+
+
+    <section class="dashboard-stats">
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+                <div class="stat-icon students-icon">
+                    👨‍🎓
+                </div>
+            </div>
+
+            <div class="stat-number">
+                {{ students|length }}
+            </div>
+
+            <div class="stat-title">
+                Students
+            </div>
+
+            <div class="stat-description">
+                Students across your classes
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+                <div class="stat-icon classes-icon">
+                    🏫
+                </div>
+            </div>
+
+            <div class="stat-number">
+                {{ groups|length }}
+            </div>
+
+            <div class="stat-title">
+                Classes
+            </div>
+
+            <div class="stat-description">
+                Your active teaching groups
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="dashboard-panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <div class="panel-label">
+                    LEARNERS
+                </div>
+
+                <h2>
+                    All Students
+                </h2>
+
+                <p>
+                    Students currently assigned to your classes
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if students %}
+
+            <div class="students-container">
+
+                {% for student in students %}
+
+                    <div class="modern-class-card">
+
+                        <div class="class-card-left">
+
+                            <div class="class-avatar">
+                                {{ student.first_name|first|default:student.username|first|upper }}
+                            </div>
+
+                            <div class="class-details">
+
+                                <div class="class-title-row">
+
+                                    <h3>
+                                        {{ student.get_full_name|default:student.username }}
+                                    </h3>
+
+                                    <span class="active-badge">
+                                        Student
+                                    </span>
+
+                                </div>
+
+                                <p class="class-subject">
+                                    @{{ student.username }}
+                                </p>
+
+                                <div class="class-meta">
+
+                                    <span>
+                                        ✉
+                                        {{ student.email|default:"No email" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="class-card-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="dashboard-empty">
+
+                <div class="empty-circle">
+                    👨‍🎓
+                </div>
+
+                <h3>
+                    No students yet
+                </h3>
+
+                <p>
+                    Students assigned to your classes will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

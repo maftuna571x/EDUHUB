@@ -1,0 +1,875 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="vocabulary-page">
+
+    <div class="vocabulary-header">
+
+        <div class="vocabulary-title-area">
+
+            <span class="eyebrow">
+                SELF STUDY
+            </span>
+
+            <h1>
+                Vocabulary
+            </h1>
+
+            <p>
+                Build your English vocabulary,
+                one word at a time.
+            </p>
+
+        </div>
+
+        <div class="vocabulary-header-actions">
+
+            <a
+                href="{% url 'vocabulary_set_create' %}"
+                class="add-word-button"
+            >
+                + Create Word Set
+            </a>
+
+            <div class="vocabulary-progress">
+
+                <div class="progress-top">
+                    <span>
+                        Learning progress
+                    </span>
+
+                    <strong>
+                        {{ progress }}%
+                    </strong>
+                </div>
+
+                <div class="progress-bar">
+                    <div
+                        class="progress-fill"
+                        data-progress="{{ progress }}"
+                    ></div>
+                </div>
+
+                <small>
+                    {{ learned_count }} of {{ total_words }} words learned
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <form
+        method="get"
+        class="vocabulary-toolbar"
+    >
+
+        <div class="search-box">
+
+            <span class="search-icon">
+                ⌕
+            </span>
+
+            <input
+                type="text"
+                name="q"
+                value="{{ search_query }}"
+                placeholder="Search vocabulary..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <select name="level">
+
+            <option value="">
+                All levels
+            </option>
+
+            {% for level in levels %}
+
+                <option
+                    value="{{ level }}"
+                    {% if selected_level == level %}
+                        selected
+                    {% endif %}
+                >
+                    {{ level }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <select name="category">
+
+            <option value="">
+                All categories
+            </option>
+
+            {% for category in categories %}
+
+                <option
+                    value="{{ category }}"
+                    {% if selected_category == category %}
+                        selected
+                    {% endif %}
+                >
+                    {{ category }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button
+            type="submit"
+            class="search-button"
+        >
+            Search
+        </button>
+
+        <a
+            href="{% url 'vocabulary' %}"
+            class="clear-filter"
+        >
+            Clear
+        </a>
+
+    </form>
+
+
+    <div class="vocabulary-result-info">
+
+        <span>
+            {{ vocabularies|length }} words
+        </span>
+
+        {% if search_query %}
+
+            <span>
+                for "{{ search_query }}"
+            </span>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="vocabulary-grid">
+
+        {% for item in vocabularies %}
+
+            <article class="vocabulary-card">
+
+                <div class="card-top">
+
+                    {% if item.level %}
+
+                        <span class="level-badge">
+                            {{ item.level }}
+                        </span>
+
+                    {% else %}
+
+                        <span></span>
+
+                    {% endif %}
+
+
+                    <a
+                        href="{% url 'vocabulary_favorite' item.id %}"
+                        class="favorite-button"
+                        title="Favorite"
+                        aria-label="Favorite"
+                    >
+
+                        {% if item.id in favorite_ids %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+
+                    </a>
+
+                </div>
+
+
+                <div class="word-section">
+
+                    <div class="word-title-row">
+
+                        <h2>
+                            {{ item.word }}
+                        </h2>
+
+                        <button
+                            type="button"
+                            class="word-listen-button"
+                            data-word="{{ item.word }}"
+                            title="Listen to pronunciation"
+                            aria-label="Listen to {{ item.word }}"
+                        >
+                            🔊
+                        </button>
+
+                    </div>
+
+
+                    {% if item.pronunciation %}
+
+                        <div class="pronunciation">
+                            {{ item.pronunciation }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="translation">
+                        {{ item.translation }}
+                    </div>
+
+                </div>
+
+
+                <div class="vocabulary-section">
+
+                    <span class="section-label">
+                        Definition
+                    </span>
+
+                    <p>
+                        {{ item.definition }}
+                    </p>
+
+                </div>
+
+
+                <div class="card-bottom">
+
+                    {% if item.category %}
+
+                        <span class="category">
+                            {{ item.category }}
+                        </span>
+
+                    {% else %}
+
+                        <span class="category-placeholder">
+                            Personal vocabulary
+                        </span>
+
+                    {% endif %}
+
+
+                    <a
+                        href="{% url 'vocabulary_learned' item.id %}"
+                        class="learned-button{% if item.id in learned_ids %} learned{% endif %}"
+                    >
+
+                        {% if item.id in learned_ids %}
+
+                            ✓ Learned
+
+                        {% else %}
+
+                            Mark learned
+
+                        {% endif %}
+
+                    </a>
+
+                </div>
+
+            </article>
+
+
+        {% empty %}
+
+            <div class="empty-vocabulary">
+
+                <div class="empty-icon">
+                    📚
+                </div>
+
+                <h2>
+                    No vocabulary found
+                </h2>
+
+                <p>
+                    You don't have any vocabulary words yet.
+                </p>
+
+
+                <a
+                    href="{% url 'vocabulary_set_create' %}"
+                    class="empty-add-button"
+                >
+                    + Create your first Word Set
+                </a>
+
+
+                <a
+                    href="{% url 'vocabulary' %}"
+                    class="view-all-link"
+                >
+                    View all vocabulary
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<style>
+
+.vocabulary-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 70px;
+}
+
+.vocabulary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    margin-bottom: 35px;
+}
+
+.vocabulary-title-area {
+    flex: 1;
+}
+
+.eyebrow {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    opacity: .55;
+}
+
+.vocabulary-header h1 {
+    font-size: 42px;
+    line-height: 1.1;
+    margin: 8px 0;
+}
+
+.vocabulary-header p {
+    margin: 0;
+    opacity: .65;
+    line-height: 1.6;
+}
+
+.vocabulary-header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 18px;
+}
+
+.add-word-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1px solid #111827;
+    border-radius: 11px;
+    background: #111827;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: opacity .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.add-word-button:hover {
+    opacity: .92;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(17,24,39,.15);
+}
+
+.vocabulary-progress {
+    width: 260px;
+}
+
+.progress-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 20px;
+    background: rgba(128,128,128,.18);
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: currentColor;
+    transition: width .4s ease;
+}
+
+.vocabulary-progress small {
+    display: block;
+    margin-top: 7px;
+    opacity: .55;
+}
+
+.vocabulary-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 230px;
+    height: 46px;
+    box-sizing: border-box;
+    padding: 0 15px;
+    border: 1px solid rgba(128,128,128,.25);
+    border-radius: 12px;
+}
+
+.search-icon {
+    font-size: 18px;
+    opacity: .55;
+}
+
+.search-box input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 14px;
+}
+
+.vocabulary-toolbar select,
+.vocabulary-toolbar button {
+    height: 46px;
+    border: 1px solid rgba(128,128,128,.25);
+    border-radius: 12px;
+    padding: 0 15px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+}
+
+.vocabulary-toolbar button {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.clear-filter {
+    display: inline-flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 10px;
+    color: inherit;
+    text-decoration: none;
+    opacity: .65;
+}
+
+.clear-filter:hover {
+    opacity: 1;
+}
+
+.vocabulary-result-info {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    opacity: .6;
+}
+
+.vocabulary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 18px;
+}
+
+.vocabulary-card {
+    border: 1px solid rgba(128,128,128,.18);
+    border-radius: 20px;
+    padding: 22px;
+    background: rgba(128,128,128,.035);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.vocabulary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0,0,0,.08);
+}
+
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.level-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 8px;
+    background: rgba(128,128,128,.12);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.favorite-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 24px;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.favorite-button:hover {
+    background: rgba(128,128,128,.08);
+    transform: scale(1.05);
+}
+
+.word-section {
+    margin: 20px 0;
+}
+
+.word-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.word-title-row h2 {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.word-listen-button {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #111827;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.word-listen-button:hover {
+    background: #f3f4f6;
+    transform: scale(1.05);
+}
+
+.pronunciation {
+    margin-top: 6px;
+    font-size: 13px;
+    opacity: .55;
+}
+
+.translation {
+    margin-top: 10px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.vocabulary-section {
+    margin-top: 18px;
+}
+
+.section-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: .5;
+}
+
+.vocabulary-section p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.category,
+.category-placeholder {
+    font-size: 12px;
+    opacity: .6;
+}
+
+.learned-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid rgba(128,128,128,.25);
+    border-radius: 10px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.learned-button:hover {
+    transform: translateY(-1px);
+}
+
+.learned-button.learned {
+    background: rgba(50,180,100,.12);
+}
+
+.empty-vocabulary {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 75px 20px;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.empty-vocabulary h2 {
+    margin: 0 0 8px;
+}
+
+.empty-vocabulary p {
+    margin: 0 0 22px;
+    opacity: .6;
+}
+
+.empty-add-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 11px 20px;
+    border: 1px solid #111827;
+    border-radius: 11px;
+    background: #111827;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(17,24,39,.15);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.empty-add-button:hover {
+    opacity: .92;
+    transform: translateY(-1px);
+}
+
+.view-all-link {
+    display: block;
+    margin-top: 14px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: .6;
+}
+
+.view-all-link:hover {
+    opacity: 1;
+}
+
+@media (max-width: 700px) {
+
+    .vocabulary-page {
+        padding: 25px 16px 50px;
+    }
+
+    .vocabulary-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 25px;
+    }
+
+    .vocabulary-header h1 {
+        font-size: 34px;
+    }
+
+    .vocabulary-header-actions {
+        align-items: stretch;
+    }
+
+    .vocabulary-progress {
+        width: 100%;
+    }
+
+    .add-word-button {
+        width: 100%;
+    }
+
+    .vocabulary-toolbar {
+        align-items: stretch;
+    }
+
+    .search-box {
+        flex-basis: 100%;
+    }
+
+    .vocabulary-toolbar select,
+    .vocabulary-toolbar button {
+        flex: 1;
+    }
+
+    .clear-filter {
+        justify-content: center;
+    }
+
+    .vocabulary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-bottom {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .learned-button {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const progressBar =
+            document.querySelector(".progress-fill");
+
+        if (progressBar) {
+
+            let progress =
+                Number(
+                    progressBar.dataset.progress || 0
+                );
+
+            if (Number.isNaN(progress)) {
+                progress = 0;
+            }
+
+            progress = Math.max(
+                0,
+                Math.min(
+                    100,
+                    progress
+                )
+            );
+
+            progressBar.style.width =
+                progress + "%";
+        }
+
+
+        const listenButtons =
+            document.querySelectorAll(
+                ".word-listen-button"
+            );
+
+
+        listenButtons.forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const word =
+                            button.dataset.word;
+
+                        if (!word) {
+                            return;
+                        }
+
+                        if (
+                            !(
+                                "speechSynthesis"
+                                in window
+                            )
+                        ) {
+                            return;
+                        }
+
+                        window.speechSynthesis.cancel();
+
+                        const utterance =
+                            new SpeechSynthesisUtterance(
+                                word
+                            );
+
+                        utterance.lang = "en-US";
+                        utterance.rate = 0.85;
+                        utterance.pitch = 1;
+
+                        window.speechSynthesis.speak(
+                            utterance
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

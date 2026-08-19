@@ -1,29 +1,32 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Dashboard | LingoRise
+LingoRise — Student Dashboard
 {% endblock %}
 
 {% block page_title %}
-    Dashboard
+Dashboard
 {% endblock %}
 
 {% block content %}
 
-<div class="dashboard">
+<div class="student-dashboard">
 
-    <!-- Welcome -->
+    <!-- ========================= -->
+    <!-- WELCOME -->
+    <!-- ========================= -->
 
-    <div class="welcome-section">
+    <div class="dashboard-welcome">
 
         <div>
-            <p class="welcome-label">
+            <div class="dashboard-eyebrow">
                 STUDENT DASHBOARD
-            </p>
+            </div>
 
             <h1>
                 Welcome back,
-                {{ user.get_full_name|default:user.username }} 👋
+                {{ user.get_full_name|default:user.username }}
+                👋
             </h1>
 
             <p>
@@ -31,30 +34,45 @@
             </p>
         </div>
 
+        <a
+            href="{% url 'student_assignments' %}"
+            class="dashboard-primary-button"
+        >
+            View Homework →
+        </a>
+
     </div>
 
 
-    <!-- Overview cards -->
+    <!-- ========================= -->
+    <!-- STAT CARDS -->
+    <!-- ========================= -->
 
-    <div class="dashboard-grid">
+    <div class="dashboard-stats">
 
-        <!-- Current Course -->
+        <!-- CURRENT COURSE -->
 
-        <div class="dashboard-card">
+        <div class="dashboard-stat-card">
 
-            <div class="card-icon">
+            <div class="stat-icon">
                 📚
             </div>
 
-            <div>
+            <div class="stat-content">
 
-                <span class="card-label">
+                <span>
                     Current Course
                 </span>
 
-                <h3>
-                    English
-                </h3>
+                {% if student_groups %}
+                    <h2>
+                        {{ student_groups.0.subject.name }}
+                    </h2>
+                {% else %}
+                    <h2>
+                        English
+                    </h2>
+                {% endif %}
 
                 <p>
                     Continue your learning journey
@@ -65,26 +83,29 @@
         </div>
 
 
-        <!-- Progress -->
+        <!-- PROGRESS -->
 
-        <div class="dashboard-card">
+        <div class="dashboard-stat-card">
 
-            <div class="card-icon">
+            <div class="stat-icon">
                 📈
             </div>
 
-            <div>
+            <div class="stat-content">
 
-                <span class="card-label">
+                <span>
                     Progress
                 </span>
 
-                <h3>
-                    0%
-                </h3>
+                <h2>
+                    {{ progress }}%
+                </h2>
 
                 <p>
-                    Your learning progress
+                    {{ submitted_count }}
+                    of
+                    {{ total_assignments }}
+                    assignments completed
                 </p>
 
             </div>
@@ -92,26 +113,26 @@
         </div>
 
 
-        <!-- Classes -->
+        <!-- MY CLASSES -->
 
-        <div class="dashboard-card">
+        <div class="dashboard-stat-card">
 
-            <div class="card-icon">
+            <div class="stat-icon">
                 🏫
             </div>
 
-            <div>
+            <div class="stat-content">
 
-                <span class="card-label">
+                <span>
                     My Classes
                 </span>
 
-                <h3>
-                    View Classes
-                </h3>
+                <h2>
+                    {{ student_groups|length }}
+                </h2>
 
                 <p>
-                    Check your groups and lessons
+                    Active learning groups
                 </p>
 
             </div>
@@ -119,26 +140,26 @@
         </div>
 
 
-        <!-- Homework -->
+        <!-- HOMEWORK -->
 
-        <div class="dashboard-card">
+        <div class="dashboard-stat-card">
 
-            <div class="card-icon">
+            <div class="stat-icon">
                 ✓
             </div>
 
-            <div>
+            <div class="stat-content">
 
-                <span class="card-label">
+                <span>
                     Homework
                 </span>
 
-                <h3>
-                    Assignments
-                </h3>
+                <h2>
+                    {{ total_assignments }}
+                </h2>
 
                 <p>
-                    Complete your homework
+                    Available assignments
                 </p>
 
             </div>
@@ -148,44 +169,319 @@
     </div>
 
 
-    <!-- Recent activity -->
+    <!-- ========================= -->
+    <!-- LEARNING PROGRESS -->
+    <!-- ========================= -->
 
     <div class="dashboard-section">
 
-        <div class="section-header">
+        <div class="section-heading">
 
             <div>
                 <h2>
-                    Recent Activity
+                    Learning Progress
                 </h2>
 
                 <p>
-                    Your latest learning activity
+                    Your homework completion progress
+                </p>
+            </div>
+
+            <strong>
+                {{ progress }}%
+            </strong>
+
+        </div>
+
+
+        <div class="progress-container">
+
+            <div
+                class="progress-bar"
+                data-progress="{{ progress }}"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- MY CLASSES -->
+    <!-- ========================= -->
+
+    <div class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div>
+                <h2>
+                    My Classes
+                </h2>
+
+                <p>
+                    Your active learning groups
                 </p>
             </div>
 
         </div>
 
 
-        <div class="empty-state">
+        {% if student_groups %}
 
-            <div class="empty-icon">
-                ✨
+            <div class="class-grid">
+
+                {% for group in student_groups %}
+
+                    <div class="class-card">
+
+                        <div class="class-icon">
+                            🏫
+                        </div>
+
+                        <div class="class-info">
+
+                            <h3>
+                                {{ group.name }}
+                            </h3>
+
+                            <p>
+                                {{ group.subject.name }}
+                            </p>
+
+                            {% if group.classroom %}
+                                <span>
+                                    Room {{ group.classroom.name }}
+                                </span>
+                            {% endif %}
+
+                            {% if group.teacher %}
+                                <small>
+                                    Teacher:
+                                    {{ group.teacher.get_full_name|default:group.teacher.username }}
+                                </small>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
             </div>
 
-            <h3>
-                Start your learning journey
-            </h3>
+        {% else %}
 
-            <p>
-                Your courses, assignments and progress
-                will appear here.
-            </p>
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🏫
+                </div>
+
+                <h3>
+                    No classes yet
+                </h3>
+
+                <p>
+                    You haven't been added to a learning group yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- RECENT HOMEWORK -->
+    <!-- ========================= -->
+
+    <div class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div>
+                <h2>
+                    Recent Homework
+                </h2>
+
+                <p>
+                    Your latest assignments
+                </p>
+            </div>
+
+            <a
+                href="{% url 'student_assignments' %}"
+                class="section-link"
+            >
+                View all →
+            </a>
+
+        </div>
+
+
+        {% if recent_assignments %}
+
+            <div class="assignment-list">
+
+                {% for assignment in recent_assignments %}
+
+                    <div class="assignment-card">
+
+                        <div class="assignment-icon">
+                            ✓
+                        </div>
+
+                        <div class="assignment-info">
+
+                            <h3>
+                                {{ assignment.title }}
+                            </h3>
+
+                            <p>
+                                {{ assignment.group.subject.name }}
+                                ·
+                                {{ assignment.group.name }}
+                            </p>
+
+                            <small>
+                                Teacher:
+                                {{ assignment.teacher.get_full_name|default:assignment.teacher.username }}
+                            </small>
+
+                        </div>
+
+
+                        <div class="assignment-status">
+
+                            {% if assignment.id in submitted_assignment_ids %}
+
+                                <span class="status submitted">
+                                    Submitted
+                                </span>
+
+                            {% else %}
+
+                                <span class="status pending">
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if assignment.due_date %}
+
+                                <small>
+                                    Due:
+                                    {{ assignment.due_date|date:"M d, Y H:i" }}
+                                </small>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    ✨
+                </div>
+
+                <h3>
+                    No homework yet
+                </h3>
+
+                <p>
+                    Your latest assignments will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- ACADEMIC PERFORMANCE -->
+    <!-- ========================= -->
+
+    <div class="dashboard-section grade-summary">
+
+        <div class="grade-summary-icon">
+            ⭐
+        </div>
+
+        <div>
+
+            <span>
+                Academic Performance
+            </span>
+
+            {% if grade_count %}
+
+                <h2>
+                    {{ average_grade }}
+                </h2>
+
+                <p>
+                    Average grade from
+                    {{ grade_count }}
+                    recorded grade{{ grade_count|pluralize }}.
+                </p>
+
+            {% else %}
+
+                <h2>
+                    No grades yet
+                </h2>
+
+                <p>
+                    Your grades will appear here after your teacher evaluates your work.
+                </p>
+
+            {% endif %}
 
         </div>
 
     </div>
 
 </div>
+
+
+<!-- ========================= -->
+<!-- PROGRESS BAR SCRIPT -->
+<!-- ========================= -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const progressBar = document.querySelector(".progress-bar");
+
+        if (!progressBar) {
+            return;
+        }
+
+        const progress = Number(
+            progressBar.dataset.progress
+        ) || 0;
+
+        const safeProgress = Math.min(
+            Math.max(progress, 0),
+            100
+        );
+
+        progressBar.style.width = safeProgress + "%";
+
+    });
+</script>
 
 {% endblock %}

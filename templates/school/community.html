@@ -1,0 +1,1940 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Community | LingoRise
+{% endblock %}
+
+{% block page_title %}
+    Community
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   COMMUNITY PAGE
+========================================================= */
+
+.community-page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 30px 26px 60px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.community-header {
+    margin-bottom: 22px;
+}
+
+.community-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.community-header h1 {
+    margin: 0 0 7px;
+
+    color: #151827;
+
+    font-size: 30px;
+    font-weight: 850;
+    letter-spacing: -.7px;
+}
+
+.community-header p {
+    margin: 0;
+
+    color: #85899a;
+
+    font-size: 13px;
+}
+
+.community-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 8px 11px;
+
+    border: 1px solid #dff5e9;
+    border-radius: 10px;
+
+    background: #f1fcf6;
+    color: #087443;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.community-status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow: 0 0 0 4px rgba(34,197,94,.10);
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.community-tabs {
+    display: inline-flex;
+    gap: 4px;
+
+    margin-bottom: 16px;
+    padding: 4px;
+
+    border: 1px solid #e9eaf1;
+    border-radius: 13px;
+
+    background: #f5f5f8;
+}
+
+.community-tab {
+    border: none;
+
+    padding: 9px 15px;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #777b8c;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.community-tab:hover {
+    color: #635bff;
+}
+
+.community-tab.active {
+    background: #ffffff;
+    color: #635bff;
+
+    box-shadow:
+        0 3px 12px rgba(25,28,55,.08);
+}
+
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.community-card {
+    overflow: hidden;
+
+    border: 1px solid #e7e9f0;
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 14px 45px rgba(24,27,55,.06);
+}
+
+
+/* =========================================================
+   DISCUSSION PANEL
+========================================================= */
+
+.discussions-panel {
+    display: flex;
+    flex-direction: column;
+
+    height: 590px;
+}
+
+
+/* =========================================================
+   DISCUSSION HEADER
+========================================================= */
+
+.discussion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 18px 21px;
+
+    border-bottom: 1px solid #eef0f5;
+}
+
+.discussion-title {
+    min-width: 0;
+}
+
+.discussion-title h2 {
+    margin: 0 0 4px;
+
+    color: #1b1e2d;
+
+    font-size: 15px;
+    font-weight: 850;
+}
+
+.discussion-title p {
+    margin: 0;
+
+    color: #989baa;
+
+    font-size: 10px;
+}
+
+.online-badge {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 10px;
+
+    border-radius: 9px;
+
+    background: #f1fcf6;
+    color: #087443;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.online-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+.chat-messages {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 24px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fbfbfd 0%,
+            #ffffff 100%
+        );
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 5px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #dfe1ea;
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   MESSAGE ROW
+========================================================= */
+
+.message-row {
+    display: flex;
+    align-items: flex-end;
+
+    gap: 9px;
+
+    margin-bottom: 18px;
+}
+
+.message-row.mine {
+    justify-content: flex-end;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.message-avatar {
+    flex-shrink: 0;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eeedff,
+            #dedbff
+        );
+
+    color: #635bff;
+
+    font-size: 11px;
+    font-weight: 850;
+
+    box-shadow:
+        0 3px 10px rgba(24,27,55,.08);
+}
+
+.message-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* =========================================================
+   MESSAGE BODY
+========================================================= */
+
+.message-body {
+    max-width: min(68%, 620px);
+}
+
+.message-row.mine .message-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+
+/* =========================================================
+   META
+========================================================= */
+
+.message-meta {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin: 0 3px 5px;
+}
+
+.message-row.mine .message-meta {
+    justify-content: flex-end;
+}
+
+.message-name {
+    color: #343849;
+
+    font-size: 10px;
+    font-weight: 850;
+}
+
+.message-role {
+    padding: 2px 6px;
+
+    border-radius: 5px;
+
+    background: #f1f0ff;
+    color: #7169d8;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.message-time {
+    color: #aaaeba;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   MESSAGE BUBBLE
+========================================================= */
+
+.message-bubble {
+    padding: 10px 13px;
+
+    border-radius: 14px 14px 14px 4px;
+
+    background: #f1f2f6;
+
+    color: #363a4b;
+
+    font-size: 12px;
+    line-height: 1.55;
+
+    word-break: break-word;
+}
+
+.message-row.mine .message-bubble {
+    border-radius: 14px 14px 4px 14px;
+
+    background: #635bff;
+    color: #ffffff;
+
+    box-shadow:
+        0 5px 15px rgba(99,91,255,.16);
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.chat-empty {
+    min-height: 360px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.chat-empty-icon {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 12px;
+
+    border-radius: 17px;
+
+    background: #f2f1ff;
+
+    font-size: 21px;
+}
+
+.chat-empty h3 {
+    margin: 0 0 5px;
+
+    color: #252837;
+
+    font-size: 14px;
+    font-weight: 850;
+}
+
+.chat-empty p {
+    max-width: 300px;
+
+    margin: 0;
+
+    color: #969aaa;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.chat-input-area {
+    padding: 13px 15px;
+
+    border-top: 1px solid #eef0f5;
+
+    background: #ffffff;
+}
+
+.chat-form {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+.chat-input {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 43px;
+
+    box-sizing: border-box;
+
+    padding: 0 14px;
+
+    border: 1px solid #e4e6ee;
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #f9f9fb;
+    color: #252837;
+
+    font-family: inherit;
+    font-size: 11px;
+
+    transition: .2s ease;
+}
+
+.chat-input:focus {
+    background: #ffffff;
+
+    border-color: #c9c5ff;
+
+    box-shadow:
+        0 0 0 3px rgba(99,91,255,.08);
+}
+
+.chat-input::placeholder {
+    color: #a4a7b3;
+}
+
+.send-button {
+    flex-shrink: 0;
+
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #635bff;
+    color: #ffffff;
+
+    font-size: 16px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .18s ease;
+}
+
+.send-button:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 16px rgba(99,91,255,.20);
+}
+
+.send-button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MEMBERS
+========================================================= */
+
+.members-panel {
+    display: none;
+
+    padding: 22px;
+}
+
+.members-top {
+    margin-bottom: 20px;
+}
+
+.members-title {
+    margin: 0 0 5px;
+
+    color: #202333;
+
+    font-size: 15px;
+    font-weight: 850;
+}
+
+.members-description {
+    margin: 0;
+
+    color: #969aaa;
+
+    font-size: 10px;
+}
+
+.members-search {
+    width: 100%;
+    height: 42px;
+
+    box-sizing: border-box;
+
+    margin-bottom: 22px;
+    padding: 0 13px;
+
+    border: 1px solid #e5e7ee;
+    border-radius: 11px;
+
+    outline: none;
+
+    background: #f9f9fb;
+    color: #252837;
+
+    font-family: inherit;
+    font-size: 11px;
+
+    transition: .2s ease;
+}
+
+.members-search:focus {
+    background: #ffffff;
+
+    border-color: #c9c5ff;
+
+    box-shadow:
+        0 0 0 3px rgba(99,91,255,.08);
+}
+
+.members-section-title {
+    margin: 20px 0 10px;
+
+    color: #85899a;
+
+    font-size: 9px;
+    font-weight: 850;
+
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+.member-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.member-card {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 12px;
+
+    border: 1px solid #edf0f5;
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    transition: .18s ease;
+}
+
+.member-card:hover {
+    border-color: #dcd9ff;
+
+    background: #faf9ff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 20px rgba(24,27,55,.05);
+}
+
+.member-avatar {
+    flex-shrink: 0;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eeedff,
+            #dedbff
+        );
+
+    color: #635bff;
+
+    font-size: 11px;
+    font-weight: 850;
+}
+
+.member-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.member-info {
+    min-width: 0;
+}
+
+.member-name {
+    overflow: hidden;
+
+    margin-bottom: 3px;
+
+    color: #292d3d;
+
+    font-size: 11px;
+    font-weight: 850;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.member-role {
+    color: #9296a5;
+
+    font-size: 9px;
+}
+
+.member-group {
+    margin-top: 3px;
+
+    color: #635bff;
+
+    font-size: 8px;
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+
+    .community-page {
+        padding: 20px 14px 40px;
+    }
+
+    .community-header-top {
+        display: block;
+    }
+
+    .community-status {
+        margin-top: 12px;
+    }
+
+    .discussions-panel {
+        height: 520px;
+    }
+
+    .message-body {
+        max-width: 80%;
+    }
+
+    .member-list {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+
+<div class="community-page">
+
+
+    <!-- HEADER -->
+
+    <div class="community-header">
+
+        <div class="community-header-top">
+
+            <div>
+
+                <h1>
+                    Community
+                </h1>
+
+                <p>
+                    Connect with everyone at LingoRise.
+                </p>
+
+            </div>
+
+
+            <div class="community-status">
+
+                <span class="community-status-dot"></span>
+
+                Everyone is welcome
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABS -->
+
+    <div class="community-tabs">
+
+        <button
+            type="button"
+            class="community-tab active"
+            id="discussion-tab"
+        >
+            💬 Discussions
+        </button>
+
+
+        <button
+            type="button"
+            class="community-tab"
+            id="members-tab"
+        >
+            👥 Members
+        </button>
+
+    </div>
+
+
+    <!-- MAIN CARD -->
+
+    <div class="community-card">
+
+
+        <!-- =================================================
+             DISCUSSIONS
+        ================================================= -->
+
+        <div
+            id="discussions-panel"
+            class="discussions-panel"
+        >
+
+
+            <div class="discussion-header">
+
+                <div class="discussion-title">
+
+                    <h2>
+                        Discussions
+                    </h2>
+
+                    <p>
+                        Everyone in LingoRise can participate.
+                    </p>
+
+                </div>
+
+
+                <div class="online-badge">
+
+                    <span class="online-dot"></span>
+
+                    Community
+
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGES -->
+
+            <div
+                class="chat-messages"
+                id="chat-messages"
+            >
+
+                {% if community_messages %}
+
+                    {% for message in community_messages %}
+
+                        <div
+                            class="message-row {% if message.sender_id == user.id %}mine{% endif %}"
+                            data-message-id="{{ message.id }}"
+                        >
+
+
+                            {% if message.sender_id != user.id %}
+
+                                <div class="message-avatar">
+
+                                    {% if message.sender.avatar %}
+
+                                        <img
+                                            src="{{ message.sender.avatar.url }}"
+                                            alt="{{ message.sender.get_full_name|default:message.sender.username }}"
+                                        >
+
+                                    {% else %}
+
+                                        {{ message.sender.get_full_name|default:message.sender.username|first|upper }}
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="message-body">
+
+                                <div class="message-meta">
+
+                                    <span class="message-name">
+                                        {{ message.sender.get_full_name|default:message.sender.username }}
+                                    </span>
+
+                                    <span class="message-role">
+                                        {{ message.sender.role|lower }}
+                                    </span>
+
+                                    <span class="message-time">
+                                        {{ message.created_at|date:"H:i" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="message-bubble">
+
+                                    {{ message.content|linebreaksbr }}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if message.sender_id == user.id %}
+
+                                <div class="message-avatar">
+
+                                    {% if user.avatar %}
+
+                                        <img
+                                            src="{{ user.avatar.url }}"
+                                            alt="{{ user.get_full_name|default:user.username }}"
+                                        >
+
+                                    {% else %}
+
+                                        {{ user.get_full_name|default:user.username|first|upper }}
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    {% endfor %}
+
+
+                {% else %}
+
+                    <div class="chat-empty">
+
+                        <div class="chat-empty-icon">
+                            💬
+                        </div>
+
+                        <h3>
+                            No messages yet
+                        </h3>
+
+                        <p>
+                            Start the conversation with the LingoRise community.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- INPUT -->
+
+            <div class="chat-input-area">
+
+                <form
+                    class="chat-form"
+                    id="community-message-form"
+                >
+
+                    {% csrf_token %}
+
+
+                    <input
+                        type="text"
+                        id="community-message-input"
+                        class="chat-input"
+                        placeholder="Write a message..."
+                        autocomplete="off"
+                        maxlength="2000"
+                    >
+
+
+                    <button
+                        type="submit"
+                        class="send-button"
+                        id="community-send-button"
+                        aria-label="Send message"
+                    >
+                        ➤
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MEMBERS
+        ================================================= -->
+
+        <div
+            id="members-panel"
+            class="members-panel"
+        >
+
+            <div class="members-top">
+
+                <h2 class="members-title">
+                    LingoRise Members
+                </h2>
+
+                <p class="members-description">
+                    Students and teachers who are part of the community.
+                </p>
+
+            </div>
+
+
+            <input
+                type="text"
+                id="member-search"
+                class="members-search"
+                placeholder="Search members..."
+                autocomplete="off"
+            >
+
+
+            {% regroup community_members by role as role_groups %}
+
+
+            {% for role_group in role_groups %}
+
+                <div class="members-section-title">
+
+                    {% if role_group.grouper == "TEACHER" %}
+
+                        Teachers
+
+                    {% else %}
+
+                        Students
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="member-list">
+
+                    {% for member in role_group.list %}
+
+                        <div
+                            class="member-card"
+                            data-member-name="{{ member.get_full_name|default:member.username|lower }}"
+                        >
+
+                            <div class="member-avatar">
+
+                                {% if member.avatar %}
+
+                                    <img
+                                        src="{{ member.avatar.url }}"
+                                        alt="{{ member.get_full_name|default:member.username }}"
+                                    >
+
+                                {% else %}
+
+                                    {{ member.get_full_name|default:member.username|first|upper }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="member-info">
+
+                                <div class="member-name">
+
+                                    {{ member.get_full_name|default:member.username }}
+
+                                </div>
+
+
+                                <div class="member-role">
+
+                                    {{ member.role|lower }}
+
+                                </div>
+
+
+                                {% if member.role == "STUDENT" %}
+
+                                    {% with groups=member.student_groups.all %}
+
+                                        {% for group in groups|slice:":1" %}
+
+                                            <div class="member-group">
+
+                                                {{ group.name }}
+
+                                            </div>
+
+                                        {% endfor %}
+
+                                    {% endwith %}
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /*
+     * Django user ID ni JavaScriptga xavfsiz uzatamiz.
+     *
+     * Oldingi:
+     *
+     * Number({{ user.id }})
+     *
+     * VS Code uchun syntax error berishi mumkin edi.
+     *
+     * Endi:
+     */
+
+    const currentUserId = Number(
+        "{{ user.id }}"
+    );
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const form =
+        document.getElementById(
+            "community-message-form"
+        );
+
+    const input =
+        document.getElementById(
+            "community-message-input"
+        );
+
+    const sendButton =
+        document.getElementById(
+            "community-send-button"
+        );
+
+    const chat =
+        document.getElementById(
+            "chat-messages"
+        );
+
+    const discussionTab =
+        document.getElementById(
+            "discussion-tab"
+        );
+
+    const membersTab =
+        document.getElementById(
+            "members-tab"
+        );
+
+    const discussionPanel =
+        document.getElementById(
+            "discussions-panel"
+        );
+
+    const membersPanel =
+        document.getElementById(
+            "members-panel"
+        );
+
+    const memberSearch =
+        document.getElementById(
+            "member-search"
+        );
+
+
+    /* =====================================================
+       TAB SWITCH
+    ===================================================== */
+
+    if (discussionTab && membersTab) {
+
+        discussionTab.addEventListener(
+            "click",
+            function () {
+
+                discussionTab.classList.add(
+                    "active"
+                );
+
+                membersTab.classList.remove(
+                    "active"
+                );
+
+                discussionPanel.style.display =
+                    "flex";
+
+                membersPanel.style.display =
+                    "none";
+
+            }
+        );
+
+
+        membersTab.addEventListener(
+            "click",
+            function () {
+
+                membersTab.classList.add(
+                    "active"
+                );
+
+                discussionTab.classList.remove(
+                    "active"
+                );
+
+                discussionPanel.style.display =
+                    "none";
+
+                membersPanel.style.display =
+                    "block";
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SCROLL
+    ===================================================== */
+
+    function scrollToBottom() {
+
+        if (!chat) {
+            return;
+        }
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    }
+
+
+    scrollToBottom();
+
+
+    /* =====================================================
+       CSRF
+    ===================================================== */
+
+    function getCsrfToken() {
+
+        const csrf =
+            document.querySelector(
+                "[name=csrfmiddlewaretoken]"
+            );
+
+        if (!csrf) {
+            return "";
+        }
+
+        return csrf.value;
+
+    }
+
+
+    /* =====================================================
+       SEND MESSAGE
+    ===================================================== */
+
+    if (form) {
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                event.preventDefault();
+
+
+                const content =
+                    input.value.trim();
+
+
+                if (!content) {
+                    return;
+                }
+
+
+                sendButton.disabled =
+                    true;
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "content",
+                    content
+                );
+
+
+                fetch(
+                    "{% url 'community_send_message' %}",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "X-CSRFToken":
+                                getCsrfToken(),
+
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        },
+
+                        body: formData
+                    }
+                )
+                .then(
+                    function (response) {
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                "Message failed"
+                            );
+
+                        }
+
+                        return response.json();
+
+                    }
+                )
+                .then(
+                    function (data) {
+
+                        if (!data.success) {
+
+                            throw new Error(
+                                data.error ||
+                                "Message failed"
+                            );
+
+                        }
+
+
+                        input.value = "";
+
+
+                        addMessage(
+                            data.message
+                        );
+
+
+                        scrollToBottom();
+
+                    }
+                )
+                .catch(
+                    function (error) {
+
+                        console.error(
+                            "Community error:",
+                            error
+                        );
+
+                    }
+                )
+                .finally(
+                    function () {
+
+                        sendButton.disabled =
+                            false;
+
+                        input.focus();
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       ADD MESSAGE
+    ===================================================== */
+
+    function addMessage(message) {
+
+        if (!chat) {
+            return;
+        }
+
+
+        const empty =
+            chat.querySelector(
+                ".chat-empty"
+            );
+
+
+        if (empty) {
+            empty.remove();
+        }
+
+
+        const existing =
+            chat.querySelector(
+                '[data-message-id="' +
+                message.id +
+                '"]'
+            );
+
+
+        if (existing) {
+            return;
+        }
+
+
+        const senderId =
+            Number(
+                message.sender_id
+            );
+
+
+        const isMine =
+            senderId === currentUserId;
+
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+
+        row.className =
+            "message-row";
+
+
+        if (isMine) {
+
+            row.classList.add(
+                "mine"
+            );
+
+        }
+
+
+        row.dataset.messageId =
+            message.id;
+
+
+        /* =================================================
+           AVATAR
+        ================================================= */
+
+        const avatar =
+            document.createElement(
+                "div"
+            );
+
+
+        avatar.className =
+            "message-avatar";
+
+
+        if (message.avatar) {
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+            image.src =
+                message.avatar;
+
+            image.alt =
+                message.sender_name ||
+                "User";
+
+            avatar.appendChild(
+                image
+            );
+
+        } else {
+
+            avatar.textContent =
+                message.initial ||
+                "U";
+
+        }
+
+
+        /* =================================================
+           BODY
+        ================================================= */
+
+        const body =
+            document.createElement(
+                "div"
+            );
+
+
+        body.className =
+            "message-body";
+
+
+        /* META */
+
+        const meta =
+            document.createElement(
+                "div"
+            );
+
+
+        meta.className =
+            "message-meta";
+
+
+        const name =
+            document.createElement(
+                "span"
+            );
+
+
+        name.className =
+            "message-name";
+
+
+        name.textContent =
+            message.sender_name ||
+            "User";
+
+
+        const role =
+            document.createElement(
+                "span"
+            );
+
+
+        role.className =
+            "message-role";
+
+
+        role.textContent =
+            String(
+                message.role ||
+                ""
+            ).toLowerCase();
+
+
+        const time =
+            document.createElement(
+                "span"
+            );
+
+
+        time.className =
+            "message-time";
+
+
+        time.textContent =
+            message.created_at ||
+            "";
+
+
+        meta.appendChild(
+            name
+        );
+
+        meta.appendChild(
+            role
+        );
+
+        meta.appendChild(
+            time
+        );
+
+
+        /* BUBBLE */
+
+        const bubble =
+            document.createElement(
+                "div"
+            );
+
+
+        bubble.className =
+            "message-bubble";
+
+
+        bubble.textContent =
+            message.content ||
+            "";
+
+
+        body.appendChild(
+            meta
+        );
+
+        body.appendChild(
+            bubble
+        );
+
+
+        /* =================================================
+           ROW
+        ================================================= */
+
+        if (isMine) {
+
+            row.appendChild(
+                body
+            );
+
+            row.appendChild(
+                avatar
+            );
+
+        } else {
+
+            row.appendChild(
+                avatar
+            );
+
+            row.appendChild(
+                body
+            );
+
+        }
+
+
+        chat.appendChild(
+            row
+        );
+
+    }
+
+
+    /* =====================================================
+       FIND LAST MESSAGE
+    ===================================================== */
+
+    function getNewestMessageId() {
+
+        const messages =
+            chat.querySelectorAll(
+                ".message-row"
+            );
+
+
+        if (!messages.length) {
+            return 0;
+        }
+
+
+        const last =
+            messages[
+                messages.length - 1
+            ];
+
+
+        return Number(
+            last.dataset.messageId ||
+            0
+        );
+
+    }
+
+
+    let newestMessageId =
+        getNewestMessageId();
+
+
+    /* =====================================================
+       LOAD NEW MESSAGES
+    ===================================================== */
+
+    function loadMessages() {
+
+        fetch(
+            "{% url 'community_messages_api' %}",
+            {
+                method: "GET",
+
+                headers: {
+                    "X-Requested-With":
+                        "XMLHttpRequest"
+                }
+            }
+        )
+        .then(
+            function (response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Could not load messages"
+                    );
+
+                }
+
+                return response.json();
+
+            }
+        )
+        .then(
+            function (data) {
+
+                if (!data.success) {
+                    return;
+                }
+
+
+                let added =
+                    false;
+
+
+                data.messages.forEach(
+                    function (message) {
+
+                        const messageId =
+                            Number(
+                                message.id
+                            );
+
+
+                        if (
+                            messageId >
+                            newestMessageId
+                        ) {
+
+                            addMessage(
+                                message
+                            );
+
+
+                            newestMessageId =
+                                messageId;
+
+
+                            added =
+                                true;
+
+                        }
+
+                    }
+                );
+
+
+                if (added) {
+
+                    scrollToBottom();
+
+                }
+
+            }
+        )
+        .catch(
+            function (error) {
+
+                console.error(
+                    "Message loading error:",
+                    error
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       AUTO REFRESH
+    ===================================================== */
+
+    setInterval(
+        loadMessages,
+        3000
+    );
+
+
+    /* =====================================================
+       ENTER TO SEND
+    ===================================================== */
+
+    if (input) {
+
+        input.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter" &&
+                    !event.shiftKey
+                ) {
+
+                    event.preventDefault();
+
+
+                    if (
+                        form.requestSubmit
+                    ) {
+
+                        form.requestSubmit();
+
+                    } else {
+
+                        form.dispatchEvent(
+                            new Event(
+                                "submit",
+                                {
+                                    bubbles: true,
+                                    cancelable: true
+                                }
+                            )
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       MEMBER SEARCH
+    ===================================================== */
+
+    if (memberSearch) {
+
+        memberSearch.addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+                const cards =
+                    document.querySelectorAll(
+                        ".member-card"
+                    );
+
+
+                cards.forEach(
+                    function (card) {
+
+                        const name =
+                            card.dataset.memberName ||
+                            "";
+
+
+                        if (
+                            name.includes(
+                                query
+                            )
+                        ) {
+
+                            card.style.display =
+                                "flex";
+
+                        } else {
+
+                            card.style.display =
+                                "none";
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

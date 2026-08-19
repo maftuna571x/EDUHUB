@@ -1,0 +1,519 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Messages | LingoRise
+{% endblock %}
+
+{% block page_title %}
+    Messages
+{% endblock %}
+
+{% block content %}
+
+<div class="teacher-page">
+
+    <!-- HERO -->
+
+    <section class="dashboard-hero">
+
+        <div class="hero-content">
+
+            <div class="hero-eyebrow">
+                <span class="hero-dot"></span>
+                LINGORISE · COMMUNITY
+            </div>
+
+            <h1>
+                Message your
+                <span>Teacher</span>
+                💬
+            </h1>
+
+            <p>
+                Ask questions, share updates and stay connected
+                with your teachers.
+            </p>
+
+        </div>
+
+        <div class="hero-decoration">
+            <div class="hero-glow"></div>
+            <div class="hero-symbol">✦</div>
+        </div>
+
+    </section>
+
+
+    <!-- SEND + INBOX -->
+
+    <section class="dashboard-content-grid">
+
+
+        <!-- SEND MESSAGE -->
+
+        <div class="dashboard-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-label">
+                        NEW MESSAGE
+                    </div>
+
+                    <h2>
+                        Send a message
+                    </h2>
+
+                    <p>
+                        Contact one of your teachers.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- TEACHER -->
+
+                <div style="margin-bottom:20px;">
+
+                    <label
+                        for="receiver"
+                        style="
+                            display:block;
+                            margin-bottom:8px;
+                            font-weight:600;
+                        "
+                    >
+                        Teacher
+                    </label>
+
+
+                    <select
+                        id="receiver"
+                        name="receiver"
+                        required
+                        style="
+                            width:100%;
+                            padding:14px;
+                            border-radius:12px;
+                            border:1px solid #ddd;
+                            background:white;
+                            font-family:inherit;
+                        "
+                    >
+
+                        <option value="">
+                            Select a teacher
+                        </option>
+
+
+                        {% for teacher in teachers %}
+
+                            <option value="{{ teacher.id }}">
+
+                                {{ teacher.get_full_name|default:teacher.username }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- MESSAGE -->
+
+                <div style="margin-bottom:20px;">
+
+                    <label
+                        for="content"
+                        style="
+                            display:block;
+                            margin-bottom:8px;
+                            font-weight:600;
+                        "
+                    >
+                        Message
+                    </label>
+
+
+                    <textarea
+                        id="content"
+                        name="content"
+                        rows="7"
+                        required
+                        placeholder="Write your message..."
+                        style="
+                            width:100%;
+                            padding:14px;
+                            border-radius:12px;
+                            border:1px solid #ddd;
+                            resize:vertical;
+                            font-family:inherit;
+                        "
+                    ></textarea>
+
+                </div>
+
+
+                <!-- SEND -->
+
+                <button
+                    type="submit"
+                    class="quick-action-button"
+                    style="
+                        border:none;
+                        cursor:pointer;
+                    "
+                >
+                    Send Message
+                    <span>→</span>
+                </button>
+
+            </form>
+
+        </div>
+
+
+
+        <!-- RECEIVED MESSAGES -->
+
+        <div class="dashboard-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-label">
+                        INBOX
+                    </div>
+
+                    <h2>
+                        Received Messages
+                    </h2>
+
+                    <p>
+                        Messages received from your teachers.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if received_messages %}
+
+                <div class="assignments-container">
+
+
+                    {% for message in received_messages %}
+
+
+                        <a
+                            href="{% url 'read_message' message.id %}"
+                            class="modern-assignment-card"
+                            style="
+                                text-decoration:none;
+                                color:inherit;
+                                display:flex;
+                                cursor:pointer;
+                            "
+                        >
+
+
+                            <!-- AVATAR -->
+
+                            <div class="assignment-check">
+
+                                {{ message.sender.username|first|upper }}
+
+                            </div>
+
+
+                            <!-- MESSAGE -->
+
+                            <div class="assignment-details">
+
+
+                                <h3>
+
+                                    {{ message.sender.get_full_name|default:message.sender.username }}
+
+                                </h3>
+
+
+                                <!-- STATUS -->
+
+                                <div class="assignment-group">
+
+                                    {% if message.is_read %}
+
+                                        ✓ Read
+
+                                    {% else %}
+
+                                        <strong>
+                                            New message
+                                        </strong>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- CONTENT -->
+
+                                <div class="assignment-due">
+
+                                    <span class="due-label">
+                                        Message
+                                    </span>
+
+                                    <span>
+
+                                        {{ message.content|truncatechars:70 }}
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- DATE -->
+
+                                <div class="assignment-due">
+
+                                    <span class="due-label">
+                                        Received
+                                    </span>
+
+                                    <span>
+
+                                        {{ message.created_at|date:"M d, Y • H:i" }}
+
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div
+                                style="
+                                    margin-left:auto;
+                                    display:flex;
+                                    align-items:center;
+                                    font-size:22px;
+                                "
+                            >
+                                →
+                            </div>
+
+
+                        </a>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="dashboard-empty">
+
+                    <div class="empty-circle">
+                        💬
+                    </div>
+
+                    <h3>
+                        Your inbox is empty
+                    </h3>
+
+                    <p>
+                        Messages from your teachers will appear here.
+                    </p>
+
+                </div>
+
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+
+    <!-- SENT MESSAGES -->
+
+    <section
+        class="dashboard-panel"
+        style="margin-top:24px;"
+    >
+
+        <div class="panel-header">
+
+            <div>
+
+                <div class="panel-label">
+                    SENT
+                </div>
+
+                <h2>
+                    Your Messages
+                </h2>
+
+                <p>
+                    Messages you have sent to teachers.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if sent_messages %}
+
+
+            <div class="assignments-container">
+
+
+                {% for message in sent_messages %}
+
+
+                    <div
+                        class="modern-assignment-card"
+                        style="display:flex;"
+                    >
+
+                        <div class="assignment-check">
+
+                            {{ message.receiver.username|first|upper }}
+
+                        </div>
+
+
+                        <div class="assignment-details">
+
+                            <h3>
+
+                                {{ message.receiver.get_full_name|default:message.receiver.username }}
+
+                            </h3>
+
+
+                            <div class="assignment-group">
+                                To teacher
+                            </div>
+
+
+                            <div class="assignment-due">
+
+                                <span class="due-label">
+                                    Message
+                                </span>
+
+                                <span>
+
+                                    {{ message.content|truncatechars:70 }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="assignment-due">
+
+                                <span class="due-label">
+                                    Sent
+                                </span>
+
+                                <span>
+
+                                    {{ message.created_at|date:"M d, Y • H:i" }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="dashboard-empty">
+
+                <div class="empty-circle">
+                    ✉
+                </div>
+
+                <h3>
+                    No sent messages
+                </h3>
+
+                <p>
+                    Messages you send to teachers will appear here.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- TIP -->
+
+    <section
+        class="dashboard-panel"
+        style="
+            margin-top:24px;
+            text-align:center;
+        "
+    >
+
+        <div class="empty-circle">
+            💡
+        </div>
+
+        <div class="panel-label">
+            COMMUNICATION
+        </div>
+
+        <h2>
+            Stay connected
+        </h2>
+
+        <p>
+            Your teachers can send you important updates,
+            reminders and feedback here.
+        </p>
+
+    </section>
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,695 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Settings | LingoRise
+{% endblock %}
+
+
+{% block page_title %}
+    Settings
+{% endblock %}
+
+
+{% block content %}
+
+<div class="settings-page">
+
+
+    <!-- ==========================================
+         SETTINGS HEADER
+    =========================================== -->
+
+    <div class="settings-header">
+
+        <div>
+
+            <div class="settings-eyebrow">
+                ACCOUNT
+            </div>
+
+            <h1>
+                Settings
+            </h1>
+
+            <p>
+                Manage your profile and notification preferences.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         SETTINGS CARD
+    =========================================== -->
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        class="settings-card"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- ======================================
+             PROFILE PHOTO
+        ======================================= -->
+
+        <div class="settings-section">
+
+            <div class="settings-section-heading">
+
+                <div class="settings-section-icon">
+                    🖼️
+                </div>
+
+                <div>
+
+                    <h2>
+                        Profile Photo
+                    </h2>
+
+                    <p>
+                        Add a profile photo that will appear
+                        throughout LingoRise.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-photo-area">
+
+
+                <div class="settings-avatar">
+
+                    {% if user.avatar %}
+
+                        <img
+                            src="{{ user.avatar.url }}"
+                            alt="Profile photo"
+                        >
+
+                    {% else %}
+
+                        <span>
+                            {{ user.username|first|upper }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="profile-photo-info">
+
+                    <div class="profile-photo-name">
+                        {{ user.get_full_name|default:user.username }}
+                    </div>
+
+                    <div class="profile-photo-description">
+                        JPG, PNG or other image formats
+                    </div>
+
+
+                    <label
+                        for="{{ form.avatar.id_for_label }}"
+                        class="upload-photo-button"
+                    >
+                        Choose Photo
+                    </label>
+
+                    <div class="hidden-file-input">
+                        {{ form.avatar }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             NOTIFICATIONS
+        ======================================= -->
+
+        <div class="settings-section">
+
+            <div class="settings-section-heading">
+
+                <div class="settings-section-icon">
+                    🔔
+                </div>
+
+                <div>
+
+                    <h2>
+                        Notifications
+                    </h2>
+
+                    <p>
+                        Control whether you receive message notifications.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="notification-setting-row">
+
+                <div class="notification-setting-text">
+
+                    <strong>
+                        Message Notifications
+                    </strong>
+
+                    <span>
+                        Receive notifications when someone sends you
+                        a new message.
+                    </span>
+
+                </div>
+
+
+                <label class="settings-switch">
+
+                    {{ form.notifications_enabled }}
+
+                    <span class="settings-switch-slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             SAVE
+        ======================================= -->
+
+        <div class="settings-actions">
+
+            <button
+                type="submit"
+                class="settings-save-button"
+            >
+                Save Changes
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<style>
+
+/* =====================================================
+   SETTINGS PAGE
+===================================================== */
+
+.settings-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.settings-header {
+    margin-bottom: 25px;
+}
+
+
+.settings-eyebrow {
+    margin-bottom: 6px;
+
+    color: #635bff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+
+.settings-header h1 {
+    margin: 0;
+
+    color: #171927;
+
+    font-size: 28px;
+    font-weight: 800;
+}
+
+
+.settings-header p {
+    margin: 7px 0 0;
+
+    color: #85899a;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.settings-card {
+
+    background: #ffffff;
+
+    border: 1px solid #e8e9ef;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 12px 35px rgba(28, 31, 60, .06);
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+.settings-section {
+
+    padding: 28px;
+
+    border-bottom: 1px solid #eef0f5;
+}
+
+
+.settings-section:last-of-type {
+    border-bottom: none;
+}
+
+
+.settings-section-heading {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    margin-bottom: 24px;
+}
+
+
+.settings-section-icon {
+
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: #f1f0ff;
+
+    font-size: 18px;
+}
+
+
+.settings-section-heading h2 {
+
+    margin: 0;
+
+    color: #202333;
+
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+
+.settings-section-heading p {
+
+    margin: 5px 0 0;
+
+    color: #8b8f9f;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   PROFILE PHOTO
+===================================================== */
+
+.profile-photo-area {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.settings-avatar {
+
+    width: 90px;
+    height: 90px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eeedff,
+            #dfdcff
+        );
+
+    color: #635bff;
+
+    font-size: 30px;
+    font-weight: 800;
+
+    border: 4px solid #ffffff;
+
+    box-shadow:
+        0 8px 25px rgba(35, 38, 75, .10);
+}
+
+
+.settings-avatar img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.profile-photo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+.profile-photo-name {
+
+    color: #242738;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+.profile-photo-description {
+
+    color: #9296a5;
+
+    font-size: 10px;
+
+    margin-bottom: 7px;
+}
+
+
+.upload-photo-button {
+
+    width: fit-content;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 15px;
+
+    border-radius: 9px;
+
+    background: #f0efff;
+
+    color: #635bff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+
+.upload-photo-button:hover {
+
+    background: #635bff;
+
+    color: #ffffff;
+}
+
+
+.hidden-file-input {
+    display: none;
+}
+
+
+/* =====================================================
+   NOTIFICATION SETTING
+===================================================== */
+
+.notification-setting-row {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 17px;
+
+    border: 1px solid #eceef3;
+
+    border-radius: 14px;
+
+    background: #fafbfe;
+}
+
+
+.notification-setting-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.notification-setting-text strong {
+
+    color: #292c3d;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.notification-setting-text span {
+
+    color: #8b8f9f;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   SWITCH
+===================================================== */
+
+.settings-switch {
+
+    position: relative;
+
+    display: inline-flex;
+
+    width: 48px;
+    height: 27px;
+
+    flex-shrink: 0;
+
+    cursor: pointer;
+}
+
+
+.settings-toggle-input {
+
+    position: absolute;
+
+    opacity: 0;
+
+    width: 0;
+    height: 0;
+}
+
+
+.settings-switch-slider {
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 999px;
+
+    background: #dfe1e8;
+
+    transition:
+        background .2s ease;
+}
+
+
+.settings-switch-slider::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 21px;
+    height: 21px;
+
+    left: 3px;
+    top: 3px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 2px 7px rgba(0, 0, 0, .12);
+
+    transition:
+        transform .2s ease;
+}
+
+
+.settings-toggle-input:checked
++ .settings-switch-slider {
+
+    background: #635bff;
+}
+
+
+.settings-toggle-input:checked
++ .settings-switch-slider::before {
+
+    transform: translateX(21px);
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.settings-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    padding: 20px 28px;
+
+    background: #fafbfe;
+}
+
+
+.settings-save-button {
+
+    border: none;
+
+    padding: 11px 20px;
+
+    border-radius: 10px;
+
+    background: #635bff;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.settings-save-button:hover {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(99, 91, 255, .22);
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .settings-page {
+        padding: 0 5px 30px;
+    }
+
+
+    .settings-section {
+        padding: 20px;
+    }
+
+
+    .profile-photo-area {
+        align-items: flex-start;
+    }
+
+
+    .notification-setting-row {
+        align-items: flex-start;
+    }
+
+}
+
+</style>
+
+{% endblock %}

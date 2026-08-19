@@ -1,0 +1,423 @@
+{% extends "base.html" %}
+
+{% block title %}My Classes | LingoRise{% endblock %}
+
+{% block page_title %}
+    My Classes
+{% endblock %}
+
+{% block content %}
+
+<div class="teacher-classes">
+
+    <div class="classes-header">
+
+        <div>
+            <span>TEACHING</span>
+
+            <h1>
+                My Classes
+            </h1>
+
+            <p>
+                Manage your teaching groups and students.
+            </p>
+        </div>
+
+        <div class="classes-count">
+            {{ groups|length }}
+            <small>classes</small>
+        </div>
+
+    </div>
+
+
+    {% if groups %}
+
+        <div class="classes-grid">
+
+            {% for group in groups %}
+
+                <div class="class-card">
+
+                    <div class="class-card-top">
+
+                        <div class="class-icon">
+                            🏫
+                        </div>
+
+                        <span class="active-badge">
+                            Active
+                        </span>
+
+                    </div>
+
+
+                    <div class="class-card-body">
+
+                        <h2>
+                            {{ group.name }}
+                        </h2>
+
+
+                        {% if group.subject %}
+
+                            <p class="subject">
+                                {{ group.subject.name }}
+                            </p>
+
+                        {% endif %}
+
+
+                        <div class="class-info">
+
+                            <div>
+                                👨‍🎓
+                                <strong>
+                                    {{ group.students.count }}
+                                </strong>
+                                students
+                            </div>
+
+
+                            {% if group.classroom %}
+
+                                <div>
+                                    📍
+                                    {{ group.classroom.name }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="class-card-footer">
+
+                        <span>
+                            View class
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                🏫
+            </div>
+
+            <h2>
+                No classes yet
+            </h2>
+
+            <p>
+                Your active teaching groups will appear here.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+    .teacher-classes {
+        padding: 10px 0 50px;
+    }
+
+
+    .classes-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 25px;
+    }
+
+
+    .classes-header span {
+        color: #635bff;
+
+        font-size: 10px;
+        font-weight: 800;
+
+        letter-spacing: 1.5px;
+    }
+
+
+    .classes-header h1 {
+        margin: 6px 0;
+
+        font-size: 30px;
+        letter-spacing: -.7px;
+    }
+
+
+    .classes-header p {
+        margin: 0;
+
+        color: #777b8e;
+
+        font-size: 13px;
+    }
+
+
+    .classes-count {
+        width: 75px;
+        height: 75px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 20px;
+
+        background: #f0efff;
+
+        color: #635bff;
+
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+
+    .classes-count small {
+        margin-top: 2px;
+
+        font-size: 9px;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: .8px;
+    }
+
+
+    .classes-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap: 18px;
+    }
+
+
+    .class-card {
+        overflow: hidden;
+
+        border: 1px solid #e8eaf1;
+        border-radius: 22px;
+
+        background: white;
+
+        box-shadow:
+            0 10px 30px rgba(25, 29, 58, .06);
+
+        transition: .25s ease;
+    }
+
+
+    .class-card:hover {
+        transform: translateY(-5px);
+
+        border-color: #d7d4ff;
+
+        box-shadow:
+            0 18px 40px rgba(25, 29, 58, .10);
+    }
+
+
+    .class-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 20px 20px 0;
+    }
+
+
+    .class-icon {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 15px;
+
+        background: #efeeff;
+
+        font-size: 20px;
+    }
+
+
+    .active-badge {
+        padding: 6px 9px;
+
+        border-radius: 8px;
+
+        background: #e8f8f1;
+
+        color: #13976d;
+
+        font-size: 9px;
+        font-weight: 800;
+
+        text-transform: uppercase;
+    }
+
+
+    .class-card-body {
+        padding: 20px;
+    }
+
+
+    .class-card-body h2 {
+        margin: 0;
+
+        font-size: 18px;
+        letter-spacing: -.3px;
+    }
+
+
+    .subject {
+        margin: 6px 0 18px;
+
+        color: #635bff;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+
+    .class-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        color: #777b8e;
+
+        font-size: 11px;
+    }
+
+
+    .class-info strong {
+        color: #202235;
+    }
+
+
+    .class-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 13px 20px;
+
+        border-top: 1px solid #eef0f5;
+
+        background: #fafbfe;
+
+        color: #635bff;
+
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+
+    .empty-state {
+        min-height: 350px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px dashed #dfe1ea;
+        border-radius: 22px;
+
+        text-align: center;
+    }
+
+
+    .empty-icon {
+        width: 65px;
+        height: 65px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 20px;
+
+        background: #f0efff;
+
+        font-size: 25px;
+    }
+
+
+    .empty-state h2 {
+        margin: 15px 0 5px;
+
+        font-size: 18px;
+    }
+
+
+    .empty-state p {
+        margin: 0;
+
+        color: #777b8e;
+
+        font-size: 12px;
+    }
+
+
+    @media (max-width: 1000px) {
+
+        .classes-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+
+    @media (max-width: 650px) {
+
+        .classes-header {
+            align-items: flex-start;
+        }
+
+
+        .classes-count {
+            width: 60px;
+            height: 60px;
+        }
+
+
+        .classes-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+{% endblock %}

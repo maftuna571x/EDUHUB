@@ -31,5 +31,16 @@ class User(AbstractUser):
         auto_now=True,
     )
 
+
+    avatar = models.ImageField(
+        upload_to="avatars/",
+        blank=True,
+        null=True,
+    )
+
+    notifications_enabled = models.BooleanField(
+        default=True,
+)
+
     def __str__(self):
         return self.get_full_name() or self.username

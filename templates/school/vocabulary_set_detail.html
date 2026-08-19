@@ -1,0 +1,1514 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="set-detail-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="set-detail-header">
+
+        <div class="set-header-left">
+
+            <a
+                href="{% url 'vocabulary_sets' %}"
+                class="back-link"
+            >
+                ← Vocabulary Sets
+            </a>
+
+            <span class="eyebrow">
+                VOCABULARY SET
+            </span>
+
+            <h1>
+                {{ vocabulary_set.name }}
+            </h1>
+
+            {% if vocabulary_set.description %}
+                <p>
+                    {{ vocabulary_set.description }}
+                </p>
+            {% else %}
+                <p>
+                    Build your vocabulary step by step.
+                </p>
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="set-header-actions">
+
+            <!-- ADD WORD -->
+
+            <a
+                href="{% url 'vocabulary_add' set_id=vocabulary_set.id %}"
+                class="primary-button"
+            >
+                <span>+</span>
+                Add Word
+            </a>
+
+
+            <!-- DELETE SET -->
+
+            <form
+                method="post"
+                action="{% url 'vocabulary_set_delete' set_id=vocabulary_set.id %}"
+                class="delete-set-form"
+                onsubmit="return confirmDeleteSet();"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="delete-set-button"
+                >
+                    🗑
+                    Delete Set
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         WORD COUNT
+    ====================================================== -->
+
+    <div class="words-heading">
+
+        <div>
+
+            <span class="words-eyebrow">
+                WORDS
+            </span>
+
+            <h2>
+                Your words
+            </h2>
+
+        </div>
+
+        <span class="word-count">
+
+            {{ words|length }}
+
+            {% if words|length == 1 %}
+                word
+            {% else %}
+                words
+            {% endif %}
+
+        </span>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <form
+        method="get"
+        class="search-form"
+    >
+
+        <div class="search-box">
+
+            <span class="search-icon">
+                ⌕
+            </span>
+
+            <input
+                type="text"
+                name="q"
+                value="{{ search_query|default:'' }}"
+                placeholder="Search in this set..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="search-button"
+        >
+            Search
+        </button>
+
+
+        {% if search_query %}
+
+            <a
+                href="{% url 'vocabulary_set_detail' set_id=vocabulary_set.id %}"
+                class="clear-button"
+            >
+                Clear
+            </a>
+
+        {% endif %}
+
+    </form>
+
+
+    <!-- =====================================================
+         WORDS GRID
+    ====================================================== -->
+
+    <div class="words-grid">
+
+        {% for item in words %}
+
+            <article class="word-card">
+
+                <!-- CARD TOP -->
+
+                <div class="word-card-top">
+
+                    <span class="level-badge">
+                        {{ item.level }}
+                    </span>
+
+
+                    <a
+                        href="{% url 'vocabulary_favorite' item.id %}"
+                        class="favorite-button"
+                        title="Favorite"
+                    >
+
+                        {% if item.id in favorite_ids %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+
+                    </a>
+
+                </div>
+
+
+                <!-- WORD -->
+
+                <div class="word-title-row">
+
+                    <h2>
+                        {{ item.word }}
+                    </h2>
+
+
+                    <button
+                        type="button"
+                        class="listen-button"
+                        data-word="{{ item.word }}"
+                        title="Listen"
+                    >
+                        🔊
+                    </button>
+
+                </div>
+
+
+                <!-- PRONUNCIATION -->
+
+                {% if item.pronunciation %}
+
+                    <div class="pronunciation">
+                        {{ item.pronunciation }}
+                    </div>
+
+                {% endif %}
+
+
+                <!-- TRANSLATION -->
+
+                <div class="translation">
+                    {{ item.translation }}
+                </div>
+
+
+                <!-- DEFINITION -->
+
+                {% if item.definition %}
+
+                    <div class="definition">
+
+                        <span>
+                            Definition
+                        </span>
+
+                        <p>
+                            {{ item.definition }}
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- EXAMPLE -->
+
+                {% if item.example %}
+
+                    <div class="example">
+
+                        <span>
+                            Example
+                        </span>
+
+                        <p>
+                            {{ item.example }}
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- SYNONYMS -->
+
+                {% if item.synonyms %}
+
+                    <div class="synonyms">
+
+                        <span>
+                            Synonyms
+                        </span>
+
+                        <p>
+                            {{ item.synonyms }}
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- CATEGORY -->
+
+                {% if item.category %}
+
+                    <div class="category">
+                        {{ item.category }}
+                    </div>
+
+                {% endif %}
+
+
+                <!-- FOOTER -->
+
+                <div class="word-footer">
+
+                    <a
+                        href="{% url 'vocabulary_learned' item.id %}"
+                        class="learned-button{% if item.id in learned_ids %} learned{% endif %}"
+                    >
+
+                        {% if item.id in learned_ids %}
+
+                            ✓ Learned
+
+                        {% else %}
+
+                            Mark learned
+
+                        {% endif %}
+
+                    </a>
+
+                </div>
+
+            </article>
+
+
+        {% empty %}
+
+
+            <!-- =================================================
+                 EMPTY STATE
+            ================================================== -->
+
+            <div class="empty-words">
+
+                <div class="empty-icon">
+                    📚
+                </div>
+
+
+                <h2>
+
+                    {% if search_query %}
+
+                        No words found
+
+                    {% else %}
+
+                        No words in this set yet
+
+                    {% endif %}
+
+                </h2>
+
+
+                <p>
+
+                    {% if search_query %}
+
+                        Try another search term.
+
+                    {% else %}
+
+                        Start building this set by adding your first word.
+
+                    {% endif %}
+
+                </p>
+
+
+                {% if search_query %}
+
+                    <a
+                        href="{% url 'vocabulary_set_detail' set_id=vocabulary_set.id %}"
+                        class="primary-button"
+                    >
+                        Clear Search
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'vocabulary_add' set_id=vocabulary_set.id %}"
+                        class="primary-button"
+                    >
+                        + Add first word
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.set-detail-page {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 42px 24px 80px;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.set-detail-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-end;
+
+    gap: 30px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.set-header-left {
+
+    min-width: 0;
+
+}
+
+
+.back-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    margin-bottom: 22px;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    opacity: .55;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: opacity .2s ease;
+
+}
+
+
+.back-link:hover {
+
+    opacity: 1;
+
+}
+
+
+.eyebrow {
+
+    display: block;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    opacity: .45;
+
+}
+
+
+.set-detail-header h1 {
+
+    margin: 8px 0;
+
+    font-size: 42px;
+
+    line-height: 1.1;
+
+}
+
+
+.set-detail-header p {
+
+    margin: 0;
+
+    max-width: 650px;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    opacity: .58;
+
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.set-header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+
+}
+
+
+.delete-set-form {
+
+    margin: 0;
+
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+========================================================= */
+
+.primary-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 46px;
+
+    padding: 10px 18px;
+
+    border-radius: 12px;
+
+    background: #111827;
+
+    color: #ffffff !important;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition:
+        transform .2s ease,
+        opacity .2s ease;
+
+}
+
+
+.primary-button:hover {
+
+    transform: translateY(-2px);
+
+    opacity: .92;
+
+}
+
+
+.primary-button span {
+
+    font-size: 17px;
+
+    line-height: 1;
+
+}
+
+
+/* =========================================================
+   DELETE BUTTON
+========================================================= */
+
+.delete-set-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 46px;
+
+    padding: 10px 18px;
+
+    border: 1px solid rgba(220, 38, 38, .25);
+
+    border-radius: 12px;
+
+    background: transparent;
+
+    color: #dc2626;
+
+    font: inherit;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.delete-set-button:hover {
+
+    transform: translateY(-2px);
+
+    background: rgba(220, 38, 38, .08);
+
+    border-color: rgba(220, 38, 38, .4);
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-form {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-bottom: 32px;
+
+}
+
+
+.search-box {
+
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+
+    height: 46px;
+
+    padding: 0 15px;
+
+    border: 1px solid rgba(128, 128, 128, .25);
+
+    border-radius: 12px;
+
+    background: rgba(128, 128, 128, .025);
+
+}
+
+
+.search-icon {
+
+    font-size: 20px;
+
+    opacity: .55;
+
+}
+
+
+.search-box input {
+
+    width: 100%;
+
+    min-width: 0;
+
+    border: 0;
+
+    outline: 0;
+
+    background: transparent;
+
+    color: inherit;
+
+    font: inherit;
+
+    font-size: 13px;
+
+}
+
+
+.search-box input::placeholder {
+
+    opacity: .45;
+
+}
+
+
+.search-button,
+.clear-button {
+
+    min-height: 46px;
+
+    padding: 0 16px;
+
+    border: 1px solid rgba(128, 128, 128, .25);
+
+    border-radius: 12px;
+
+    background: transparent;
+
+    color: inherit;
+
+    font: inherit;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.search-button {
+
+    cursor: pointer;
+
+}
+
+
+.clear-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.search-button:hover,
+.clear-button:hover {
+
+    background: rgba(128, 128, 128, .07);
+
+}
+
+
+/* =========================================================
+   WORDS HEADING
+========================================================= */
+
+.words-heading {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 17px;
+
+}
+
+
+.words-eyebrow {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    opacity: .42;
+
+}
+
+
+.words-heading h2 {
+
+    margin: 0;
+
+    font-size: 24px;
+
+}
+
+
+.word-count {
+
+    padding: 6px 10px;
+
+    border: 1px solid rgba(128, 128, 128, .18);
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    opacity: .65;
+
+}
+
+
+/* =========================================================
+   WORD GRID
+========================================================= */
+
+.words-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(310px, 1fr)
+        );
+
+    gap: 18px;
+
+}
+
+
+/* =========================================================
+   WORD CARD
+========================================================= */
+
+.word-card {
+
+    position: relative;
+
+    padding: 22px;
+
+    border: 1px solid rgba(128, 128, 128, .18);
+
+    border-radius: 20px;
+
+    background: rgba(128, 128, 128, .035);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.word-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, .07);
+
+    border-color:
+        rgba(128, 128, 128, .28);
+
+}
+
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.word-card-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+}
+
+
+.level-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 34px;
+
+    min-height: 24px;
+
+    padding: 3px 8px;
+
+    border:
+        1px solid rgba(128, 128, 128, .2);
+
+    border-radius: 7px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: .5px;
+
+}
+
+
+.favorite-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    font-size: 23px;
+
+    line-height: 1;
+
+    transition:
+        transform .2s ease;
+
+}
+
+
+.favorite-button:hover {
+
+    transform: scale(1.12);
+
+}
+
+
+/* =========================================================
+   WORD TITLE
+========================================================= */
+
+.word-title-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 15px;
+
+}
+
+
+.word-title-row h2 {
+
+    min-width: 0;
+
+    margin: 0;
+
+    font-size: 29px;
+
+    line-height: 1.15;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.listen-button {
+
+    flex-shrink: 0;
+
+    width: 40px;
+
+    height: 40px;
+
+    border:
+        1px solid rgba(128, 128, 128, .25);
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: inherit;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    transition:
+        transform .2s ease,
+        background .2s ease;
+
+}
+
+
+.listen-button:hover {
+
+    transform: scale(1.05);
+
+    background:
+        rgba(128, 128, 128, .08);
+
+}
+
+
+/* =========================================================
+   WORD INFO
+========================================================= */
+
+.pronunciation {
+
+    margin-top: 7px;
+
+    font-size: 13px;
+
+    opacity: .5;
+
+}
+
+
+.translation {
+
+    margin-top: 11px;
+
+    font-size: 17px;
+
+    font-weight: 650;
+
+}
+
+
+/* =========================================================
+   DEFINITION / EXAMPLE / SYNONYMS
+========================================================= */
+
+.definition,
+.example,
+.synonyms {
+
+    margin-top: 20px;
+
+}
+
+
+.definition > span,
+.example > span,
+.synonyms > span {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+
+    text-transform: uppercase;
+
+    opacity: .45;
+
+}
+
+
+.definition p,
+.example p,
+.synonyms p {
+
+    margin: 0;
+
+    line-height: 1.6;
+
+    font-size: 13px;
+
+}
+
+
+.example p {
+
+    opacity: .72;
+
+    font-style: italic;
+
+}
+
+
+.synonyms p {
+
+    opacity: .7;
+
+}
+
+
+/* =========================================================
+   CATEGORY
+========================================================= */
+
+.category {
+
+    display: inline-flex;
+
+    margin-top: 17px;
+
+    padding: 5px 9px;
+
+    border-radius: 7px;
+
+    background:
+        rgba(128, 128, 128, .09);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    opacity: .65;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.word-footer {
+
+    margin-top: 22px;
+
+    padding-top: 17px;
+
+    border-top:
+        1px solid rgba(128, 128, 128, .12);
+
+}
+
+
+.learned-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 38px;
+
+    padding: 8px 13px;
+
+    border:
+        1px solid rgba(128, 128, 128, .25);
+
+    border-radius: 10px;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition:
+        background .2s ease;
+
+}
+
+
+.learned-button:hover {
+
+    background:
+        rgba(128, 128, 128, .08);
+
+}
+
+
+.learned-button.learned {
+
+    background:
+        rgba(50, 180, 100, .12);
+
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-words {
+
+    grid-column: 1 / -1;
+
+    padding: 75px 20px;
+
+    text-align: center;
+
+}
+
+
+.empty-icon {
+
+    margin-bottom: 16px;
+
+    font-size: 50px;
+
+}
+
+
+.empty-words h2 {
+
+    margin: 0 0 8px;
+
+    font-size: 23px;
+
+}
+
+
+.empty-words p {
+
+    margin: 0 0 22px;
+
+    font-size: 13px;
+
+    opacity: .58;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .set-detail-page {
+
+        padding:
+            25px
+            16px
+            50px;
+
+    }
+
+
+    .set-detail-header {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 20px;
+
+    }
+
+
+    .set-detail-header h1 {
+
+        font-size: 34px;
+
+    }
+
+
+    .set-header-actions {
+
+        width: 100%;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .set-header-actions .primary-button,
+    .set-header-actions .delete-set-form,
+    .set-header-actions .delete-set-button {
+
+        width: 100%;
+
+    }
+
+
+    .primary-button {
+
+        width: 100%;
+
+    }
+
+
+    .search-form {
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .search-box {
+
+        flex-basis: 100%;
+
+    }
+
+
+    .search-button,
+    .clear-button {
+
+        flex: 1;
+
+    }
+
+
+    .words-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .set-detail-header h1 {
+
+        font-size: 30px;
+
+    }
+
+
+    .word-title-row h2 {
+
+        font-size: 25px;
+
+    }
+
+
+    .search-form {
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+    }
+
+
+    .search-box {
+
+        grid-column: 1 / -1;
+
+    }
+
+
+    .search-button,
+    .clear-button {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+
+<script>
+
+/* =========================================================
+   DELETE SET CONFIRMATION
+========================================================= */
+
+function confirmDeleteSet() {
+
+    return confirm(
+        "Are you sure you want to delete this vocabulary set?"
+        + "\n\n"
+        + "The set will be permanently removed."
+    );
+
+}
+
+
+/* =========================================================
+   TEXT TO SPEECH
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const listenButtons =
+            document.querySelectorAll(
+                ".listen-button"
+            );
+
+
+        listenButtons.forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const word =
+                            button.dataset.word;
+
+
+                        if (!word) {
+
+                            return;
+
+                        }
+
+
+                        if (
+                            !(
+                                "speechSynthesis"
+                                in window
+                            )
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        window.speechSynthesis.cancel();
+
+
+                        const utterance =
+                            new SpeechSynthesisUtterance(
+                                word
+                            );
+
+
+                        utterance.lang =
+                            "en-US";
+
+
+                        utterance.rate =
+                            0.85;
+
+
+                        utterance.pitch =
+                            1;
+
+
+                        window.speechSynthesis.speak(
+                            utterance
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,840 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="add-vocabulary-page">
+
+```
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<div class="add-vocabulary-header">
+
+    <a
+        href="{% url 'vocabulary' %}"
+        class="back-link"
+    >
+        ← Back to Vocabulary
+    </a>
+
+
+    <span class="eyebrow">
+        SELF STUDY
+    </span>
+
+
+    <h1>
+        Add a new word
+    </h1>
+
+
+    <p>
+        Add a word to your personal vocabulary collection.
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     FORM
+====================================================== -->
+
+<div class="vocabulary-form-card">
+
+    {% if error %}
+
+        <div class="form-error">
+            {{ error }}
+        </div>
+
+    {% endif %}
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        <!-- =================================================
+             WORD
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="word">
+                Word <span>*</span>
+            </label>
+
+
+            <input
+                type="text"
+                id="word"
+                name="word"
+                value="{{ word|default:'' }}"
+                placeholder="e.g. fascinating"
+                autocomplete="off"
+                required
+            >
+
+
+            <small>
+                Enter the English word you want to learn.
+            </small>
+
+        </div>
+
+
+        <!-- =================================================
+             UZBEK TRANSLATION
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="translation">
+                Uzbek translation <span>*</span>
+            </label>
+
+
+            <input
+                type="text"
+                id="translation"
+                name="translation"
+                value="{{ translation|default:'' }}"
+                placeholder="e.g. juda qiziqarli"
+                required
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             DEFINITION
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="definition">
+                Definition <span>*</span>
+            </label>
+
+
+            <textarea
+                id="definition"
+                name="definition"
+                rows="5"
+                placeholder="Explain the meaning of the word in English..."
+                required
+            >{{ definition|default:'' }}</textarea>
+
+
+            <small>
+                Write a simple English explanation of the word.
+            </small>
+
+        </div>
+
+
+        <!-- =================================================
+             PRONUNCIATION
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="pronunciation">
+                Pronunciation
+            </label>
+
+
+            <div class="pronunciation-input-row">
+
+                <input
+                    type="text"
+                    id="pronunciation"
+                    name="pronunciation"
+                    value="{{ pronunciation|default:'' }}"
+                    placeholder="e.g. /ˈfæsɪneɪtɪŋ/"
+                >
+
+
+                <button
+                    type="button"
+                    class="listen-button"
+                    id="previewPronunciation"
+                >
+                    🔊 Listen
+                </button>
+
+            </div>
+
+
+            <small>
+                Optional. Add the pronunciation to help you remember how the word sounds.
+            </small>
+
+        </div>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'vocabulary' %}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="save-button"
+            >
+                Add word
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+```
+
+</div>
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.add-vocabulary-page {
+
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    padding:
+        45px
+        24px
+        80px;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.add-vocabulary-header {
+
+    margin-bottom: 30px;
+
+}
+
+
+.back-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    margin-bottom: 30px;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    opacity: .65;
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease;
+
+}
+
+
+.back-link:hover {
+
+    opacity: 1;
+
+    transform:
+        translateX(-3px);
+
+}
+
+
+.eyebrow {
+
+    display: block;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    opacity: .5;
+
+}
+
+
+.add-vocabulary-header h1 {
+
+    font-size: 40px;
+
+    line-height: 1.15;
+
+    margin:
+        8px
+        0;
+
+}
+
+
+.add-vocabulary-header p {
+
+    margin: 0;
+
+    opacity: .6;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.vocabulary-form-card {
+
+    border:
+        1px solid
+        rgba(128,128,128,.18);
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    background:
+        rgba(128,128,128,.035);
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.form-error {
+
+    padding:
+        13px
+        15px;
+
+    margin-bottom: 22px;
+
+    border:
+        1px solid
+        rgba(220,60,60,.15);
+
+    border-radius: 12px;
+
+    background:
+        rgba(220,60,60,.10);
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================================
+   FORM GROUP
+========================================================= */
+
+.form-group {
+
+    margin-bottom: 22px;
+
+}
+
+
+.form-group label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+.form-group label span {
+
+    opacity: .6;
+
+}
+
+
+.form-group small {
+
+    display: block;
+
+    margin-top: 7px;
+
+    font-size: 12px;
+
+    opacity: .5;
+
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.form-group input,
+.form-group textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding:
+        13px
+        14px;
+
+    border:
+        1px solid
+        rgba(128,128,128,.25);
+
+    border-radius: 12px;
+
+    background:
+        transparent;
+
+    color: inherit;
+
+    font: inherit;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.form-group textarea {
+
+    min-height: 130px;
+
+    resize: vertical;
+
+}
+
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+
+    opacity: .45;
+
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus {
+
+    border-color:
+        currentColor;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(128,128,128,.08);
+
+}
+
+
+/* =========================================================
+   PRONUNCIATION
+========================================================= */
+
+.pronunciation-input-row {
+
+    display: flex;
+
+    align-items: stretch;
+
+    gap: 10px;
+
+}
+
+
+.pronunciation-input-row input {
+
+    flex: 1;
+
+}
+
+
+/* =========================================================
+   LISTEN BUTTON
+========================================================= */
+
+.listen-button {
+
+    flex-shrink: 0;
+
+    min-width: 105px;
+
+    min-height: 46px;
+
+    padding:
+        0
+        14px;
+
+    border:
+        1px solid
+        #d1d5db;
+
+    border-radius: 11px;
+
+    background:
+        #ffffff;
+
+    color:
+        #111827;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+
+}
+
+
+.listen-button:hover {
+
+    background:
+        #f3f4f6;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.form-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 28px;
+
+    padding-top: 5px;
+
+}
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+.cancel-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 44px;
+
+    box-sizing: border-box;
+
+    padding:
+        10px
+        18px;
+
+    border:
+        1px solid
+        #d1d5db;
+
+    border-radius: 11px;
+
+    background:
+        #ffffff;
+
+    color:
+        #111827 !important;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+
+}
+
+
+.cancel-button:hover {
+
+    background:
+        #f3f4f6;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+.save-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 44px;
+
+    box-sizing: border-box;
+
+    padding:
+        10px
+        20px;
+
+    border:
+        1px solid
+        #111827;
+
+    border-radius: 11px;
+
+    background:
+        #111827;
+
+    color:
+        #ffffff !important;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    appearance: none;
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.save-button:hover {
+
+    opacity: .92;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(17,24,39,.16);
+
+}
+
+
+.save-button:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .add-vocabulary-page {
+
+        padding:
+            25px
+            16px
+            50px;
+
+    }
+
+
+    .add-vocabulary-header h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .vocabulary-form-card {
+
+        padding: 20px;
+
+        border-radius: 18px;
+
+    }
+
+
+    .pronunciation-input-row {
+
+        flex-direction: column;
+
+    }
+
+
+    .listen-button {
+
+        width: 100%;
+
+    }
+
+
+    .form-actions {
+
+        flex-direction: column-reverse;
+
+        align-items: stretch;
+
+    }
+
+
+    .cancel-button,
+    .save-button {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const listenButton =
+            document.getElementById(
+                "previewPronunciation"
+            );
+
+        const wordInput =
+            document.getElementById(
+                "word"
+            );
+
+
+        if (
+            !listenButton ||
+            !wordInput
+        ) {
+            return;
+        }
+
+
+        listenButton.addEventListener(
+            "click",
+            function () {
+
+                const word =
+                    wordInput.value.trim();
+
+
+                if (!word) {
+
+                    wordInput.focus();
+
+                    return;
+
+                }
+
+
+                if (
+                    !(
+                        "speechSynthesis"
+                        in window
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                window.speechSynthesis.cancel();
+
+
+                const utterance =
+                    new SpeechSynthesisUtterance(
+                        word
+                    );
+
+
+                utterance.lang =
+                    "en-US";
+
+                utterance.rate =
+                    0.85;
+
+                utterance.pitch =
+                    1;
+
+
+                window.speechSynthesis.speak(
+                    utterance
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

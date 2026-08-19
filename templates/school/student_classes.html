@@ -1,0 +1,836 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Classes — LingoRise
+{% endblock %}
+
+{% block page_title %}
+    My Classes
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =====================================================
+       MY CLASSES PAGE
+    ===================================================== */
+
+    .classes-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 4px 55px;
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .classes-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .classes-header-left {
+        min-width: 0;
+    }
+
+    .classes-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 10px;
+
+        color: #635bff;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .classes-eyebrow::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #635bff;
+        box-shadow: 0 0 0 5px rgba(99, 91, 255, .10);
+    }
+
+    .classes-header h1 {
+        margin: 0 0 8px;
+
+        color: #151827;
+
+        font-size: 34px;
+        line-height: 1.15;
+        font-weight: 850;
+        letter-spacing: -1px;
+    }
+
+    .classes-header p {
+        margin: 0;
+
+        color: #85899a;
+
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       COUNT
+    ===================================================== */
+
+    .classes-count {
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        padding: 12px 16px;
+
+        border: 1px solid #e7e9f0;
+        border-radius: 14px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 8px 24px rgba(24, 27, 55, .05);
+    }
+
+    .classes-count-icon {
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        background: #f0efff;
+
+        color: #635bff;
+
+        font-size: 16px;
+    }
+
+    .classes-count-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .classes-count-number {
+        color: #151827;
+        font-size: 16px;
+        font-weight: 850;
+        line-height: 1;
+    }
+
+    .classes-count-label {
+        color: #969aaa;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       GRID
+    ===================================================== */
+
+    .classes-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap: 20px;
+    }
+
+
+    /* =====================================================
+       CARD
+    ===================================================== */
+
+    .class-card {
+        position: relative;
+
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+
+        min-height: 320px;
+
+        padding: 22px;
+
+        border: 1px solid #e7e9f0;
+        border-radius: 22px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 8px 28px rgba(24, 27, 55, .045);
+
+        transition:
+            transform .22s ease,
+            box-shadow .22s ease,
+            border-color .22s ease;
+    }
+
+    .class-card::before {
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+        right: 0;
+
+        height: 3px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #635bff,
+                #8b83ff
+            );
+
+        opacity: .9;
+    }
+
+    .class-card:hover {
+        transform: translateY(-5px);
+
+        border-color: #dcd9ff;
+
+        box-shadow:
+            0 18px 40px rgba(24, 27, 55, .09);
+    }
+
+
+    /* =====================================================
+       CARD TOP
+    ===================================================== */
+
+    .class-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+    .class-icon {
+        width: 52px;
+        height: 52px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #f0efff,
+                #e8e6ff
+            );
+
+        color: #635bff;
+
+        font-size: 23px;
+
+        box-shadow:
+            inset 0 0 0 1px rgba(99, 91, 255, .08);
+    }
+
+    .class-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 7px 10px;
+
+        border-radius: 9px;
+
+        background: #ecfdf5;
+
+        color: #047857;
+
+        font-size: 9px;
+        font-weight: 800;
+
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .class-status::before {
+        content: "";
+
+        width: 5px;
+        height: 5px;
+
+        border-radius: 50%;
+
+        background: #10b981;
+    }
+
+
+    /* =====================================================
+       CARD TITLE
+    ===================================================== */
+
+    .class-name {
+        margin: 0 0 7px;
+
+        color: #151827;
+
+        font-size: 20px;
+        line-height: 1.25;
+        font-weight: 850;
+
+        letter-spacing: -.4px;
+    }
+
+    .class-subject {
+        margin: 0;
+
+        color: #635bff;
+
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+
+    /* =====================================================
+       INFO
+    ===================================================== */
+
+    .class-info {
+        display: grid;
+        gap: 12px;
+
+        margin-top: 22px;
+        margin-bottom: 22px;
+
+        padding: 15px;
+
+        border: 1px solid #eef0f5;
+        border-radius: 15px;
+
+        background: #fafbfe;
+    }
+
+    .class-info-row {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+    }
+
+    .class-info-icon {
+        width: 30px;
+        height: 30px;
+
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background: #ffffff;
+
+        border: 1px solid #e9ebf1;
+
+        font-size: 13px;
+    }
+
+    .class-info-content {
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 2px;
+    }
+
+    .class-info-label {
+        color: #9a9eae;
+
+        font-size: 9px;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: .45px;
+    }
+
+    .class-info-value {
+        overflow: hidden;
+
+        color: #292c3b;
+
+        font-size: 11px;
+        font-weight: 750;
+
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+
+    /* =====================================================
+       CARD FOOTER
+    ===================================================== */
+
+    .class-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-top: auto;
+
+        padding-top: 17px;
+
+        border-top: 1px solid #eef0f5;
+    }
+
+    .students-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .students-icon {
+        width: 31px;
+        height: 31px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background: #f4f5f8;
+
+        font-size: 13px;
+    }
+
+    .students-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .students-number {
+        color: #292c3b;
+
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .students-label {
+        color: #9a9eae;
+
+        font-size: 9px;
+    }
+
+
+    /* =====================================================
+       VIEW BUTTON
+    ===================================================== */
+
+    .class-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 37px;
+
+        padding: 0 13px;
+
+        border-radius: 10px;
+
+        background: #151827;
+        color: #ffffff !important;
+
+        text-decoration: none !important;
+
+        font-size: 10px;
+        font-weight: 800;
+
+        transition:
+            background .2s ease,
+            transform .2s ease;
+    }
+
+    .class-button:hover {
+        background: #635bff;
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =====================================================
+       EMPTY STATE
+    ===================================================== */
+
+    .empty-classes {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 320px;
+
+        padding: 40px;
+
+        border: 1px dashed #d8dae4;
+        border-radius: 22px;
+
+        background: #ffffff;
+
+        text-align: center;
+    }
+
+    .empty-class-icon {
+        width: 70px;
+        height: 70px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 18px;
+
+        border-radius: 20px;
+
+        background: #f0efff;
+
+        font-size: 29px;
+    }
+
+    .empty-classes h2 {
+        margin: 0 0 8px;
+
+        color: #252837;
+
+        font-size: 20px;
+        font-weight: 850;
+    }
+
+    .empty-classes p {
+        max-width: 390px;
+
+        margin: 0;
+
+        color: #85899a;
+
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 1050px) {
+
+        .classes-grid {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+
+    @media (max-width: 700px) {
+
+        .classes-page {
+            padding: 5px 0 40px;
+        }
+
+        .classes-header {
+            align-items: flex-start;
+
+            flex-direction: column;
+
+            margin-bottom: 24px;
+        }
+
+        .classes-header h1 {
+            font-size: 29px;
+        }
+
+        .classes-count {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .classes-grid {
+            grid-template-columns: 1fr;
+
+            gap: 15px;
+        }
+
+        .class-card {
+            min-height: auto;
+        }
+
+    }
+
+
+    @media (max-width: 420px) {
+
+        .class-footer {
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+
+        .class-button {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<div class="classes-page">
+
+
+    <!-- =================================================
+         HEADER
+    ================================================= -->
+
+    <div class="classes-header">
+
+        <div class="classes-header-left">
+
+            <div class="classes-eyebrow">
+                Learning Space
+            </div>
+
+            <h1>
+                My Classes
+            </h1>
+
+            <p>
+                View the classes and learning groups you are enrolled in.
+            </p>
+
+        </div>
+
+
+        <div class="classes-count">
+
+            <div class="classes-count-icon">
+                🏫
+            </div>
+
+            <div class="classes-count-text">
+
+                <span class="classes-count-number">
+                    {{ classes|length }}
+                </span>
+
+                <span class="classes-count-label">
+                    Active Classes
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         CLASSES
+    ================================================= -->
+
+    {% if classes %}
+
+        <div class="classes-grid">
+
+
+            {% for class in classes %}
+
+
+                <article class="class-card">
+
+
+                    <!-- CARD TOP -->
+
+                    <div class="class-card-top">
+
+                        <div class="class-icon">
+                            🏫
+                        </div>
+
+                        <div class="class-status">
+                            Active
+                        </div>
+
+                    </div>
+
+
+                    <!-- TITLE -->
+
+                    <h2 class="class-name">
+                        {{ class.name }}
+                    </h2>
+
+                    <p class="class-subject">
+                        {{ class.subject.name }}
+                    </p>
+
+
+                    <!-- INFO -->
+
+                    <div class="class-info">
+
+
+                        <div class="class-info-row">
+
+                            <div class="class-info-icon">
+                                👨‍🏫
+                            </div>
+
+                            <div class="class-info-content">
+
+                                <span class="class-info-label">
+                                    Teacher
+                                </span>
+
+                                <span class="class-info-value">
+
+                                    {{ class.teacher.get_full_name|default:class.teacher.username }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="class-info-row">
+
+                            <div class="class-info-icon">
+                                🏢
+                            </div>
+
+                            <div class="class-info-content">
+
+                                <span class="class-info-label">
+                                    Classroom
+                                </span>
+
+                                <span class="class-info-value">
+
+                                    {{ class.classroom.name }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- FOOTER -->
+
+                    <div class="class-footer">
+
+
+                        <div class="students-info">
+
+                            <div class="students-icon">
+                                👥
+                            </div>
+
+                            <div class="students-text">
+
+                                <span class="students-number">
+                                    {{ class.students.count }}
+                                </span>
+
+                                <span class="students-label">
+                                    Students
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="class-button"
+                        >
+                            View Class
+                            <span>→</span>
+                        </a>
+
+
+                    </div>
+
+
+                </article>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- =================================================
+             EMPTY
+        ================================================= -->
+
+        <div class="empty-classes">
+
+            <div class="empty-class-icon">
+                🏫
+            </div>
+
+            <h2>
+                No classes yet
+            </h2>
+
+            <p>
+                You have not been enrolled in any active classes yet.
+                Once a teacher adds you to a class, it will appear here.
+            </p>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

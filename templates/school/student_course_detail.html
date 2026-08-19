@@ -1,0 +1,609 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .course-detail-page {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 22px;
+        color: #6b7280;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .back-link:hover {
+        color: #111827;
+    }
+
+    .course-hero {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 22px;
+        padding: 28px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+    }
+
+    .course-hero-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 25px;
+        align-items: flex-start;
+    }
+
+    .course-icon-large {
+        width: 62px;
+        height: 62px;
+        border-radius: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f6;
+        font-size: 30px;
+        margin-bottom: 17px;
+    }
+
+    .course-hero h1 {
+        margin: 0 0 7px;
+        font-size: 32px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .course-hero-group {
+        margin: 0 0 17px;
+        color: #6b7280;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .course-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .meta-item {
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        color: #374151;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .course-progress-box {
+        min-width: 230px;
+        padding: 18px;
+        border-radius: 16px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+    }
+
+    .course-progress-title {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .course-progress-track {
+        height: 9px;
+        width: 100%;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .course-progress-fill {
+        height: 100%;
+        width: var(--progress-width);
+        background: #111827;
+        border-radius: 999px;
+    }
+
+    .course-progress-subtitle {
+        margin-top: 9px;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 21px;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .stat-value {
+        color: #111827;
+        font-size: 27px;
+        font-weight: 800;
+    }
+
+    .section {
+        margin-top: 25px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 14px;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .assignment-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .assignment-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 18px 20px;
+    }
+
+    .assignment-title {
+        margin: 0 0 6px;
+        font-size: 16px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .assignment-due {
+        margin: 0;
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+    .assignment-status {
+        white-space: nowrap;
+        padding: 8px 11px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .assignment-status.completed {
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .assignment-status.pending {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .assignment-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 105px;
+        min-height: 38px;
+        padding: 0 13px;
+        border-radius: 10px;
+        background: #111827;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .assignment-button:hover {
+        background: #374151;
+    }
+
+    .grades-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .grade-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 16px 18px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+    }
+
+    .grade-title {
+        margin: 0 0 4px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .grade-teacher {
+        margin: 0;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .grade-score {
+        font-size: 20px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .empty-box {
+        padding: 30px;
+        text-align: center;
+        background: #ffffff;
+        border: 1px dashed #d1d5db;
+        border-radius: 16px;
+    }
+
+    .empty-box p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    @media (max-width: 850px) {
+        .course-hero-top {
+            flex-direction: column;
+        }
+
+        .course-progress-box {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 650px) {
+        .course-detail-page {
+            padding: 24px 16px 45px;
+        }
+
+        .course-hero h1 {
+            font-size: 27px;
+        }
+
+        .assignment-card {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .assignment-button {
+            width: 100%;
+        }
+
+        .grade-row {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+
+<div class="course-detail-page">
+
+    <a href="{% url 'student_courses' %}" class="back-link">
+        ← Back to My Courses
+    </a>
+
+
+    <!-- =====================================================
+         COURSE HERO
+    ====================================================== -->
+
+    <div class="course-hero">
+
+        <div class="course-hero-top">
+
+            <div>
+
+                <div class="course-icon-large">
+                    📚
+                </div>
+
+                <h1>
+                    {{ group.subject.name }}
+                </h1>
+
+                <p class="course-hero-group">
+                    {{ group.name }}
+                </p>
+
+                <div class="course-meta">
+
+                    <div class="meta-item">
+                        👨‍🏫
+                        {{ group.teacher.get_full_name|default:group.teacher.username }}
+                    </div>
+
+                    <div class="meta-item">
+                        🏫
+                        {{ group.classroom.name }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- COURSE PROGRESS -->
+
+            <div class="course-progress-box">
+
+                <div class="course-progress-title">
+                    <span>Course Progress</span>
+                    <span>{{ progress }}%</span>
+                </div>
+
+                <div class="course-progress-track">
+
+                    <div
+                        class="course-progress-fill"
+                        style="--progress-width: {{ progress }}%;"
+                    ></div>
+
+                </div>
+
+                <div class="course-progress-subtitle">
+                    {{ completed_assignments }}
+                    of
+                    {{ total_assignments }}
+                    assignments completed
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Homework
+            </div>
+
+            <div class="stat-value">
+                {{ completed_assignments }}/{{ total_assignments }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Course Progress
+            </div>
+
+            <div class="stat-value">
+                {{ progress }}%
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Average Grade
+            </div>
+
+            <div class="stat-value">
+
+                {% if average_grade != None %}
+                    {{ average_grade }}
+                {% else %}
+                    —
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         HOMEWORK
+    ====================================================== -->
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Homework
+            </h2>
+
+            <span>
+                {{ total_assignments }}
+            </span>
+
+        </div>
+
+
+        {% if assignments %}
+
+            <div class="assignment-list">
+
+                {% for assignment in assignments %}
+
+                    <div class="assignment-card">
+
+                        <div>
+
+                            <h3 class="assignment-title">
+                                {{ assignment.title }}
+                            </h3>
+
+                            <p class="assignment-due">
+                                Due:
+                                {{ assignment.due_date|date:"M d, Y H:i" }}
+                            </p>
+
+                        </div>
+
+
+                        {% if assignment.id in submissions %}
+
+                            <span class="assignment-status completed">
+                                ✓ Submitted
+                            </span>
+
+                        {% else %}
+
+                            <span class="assignment-status pending">
+                                Pending
+                            </span>
+
+                        {% endif %}
+
+
+                        <a
+                            href="{% url 'submit_assignment' assignment.id %}"
+                            class="assignment-button"
+                        >
+
+                            {% if assignment.id in submissions %}
+                                View
+                            {% else %}
+                                Open
+                            {% endif %}
+
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-box">
+
+                <p>
+                    No homework has been assigned for this course yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =====================================================
+         GRADES
+    ====================================================== -->
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Grades
+            </h2>
+
+        </div>
+
+
+        {% if grades %}
+
+            <div class="grades-list">
+
+                {% for grade in grades %}
+
+                    <div class="grade-row">
+
+                        <div>
+
+                            <p class="grade-title">
+                                {{ grade.assignment.title }}
+                            </p>
+
+                            <p class="grade-teacher">
+                                Teacher:
+                                {{ grade.teacher.get_full_name|default:grade.teacher.username }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="grade-score">
+                            {{ grade.score }}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-box">
+
+                <p>
+                    No grades have been recorded for this course yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

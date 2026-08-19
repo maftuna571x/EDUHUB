@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="delete-page">
+
+    <div class="delete-card">
+
+        <div class="delete-icon">
+            🗑️
+        </div>
+
+        <span class="eyebrow">
+            DELETE VOCABULARY SET
+        </span>
+
+        <h1>
+            Delete "{{ vocabulary_set.name }}"?
+        </h1>
+
+        <p>
+            This will permanently delete this vocabulary set.
+            The words themselves will not be deleted.
+        </p>
+
+        <div class="actions">
+
+            <a
+                href="{% url 'vocabulary_set_detail' set_id=vocabulary_set.id %}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="confirm-delete-button"
+                >
+                    Delete Set
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.delete-page {
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 80px 24px;
+}
+
+.delete-card {
+    padding: 40px;
+    border: 1px solid rgba(128, 128, 128, .18);
+    border-radius: 24px;
+    text-align: center;
+    background: rgba(128, 128, 128, .035);
+}
+
+.delete-icon {
+    margin-bottom: 20px;
+    font-size: 48px;
+}
+
+.eyebrow {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    opacity: .45;
+}
+
+.delete-card h1 {
+    margin: 0 0 14px;
+    font-size: 30px;
+}
+
+.delete-card p {
+    margin: 0 auto;
+    max-width: 470px;
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: .58;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.cancel-button,
+.confirm-delete-button {
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 11px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cancel-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(128, 128, 128, .25);
+    color: inherit;
+}
+
+.confirm-delete-button {
+    border: 0;
+    background: #dc2626;
+    color: white;
+}
+
+.cancel-button:hover {
+    background: rgba(128, 128, 128, .07);
+}
+
+.confirm-delete-button:hover {
+    opacity: .9;
+}
+
+@media (max-width: 600px) {
+
+    .delete-page {
+        padding: 40px 16px;
+    }
+
+    .delete-card {
+        padding: 30px 20px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .cancel-button,
+    .confirm-delete-button {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,214 +1,755 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Teacher Dashboard | LingoRise
+Dashboard | LingoRise
 {% endblock %}
 
 {% block page_title %}
-    Dashboard
+Dashboard
 {% endblock %}
 
 {% block content %}
 
-<div class="dashboard-header">
+<style>
 
-    <div>
-        <span class="dashboard-label">
-            TEACHER DASHBOARD
-        </span>
+.teacher-dashboard {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 30px 24px 60px;
+}
 
-        <h1>
-            Welcome back, {{ user.get_full_name|default:user.username }} 👋
-        </h1>
+/* HERO */
 
-        <p>
-            Manage your classes, students and assignments.
-        </p>
-    </div>
+.teacher-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 28px;
+}
 
-</div>
+.teacher-eyebrow {
+    margin-bottom: 8px;
+    color: #6c63ff;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.teacher-hero h1 {
+    margin: 0;
+    color: #181b2b;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.teacher-hero p {
+    margin: 9px 0 0;
+    max-width: 620px;
+    color: #85899a;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* STATS */
+
+.teacher-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 30px;
+}
+
+.teacher-stat {
+    position: relative;
+    padding: 20px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e9eaf1;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(25, 28, 55, .045);
+}
+
+.teacher-stat-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 17px;
+
+    border-radius: 12px;
+
+    background: #f0efff;
+
+    font-size: 18px;
+}
+
+.teacher-stat-number {
+    color: #1b1e2d;
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.teacher-stat-label {
+    margin-top: 3px;
+    color: #555a6c;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.teacher-stat-description {
+    margin-top: 5px;
+    color: #999dab;
+    font-size: 9px;
+}
+
+/* WORKSPACE */
+
+.teacher-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(280px, .8fr);
+    gap: 18px;
+}
+
+/* CARD */
+
+.teacher-card {
+    background: #fff;
+    border: 1px solid #e9eaf1;
+    border-radius: 19px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(25, 28, 55, .045);
+}
+
+.teacher-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 21px;
+    border-bottom: 1px solid #eef0f5;
+}
+
+.teacher-card-label {
+    color: #8d91a1;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.teacher-card-header h2 {
+    margin: 5px 0 0;
+    color: #202332;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.teacher-view-link {
+    color: #635bff;
+    font-size: 10px;
+    font-weight: 850;
+    text-decoration: none;
+}
+
+.teacher-card-body {
+    padding: 18px;
+}
+
+/* CLASS */
+
+.teacher-class {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 14px;
+
+    margin-bottom: 9px;
+
+    border: 1px solid #eef0f5;
+    border-radius: 14px;
+
+    transition: .2s ease;
+}
+
+.teacher-class:last-child {
+    margin-bottom: 0;
+}
+
+.teacher-class:hover {
+    border-color: #dcd9ff;
+    background: #faf9ff;
+    transform: translateY(-1px);
+}
+
+.teacher-class-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #f1f0ff;
+
+    font-size: 18px;
+}
+
+.teacher-class-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.teacher-class-name {
+    color: #292d3d;
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.teacher-class-subject {
+    margin-top: 4px;
+    color: #9296a5;
+    font-size: 9px;
+}
+
+.teacher-class-meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 5px;
+    color: #635bff;
+    font-size: 8px;
+    font-weight: 750;
+}
+
+/* ASSIGNMENT */
+
+.teacher-assignment {
+    padding: 14px;
+    border: 1px solid #eef0f5;
+    border-radius: 14px;
+    margin-bottom: 9px;
+}
+
+.teacher-assignment:last-child {
+    margin-bottom: 0;
+}
+
+.teacher-assignment-title {
+    color: #292d3d;
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.teacher-assignment-group {
+    margin-top: 5px;
+    color: #635bff;
+    font-size: 9px;
+    font-weight: 750;
+}
+
+.teacher-assignment-due {
+    margin-top: 7px;
+    color: #969aa9;
+    font-size: 9px;
+}
+
+/* QUICK ACTION */
+
+.quick-action {
+    padding: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #635bff,
+            #817aff
+        );
+
+    border-radius: 19px;
+
+    color: white;
+
+    box-shadow:
+        0 14px 35px rgba(99, 91, 255, .20);
+}
+
+.quick-action-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    background: rgba(255,255,255,.15);
+
+    border-radius: 13px;
+
+    font-size: 18px;
+}
+
+.quick-action-label {
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    opacity: .75;
+}
+
+.quick-action h2 {
+    margin: 7px 0 8px;
+
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.quick-action p {
+    margin: 0 0 19px;
+
+    color: rgba(255,255,255,.76);
+
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.quick-action a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 14px;
+
+    background: white;
+    color: #635bff;
+
+    border-radius: 10px;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    text-decoration: none;
+}
+
+/* EMPTY */
+
+.teacher-empty {
+    padding: 38px 20px;
+
+    text-align: center;
+
+    color: #969aa9;
+}
+
+.teacher-empty-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 12px;
+
+    background: #f4f4f8;
+
+    border-radius: 15px;
+
+    font-size: 20px;
+}
+
+.teacher-empty h3 {
+    margin: 0 0 5px;
+
+    color: #363a4a;
+
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.teacher-empty p {
+    margin: 0;
+
+    font-size: 10px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+    .teacher-workspace {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .teacher-dashboard {
+        padding: 22px 14px 45px;
+    }
+
+    .teacher-hero {
+        align-items: flex-start;
+    }
+
+    .teacher-hero h1 {
+        font-size: 26px;
+    }
+
+    .teacher-stats {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
 
 
-<!-- STATISTICS -->
+<div class="teacher-dashboard">
 
-<div class="stats-grid">
+    <!-- HERO -->
 
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            🏫
-        </div>
+    <div class="teacher-hero">
 
         <div>
-            <span>My Classes</span>
-            <strong>{{ groups|length }}</strong>
-        </div>
 
-    </div>
+            <div class="teacher-eyebrow">
+                LINGORISE · TEACHER SPACE
+            </div>
 
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            👨‍🎓
-        </div>
-
-        <div>
-            <span>Students</span>
-            <strong>{{ total_students }}</strong>
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            ✓
-        </div>
-
-        <div>
-            <span>Assignments</span>
-            <strong>{{ total_assignments }}</strong>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- MY CLASSES -->
-
-<div class="dashboard-section">
-
-    <div class="section-heading">
-
-        <div>
-            <h2>My Classes</h2>
+            <h1>
+                Welcome back,
+                {{ user.get_full_name|default:user.username }}
+                👋
+            </h1>
 
             <p>
-                Your active teaching groups
+                Everything you need to manage your classes,
+                students and assignments — all in one place.
             </p>
+
         </div>
 
     </div>
 
 
-    {% if groups %}
+    <!-- STATS -->
 
-        <div class="course-grid">
+    <div class="teacher-stats">
 
-            {% for group in groups %}
+        <!-- CLASSES -->
 
-                <div class="course-card">
+        <div class="teacher-stat">
 
-                    <div class="course-card-top">
+            <div class="teacher-stat-icon">
+                🏫
+            </div>
 
-                        <span class="course-badge">
-                            {{ group.subject.name }}
-                        </span>
+            <div class="teacher-stat-number">
+                {{ total_classes }}
+            </div>
 
-                    </div>
+            <div class="teacher-stat-label">
+                My Classes
+            </div>
 
-
-                    <h3>
-                        {{ group.name }}
-                    </h3>
-
-
-                    <p>
-                        Classroom:
-                        {{ group.classroom.name }}
-                    </p>
-
-
-                    <p>
-                        Students:
-                        {{ group.students.count }}
-                    </p>
-
-                </div>
-
-            {% endfor %}
+            <div class="teacher-stat-description">
+                Active teaching groups
+            </div>
 
         </div>
 
-    {% else %}
 
-        <div class="empty-card">
-            You don't have any active classes yet.
+        <!-- STUDENTS -->
+
+        <div class="teacher-stat">
+
+            <div class="teacher-stat-icon">
+                👨‍🎓
+            </div>
+
+            <div class="teacher-stat-number">
+                {{ total_students }}
+            </div>
+
+            <div class="teacher-stat-label">
+                Students
+            </div>
+
+            <div class="teacher-stat-description">
+                Students across your classes
+            </div>
+
         </div>
 
-    {% endif %}
 
-</div>
+        <!-- ASSIGNMENTS -->
+
+        <div class="teacher-stat">
+
+            <div class="teacher-stat-icon">
+                ✓
+            </div>
+
+            <div class="teacher-stat-number">
+                {{ total_assignments }}
+            </div>
+
+            <div class="teacher-stat-label">
+                Assignments
+            </div>
+
+            <div class="teacher-stat-description">
+                Active learning tasks
+            </div>
+
+        </div>
+
+    </div>
 
 
-<!-- RECENT ASSIGNMENTS -->
+    <!-- WORKSPACE -->
 
-<div class="dashboard-section">
+    <div class="teacher-workspace">
 
-    <div class="section-heading">
+
+        <!-- LEFT -->
 
         <div>
-            <h2>Recent Assignments</h2>
-
-            <p>
-                Your latest assignments
-            </p>
-        </div>
-
-    </div>
 
 
-    {% if assignments %}
+            <!-- CLASSES -->
 
-        <div class="assignment-list">
+            <div class="teacher-card">
 
-            {% for assignment in assignments %}
-
-                <div class="assignment-card">
+                <div class="teacher-card-header">
 
                     <div>
 
-                        <h3>
-                            {{ assignment.title }}
-                        </h3>
+                        <div class="teacher-card-label">
+                            Teaching
+                        </div>
 
-                        <p>
-                            {{ assignment.group.name }}
-                            ·
-                            {{ assignment.group.subject.name }}
-                        </p>
+                        <h2>
+                            My Classes
+                        </h2>
 
                     </div>
 
-
-                    <div class="assignment-date">
-
-                        <span>
-                            Due date
-                        </span>
-
-                        <strong>
-                            {{ assignment.due_date }}
-                        </strong>
-
-                    </div>
+                    <a
+                        href="{% url 'teacher_assignments' %}"
+                        class="teacher-view-link"
+                    >
+                        View all →
+                    </a>
 
                 </div>
 
-            {% endfor %}
+
+                <div class="teacher-card-body">
+
+                    {% for group in teaching_groups %}
+
+                        <div class="teacher-class">
+
+                            <div class="teacher-class-icon">
+                                🏫
+                            </div>
+
+                            <div class="teacher-class-info">
+
+                                <div class="teacher-class-name">
+                                    {{ group.name }}
+                                </div>
+
+                                <div class="teacher-class-subject">
+
+                                    {% if group.subject %}
+                                        {{ group.subject.name }}
+                                    {% else %}
+                                        No subject
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="teacher-class-meta">
+
+                                    👨‍🎓
+                                    {{ group.students.count }}
+                                    student{{ group.students.count|pluralize }}
+
+                                    {% if group.classroom %}
+                                        · {{ group.classroom.name }}
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="teacher-empty">
+
+                            <div class="teacher-empty-icon">
+                                🏫
+                            </div>
+
+                            <h3>
+                                No active classes yet
+                            </h3>
+
+                            <p>
+                                Your teaching groups will appear
+                                here once they are created.
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ASSIGNMENTS -->
+
+            <div
+                class="teacher-card"
+                style="margin-top: 18px;"
+            >
+
+                <div class="teacher-card-header">
+
+                    <div>
+
+                        <div class="teacher-card-label">
+                            Workspace
+                        </div>
+
+                        <h2>
+                            Recent Assignments
+                        </h2>
+
+                    </div>
+
+                    <a
+                        href="{% url 'teacher_assignments' %}"
+                        class="teacher-view-link"
+                    >
+                        View all →
+                    </a>
+
+                </div>
+
+
+                <div class="teacher-card-body">
+
+                    {% for assignment in recent_assignments %}
+
+                        <div class="teacher-assignment">
+
+                            <div class="teacher-assignment-title">
+                                {{ assignment.title }}
+                            </div>
+
+                            <div class="teacher-assignment-group">
+
+                                {{ assignment.group.name }}
+
+                            </div>
+
+                            {% if assignment.due_date %}
+
+                                <div class="teacher-assignment-due">
+
+                                    Due
+                                    {{ assignment.due_date|date:"M d, Y · H:i" }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="teacher-empty">
+
+                            <div class="teacher-empty-icon">
+                                ✓
+                            </div>
+
+                            <h3>
+                                No assignments yet
+                            </h3>
+
+                            <p>
+                                Create your first assignment
+                                for your students.
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
 
         </div>
 
-    {% else %}
 
-        <div class="empty-card">
-            No assignments yet.
+        <!-- RIGHT -->
+
+        <div>
+
+            <div class="quick-action">
+
+                <div class="quick-action-icon">
+                    ＋
+                </div>
+
+                <div class="quick-action-label">
+                    Quick Action
+                </div>
+
+                <h2>
+                    Create a new assignment
+                </h2>
+
+                <p>
+                    Give your students something new
+                    to learn and practice.
+                </p>
+
+                <a
+                    href="{% url 'create_assignment' %}"
+                >
+                    Create assignment →
+                </a>
+
+            </div>
+
         </div>
 
-    {% endif %}
+
+    </div>
 
 </div>
 

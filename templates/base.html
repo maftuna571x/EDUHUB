@@ -4,25 +4,539 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
-        {% block title %}LingoRise{% endblock %}
+        {% block title %}
+            LingoRise
+        {% endblock %}
     </title>
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+    <style>
+
+        /* =====================================================
+           NOTIFICATION SYSTEM
+        ===================================================== */
+
+        .notification-wrapper {
+            position: relative;
+            z-index: 1000;
+        }
+
+
+        .notification-button {
+            position: relative;
+
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #e7e9f0;
+            border-radius: 13px;
+
+            background: #ffffff;
+            color: #4d5265;
+
+            font-size: 19px;
+
+            cursor: pointer;
+
+            transition:
+                background .2s ease,
+                border-color .2s ease,
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .notification-button:hover {
+            background: #f7f6ff;
+            border-color: #dcd9ff;
+            color: #635bff;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 7px 18px rgba(35, 38, 75, .08);
+        }
+
+
+        .notification-badge {
+            position: absolute;
+
+            top: -5px;
+            right: -5px;
+
+            min-width: 19px;
+            height: 19px;
+
+            padding: 0 5px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 2px solid #ffffff;
+            border-radius: 999px;
+
+            background: #635bff;
+            color: #ffffff;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            line-height: 1;
+
+            box-shadow:
+                0 4px 10px rgba(99, 91, 255, .25);
+        }
+
+
+        .notification-badge.hidden {
+            display: none;
+        }
+
+
+        /* =====================================================
+           DROPDOWN
+        ===================================================== */
+
+        .notification-dropdown {
+            position: absolute;
+
+            top: calc(100% + 12px);
+            right: 0;
+
+            width: 360px;
+
+            background: #ffffff;
+
+            border: 1px solid #e7e9f0;
+            border-radius: 18px;
+
+            box-shadow:
+                0 20px 50px rgba(24, 27, 55, .14);
+
+            overflow: hidden;
+
+            opacity: 0;
+            visibility: hidden;
+
+            transform:
+                translateY(-8px)
+                scale(.98);
+
+            transform-origin: top right;
+
+            transition:
+                opacity .18s ease,
+                visibility .18s ease,
+                transform .18s ease;
+        }
+
+
+        .notification-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+
+            transform:
+                translateY(0)
+                scale(1);
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .notification-header {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 17px 18px 15px;
+
+            border-bottom: 1px solid #eef0f5;
+        }
+
+
+        .notification-header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+
+        .notification-header-title {
+            margin: 0;
+
+            color: #151827;
+
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+
+        .notification-header-subtitle {
+            margin: 0;
+
+            color: #85899a;
+
+            font-size: 10px;
+        }
+
+
+        .notification-header-count {
+            min-width: 25px;
+            height: 25px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #f0efff;
+            color: #635bff;
+
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           LIST
+        ===================================================== */
+
+        .notification-list {
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+
+        .notification-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+
+        .notification-list::-webkit-scrollbar-thumb {
+            background: #dfe1ea;
+            border-radius: 20px;
+        }
+
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 12px;
+
+            padding: 15px 17px;
+
+            border-bottom: 1px solid #f0f1f5;
+
+            background: #ffffff;
+
+            text-decoration: none;
+
+            transition:
+                background .18s ease;
+        }
+
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+
+        .notification-item:hover {
+            background: #f8f8ff;
+        }
+
+
+        .notification-item.unread {
+            background: #faf9ff;
+        }
+
+
+        .notification-avatar {
+            flex-shrink: 0;
+
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eeedff,
+                    #e4e1ff
+                );
+
+            color: #635bff;
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+
+        .notification-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+
+        .notification-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 8px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .notification-sender {
+            overflow: hidden;
+
+            color: #1a1d2b;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+        .notification-time {
+            flex-shrink: 0;
+
+            color: #a0a4b2;
+
+            font-size: 9px;
+        }
+
+
+        .notification-message {
+            display: -webkit-box;
+
+            overflow: hidden;
+
+            color: #73788b;
+
+            font-size: 11px;
+            line-height: 1.55;
+
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-clamp: 2;
+        }
+
+
+        .notification-unread-dot {
+            flex-shrink: 0;
+
+            width: 7px;
+            height: 7px;
+
+            margin-top: 5px;
+
+            border-radius: 50%;
+
+            background: #635bff;
+
+            box-shadow:
+                0 0 0 4px rgba(99, 91, 255, .10);
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .notification-empty {
+            min-height: 170px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 25px;
+        }
+
+
+        .notification-empty-icon {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 11px;
+
+            border-radius: 15px;
+
+            background: #f3f3f8;
+
+            font-size: 20px;
+        }
+
+
+        .notification-empty h3 {
+            margin: 0;
+
+            color: #252837;
+
+            font-size: 13px;
+        }
+
+
+        .notification-empty p {
+            max-width: 220px;
+
+            margin: 6px 0 0;
+
+            color: #8b8f9f;
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .notification-footer {
+            padding: 12px 15px;
+
+            border-top: 1px solid #eef0f5;
+
+            background: #fafbfe;
+        }
+
+
+        .notification-view-all {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            padding: 9px;
+
+            border-radius: 9px;
+
+            background: #f0efff;
+            color: #635bff;
+
+            text-decoration: none;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            transition:
+                background .2s ease,
+                color .2s ease;
+        }
+
+
+        .notification-view-all:hover {
+            background: #635bff;
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .page-heading {
+            min-width: 0;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 520px) {
+
+            .notification-dropdown {
+                position: fixed;
+
+                top: 70px;
+
+                left: 15px;
+                right: 15px;
+
+                width: auto;
+
+                transform-origin: top center;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
+
 <div class="app">
 
-    <!-- ==================== SIDEBAR ==================== -->
+
+    <!-- =====================================================
+         SIDEBAR
+    ===================================================== -->
 
     <aside class="sidebar">
 
+
         <!-- BRAND -->
+
         <div class="brand">
 
             <div class="brand-icon">
@@ -30,6 +544,7 @@
             </div>
 
             <div class="brand-info">
+
                 <div class="brand-name">
                     LingoRise
                 </div>
@@ -37,473 +552,650 @@
                 <div class="brand-tagline">
                     Learn. Rise.
                 </div>
-            </div>
-
-        </div>
-
-
-<nav class="sidebar-nav">
-
-    {% if user.role == "TEACHER" %}
-
-        <!-- ==================== TEACHER MAIN ==================== -->
-
-        <div class="nav-section">
-
-            <button
-                type="button"
-                class="nav-section-toggle"
-                onclick="toggleSection('teacher-main-section', this)"
-            >
-                <span>MAIN</span>
-                <span class="section-arrow">⌄</span>
-            </button>
-
-            <div
-                class="nav-section-items open"
-                id="teacher-main-section"
-            >
-
-                <a
-                    href="{% url 'dashboard' %}"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">⌂</span>
-                    <span>Dashboard</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">▤</span>
-                    <span>My Classes</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">👨‍🎓</span>
-                    <span>Students</span>
-                </a>
-
-                <a
-                    href="{% url 'teacher_assignments' %}"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">✓</span>
-                    <span>Assignments</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">★</span>
-                    <span>Grades</span>
-                </a>
 
             </div>
 
         </div>
 
 
-        <!-- ==================== TEACHER COMMUNITY ==================== -->
+        <!-- =================================================
+             SIDEBAR NAVIGATION
+        ================================================= -->
 
-        <div class="nav-section">
-
-            <button
-                type="button"
-                class="nav-section-toggle"
-                onclick="toggleSection('teacher-community-section', this)"
-            >
-                <span>COMMUNITY</span>
-                <span class="section-arrow">⌄</span>
-            </button>
-
-            <div
-                class="nav-section-items open"
-                id="teacher-community-section"
-            >
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">◌</span>
-                    <span>Messages</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">◎</span>
-                    <span>Community</span>
-                </a>
-
-            </div>
-
-        </div>
+        <nav class="sidebar-nav">
 
 
-    {% elif user.role == "STUDENT" %}
-
-        <!-- ==================== STUDENT MAIN ==================== -->
-
-        <div class="nav-section">
-
-            <button
-                type="button"
-                class="nav-section-toggle"
-                onclick="toggleSection('main-section', this)"
-            >
-                <span>MAIN</span>
-                <span class="section-arrow">⌄</span>
-            </button>
-
-            <div
-                class="nav-section-items open"
-                id="main-section"
-            >
-
-                <a
-                    href="{% url 'dashboard' %}"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">⌂</span>
-                    <span>Dashboard</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">▣</span>
-                    <span>My Courses</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">▤</span>
-                    <span>My Classes</span>
-                </a>
-
-                <a
-                    href="{% url 'student_assignments' %}"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">✓</span>
-                    <span>Homework</span>
-                </a>
-
-            </div>
-
-        </div>
+            {% if user.role == "TEACHER" %}
 
 
-        <!-- ==================== STUDENT COMMUNITY ==================== -->
+                <!-- TEACHER MAIN -->
 
-        <div class="nav-section">
+                <div class="nav-section">
 
-            <button
-                type="button"
-                class="nav-section-toggle"
-                onclick="toggleSection('community-section', this)"
-            >
-                <span>COMMUNITY</span>
-                <span class="section-arrow">⌄</span>
-            </button>
-
-            <div
-                class="nav-section-items open"
-                id="community-section"
-            >
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">◌</span>
-                    <span>Messages</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="nav-item"
-                >
-                    <span class="nav-icon">◎</span>
-                    <span>Community</span>
-                </a>
-
-            </div>
-
-        </div>
+                    <button
+                        type="button"
+                        class="nav-section-toggle"
+                        onclick="toggleSection('teacher-main-section', this)"
+                    >
+                        <span>MAIN</span>
+                        <span class="section-arrow">⌄</span>
+                    </button>
 
 
-        <!-- ==================== STUDENT SELF STUDY ==================== -->
+                    <div
+                        class="nav-section-items open"
+                        id="teacher-main-section"
+                    >
 
-        <div class="nav-section">
-
-            <button
-                type="button"
-                class="nav-section-toggle"
-                onclick="toggleSection('self-study-section', this)"
-            >
-                <span>SELF STUDY</span>
-                <span class="section-arrow">⌄</span>
-            </button>
-
-            <div
-                class="nav-section-items open"
-                id="self-study-section"
-            >
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">A</span>
-                    <span>Vocabulary</span>
-                </a>
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">◇</span>
-                    <span>Flashcards</span>
-                </a>
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">?</span>
-                    <span>Vocabulary Quiz</span>
-                </a>
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">G</span>
-                    <span>Grammar</span>
-                </a>
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">◖</span>
-                    <span>Listening</span>
-                </a>
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">▤</span>
-                    <span>Reading</span>
-                </a>
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">◉</span>
-                    <span>Speaking</span>
-                </a>
-
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">★</span>
-                    <span>Practice Tests</span>
-                </a>
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
-</nav>
+                        <a
+                            href="{% url 'dashboard' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">⌂</span>
+                            <span>Dashboard</span>
+                        </a>
 
 
-        <!-- ==================== SIDEBAR BOTTOM ==================== -->
+                        <a
+                            href="{% url 'teacher_classes' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">▤</span>
+                            <span>My Classes</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'teacher_students' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">👨‍🎓</span>
+                            <span>Students</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'teacher_assignments' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">✓</span>
+                            <span>Assignments</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'teacher_grades' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">★</span>
+                            <span>Grades</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TEACHER COMMUNITY -->
+
+                <div class="nav-section">
+
+                    <button
+                        type="button"
+                        class="nav-section-toggle"
+                        onclick="toggleSection('teacher-community-section', this)"
+                    >
+                        <span>COMMUNITY</span>
+                        <span class="section-arrow">⌄</span>
+                    </button>
+
+
+                    <div
+                        class="nav-section-items open"
+                        id="teacher-community-section"
+                    >
+
+                        <a
+                            href="{% url 'teacher_messages' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">◌</span>
+                            <span>Messages</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'community' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">◎</span>
+                            <span>Community</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+            {% elif user.role == "STUDENT" %}
+
+
+                <!-- STUDENT MAIN -->
+
+                <div class="nav-section">
+
+                    <button
+                        type="button"
+                        class="nav-section-toggle"
+                        onclick="toggleSection('main-section', this)"
+                    >
+                        <span>MAIN</span>
+                        <span class="section-arrow">⌄</span>
+                    </button>
+
+
+                    <div
+                        class="nav-section-items open"
+                        id="main-section"
+                    >
+
+                        <a
+                            href="{% url 'dashboard' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">⌂</span>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <a
+                            href="{% url 'student_courses' %}"
+                             class="nav-item"
+                        >
+                            <span class="nav-icon">▣</span>
+                            <span>My Courses</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'student_classes' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">▤</span>
+                            <span>My Classes</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'student_assignments' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">✓</span>
+                            <span>Homework</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STUDENT COMMUNITY -->
+
+                <div class="nav-section">
+
+                    <button
+                        type="button"
+                        class="nav-section-toggle"
+                        onclick="toggleSection('community-section', this)"
+                    >
+                        <span>COMMUNITY</span>
+                        <span class="section-arrow">⌄</span>
+                    </button>
+
+
+                    <div
+                        class="nav-section-items open"
+                        id="community-section"
+                    >
+
+                        <a
+                            href="{% url 'student_messages' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">◌</span>
+                            <span>Messages</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'community' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">◎</span>
+                            <span>Community</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STUDENT SELF STUDY -->
+
+                <div class="nav-section">
+
+                    <button
+                        type="button"
+                        class="nav-section-toggle"
+                        onclick="toggleSection('self-study-section', this)"
+                    >
+                        <span>SELF STUDY</span>
+                        <span class="section-arrow">⌄</span>
+                    </button>
+
+
+                    <div
+                        class="nav-section-items open"
+                        id="self-study-section"
+                    >
+
+                        <a href="{% url 'vocabulary' %}"  class="nav-item">
+                            <span class="nav-icon">A</span>
+                            <span>Vocabulary</span>
+                        </a>
+
+                        <a href="#" class="nav-item">
+                            <span class="nav-icon">◇</span>
+                            <span>Flashcards</span>
+                        </a>
+
+                        <a href="#" class="nav-item">
+                            <span class="nav-icon">?</span>
+                            <span>Vocabulary Quiz</span>
+                        </a>
+
+                
+                        <a
+                            href="{% url 'grammar_checker' %}"
+                            class="nav-item"
+                        >
+                            <span class="nav-icon">G</span>
+                            <span>Grammar</span>
+                        </a>
+
+                        <a href="#" class="nav-item">
+                            <span class="nav-icon">◖</span>
+                            <span>Listening</span>
+                        </a>
+
+                        <a href="#" class="nav-item">
+                            <span class="nav-icon">▤</span>
+                            <span>Reading</span>
+                        </a>
+
+                        <a href="#" class="nav-item">
+                            <span class="nav-icon">◉</span>
+                            <span>Speaking</span>
+                        </a>
+
+                        <a href="#" class="nav-item">
+                            <span class="nav-icon">★</span>
+                            <span>Practice Tests</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+            {% endif %}
+
+        </nav>
+
+
+        <!-- =================================================
+             SIDEBAR BOTTOM
+        ================================================= -->
 
         <div class="sidebar-bottom">
 
-<!-- ==================== ADMIN NAVIGATION ==================== -->
 
-{% if user.role == "ADMIN" %}
-
-<div class="nav-section">
-
-    <div class="nav-section-title">
-        MAIN
-    </div>
-
-    <a href="{% url 'dashboard' %}" class="nav-item">
-        <span class="nav-icon">⌂</span>
-        <span>Dashboard</span>
-    </a>
-
-</div>
+            {% if user.role == "ADMIN" %}
 
 
-<div class="nav-section">
+                <div class="nav-section">
 
-    <div class="nav-section-title">
-        MANAGEMENT
-    </div>
+                    <div class="nav-section-title">
+                        MAIN
+                    </div>
 
-    <a href="/admin/users/user/" class="nav-item">
-        <span class="nav-icon">👨‍🎓</span>
-        <span>Students</span>
-    </a>
+                    <a
+                        href="{% url 'teacher_dashboard' %}"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">⌂</span>
+                        <span>Dashboard</span>
+                    </a>
 
-    <a href="/admin/users/user/" class="nav-item">
-        <span class="nav-icon">👨‍🏫</span>
-        <span>Teachers</span>
-    </a>
-
-    <a href="/admin/school/group/" class="nav-item">
-        <span class="nav-icon">🏫</span>
-        <span>Groups</span>
-    </a>
-
-    <a href="/admin/school/subject/" class="nav-item">
-        <span class="nav-icon">📚</span>
-        <span>Subjects</span>
-    </a>
-
-    <a href="/admin/school/classroom/" class="nav-item">
-        <span class="nav-icon">🏢</span>
-        <span>Classrooms</span>
-    </a>
-
-</div>
+                </div>
 
 
-<div class="nav-section">
+                <div class="nav-section">
 
-    <div class="nav-section-title">
-        ACADEMIC
-    </div>
-
-    <a href="/admin/school/assignment/" class="nav-item">
-        <span class="nav-icon">📝</span>
-        <span>Assignments</span>
-    </a>
-
-    <a href="/admin/school/grade/" class="nav-item">
-        <span class="nav-icon">📊</span>
-        <span>Grades</span>
-    </a>
-
-</div>
+                    <div class="nav-section-title">
+                        MANAGEMENT
+                    </div>
 
 
-<div class="nav-section">
+                    <a
+                        href="/admin/users/user/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">👨‍🎓</span>
+                        <span>Students</span>
+                    </a>
 
-    <div class="nav-section-title">
-        SYSTEM
-    </div>
 
-    <a href="/admin/" class="nav-item">
-        <span class="nav-icon">⚙</span>
-        <span>Admin Panel</span>
-    </a>
+                    <a
+                        href="/admin/users/user/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">👨‍🏫</span>
+                        <span>Teachers</span>
+                    </a>
 
-</div>
 
-{% else %}
+                    <a
+                        href="/admin/school/group/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">🏫</span>
+                        <span>Groups</span>
+                    </a>
 
-<!-- SETTINGS -->
 
-<a
-    href="#"
-    class="nav-item"
->
+                    <a
+                        href="/admin/school/subject/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">📚</span>
+                        <span>Subjects</span>
+                    </a>
 
-    <span class="nav-icon">
-        ⚙
-    </span>
 
-    <span>
-        Settings
-    </span>
+                    <a
+                        href="/admin/school/classroom/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">🏢</span>
+                        <span>Classrooms</span>
+                    </a>
 
-</a>
+                </div>
 
-{% endif %}
 
+                <div class="nav-section">
+
+                    <div class="nav-section-title">
+                        ACADEMIC
+                    </div>
+
+
+                    <a
+                        href="/admin/school/assignment/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">📝</span>
+                        <span>Assignments</span>
+                    </a>
+
+
+                    <a
+                        href="/admin/school/grade/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">📊</span>
+                        <span>Grades</span>
+                    </a>
+
+                </div>
+
+
+                <div class="nav-section">
+
+                    <div class="nav-section-title">
+                        SYSTEM
+                    </div>
+
+
+                    <a
+                        href="/admin/"
+                        class="nav-item"
+                    >
+                        <span class="nav-icon">⚙</span>
+                        <span>Admin Panel</span>
+                    </a>
+
+                </div>
+
+
+            {% else %}
+
+
+
+                <a
+                    href="{% url 'settings' %}"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">
+                         ⚙
+                    </span>
+
+                      <span>
+                        Settings
+                    </span>
+
+                 </a>
+
+
+            {% endif %}
 
 
             <!-- USER PROFILE -->
 
+
             <div class="user-profile">
 
-                <div class="user-avatar">
+    <div class="user-avatar">
 
-                    {{ user.username|first|upper }}
+        {% if user.avatar %}
 
-                </div>
+            <img
+                src="{{ user.avatar.url }}"
+                alt="{{ user.username }}"
+            >
+
+        {% else %}
+
+            {{ user.username|first|upper }}
+
+        {% endif %}
+
+    </div>
 
 
-                <div class="user-info">
+    <div class="user-info">
 
-                    <div class="user-name">
+        <div class="user-name">
 
-                        {{ user.get_full_name|default:user.username }}
+            {{ user.get_full_name|default:user.username }}
 
-                    </div>
+        </div>
 
 
-                    <div class="user-role">
+        <div class="user-role">
 
-                        {{ user.role|default:"User" }}
+            {{ user.role|default:"User" }}
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-            </div>
-
+</div>
 
 
             <!-- LOGOUT -->
 
-        <button
-            type="button"
-            class="logout"
-            onclick="openLogoutModal()"
-        >
-            <span class="nav-icon">
-                ↪
-            </span>
+            <button
+                type="button"
+                class="logout"
+                onclick="openLogoutModal()"
+            >
+                <span class="nav-icon">↪</span>
+                <span>Logout</span>
+            </button>
 
-            <span>
-                Logout
-            </span>
-        </button>
 
         </div>
 
     </aside>
 
 
-    <!-- ==================== MAIN CONTENT ==================== -->
+    <!-- =====================================================
+         MAIN CONTENT
+    ===================================================== -->
 
     <main class="main-content">
 
 
-        <!-- TOP BAR -->
+        <!-- TOPBAR -->
 
         <header class="topbar">
+
 
             <div class="page-heading">
 
                 {% block page_title %}
-
                     Dashboard
-
                 {% endblock %}
 
             </div>
 
 
-            <button
-                type="button"
-                class="notification-button"
-            >
-                🔔
-            </button>
+            <!-- =================================================
+                 NOTIFICATION
+            ================================================= -->
+
+            <div class="notification-wrapper">
+
+
+                <button
+                    type="button"
+                    class="notification-button"
+                    id="notification-button"
+                    aria-label="Notifications"
+                    aria-expanded="false"
+                >
+
+                    🔔
+
+                    <span
+                        class="notification-badge hidden"
+                        id="notification-badge"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="notification-dropdown"
+                    id="notification-dropdown"
+                >
+
+
+                    <div class="notification-header">
+
+                        <div class="notification-header-left">
+
+                            <h3 class="notification-header-title">
+                                Notifications
+                            </h3>
+
+                            <p class="notification-header-subtitle">
+                                Your latest messages
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="notification-header-count"
+                            id="notification-header-count"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="notification-list"
+                        id="notification-list"
+                    >
+
+                        <div class="notification-empty">
+
+                            <div class="notification-empty-icon">
+                                🔔
+                            </div>
+
+                            <h3>
+                                No new messages
+                            </h3>
+
+                            <p>
+                                When someone sends you a message,
+                                it will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="notification-footer">
+
+                        {% if user.role == "STUDENT" %}
+
+                            <a
+                                href="{% url 'student_messages' %}"
+                                class="notification-view-all"
+                            >
+                                Open Messages
+                                <span>→</span>
+                            </a>
+
+                        {% elif user.role == "TEACHER" %}
+
+                            <a
+                                href="{% url 'teacher_messages' %}"
+                                class="notification-view-all"
+                            >
+                                Open Messages
+                                <span>→</span>
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </header>
-
 
 
         <!-- PAGE CONTENT -->
@@ -511,7 +1203,6 @@
         <section class="page-content">
 
             {% block content %}
-
             {% endblock %}
 
         </section>
@@ -522,39 +1213,9 @@
 </div>
 
 
-
-<!-- ==================== COLLAPSIBLE SIDEBAR SCRIPT ==================== -->
-
-<script>
-
-function toggleSection(sectionId, button) {
-
-    const section = document.getElementById(sectionId);
-
-    const arrow = button.querySelector(".section-arrow");
-
-
-    if (section.classList.contains("open")) {
-
-        section.classList.remove("open");
-        section.classList.add("closed");
-
-        arrow.classList.add("rotated");
-
-    } else {
-
-        section.classList.remove("closed");
-        section.classList.add("open");
-
-        arrow.classList.remove("rotated");
-
-    }
-
-}
-
-</script>
-
-<!-- ==================== LOGOUT MODAL ==================== -->
+<!-- =========================================================
+     LOGOUT MODAL
+========================================================= -->
 
 <div
     class="logout-modal"
@@ -571,13 +1232,16 @@ function toggleSection(sectionId, button) {
             ↪
         </div>
 
+
         <h2>
             Ready to leave?
         </h2>
 
+
         <p>
             Are you sure you want to log out of LingoRise?
         </p>
+
 
         <div class="logout-modal-actions">
 
@@ -588,6 +1252,7 @@ function toggleSection(sectionId, button) {
             >
                 Cancel
             </button>
+
 
             <a
                 href="{% url 'logout' %}"
@@ -603,12 +1268,65 @@ function toggleSection(sectionId, button) {
 </div>
 
 
+<!-- =========================================================
+     SIDEBAR JAVASCRIPT
+========================================================= -->
+
+<script>
+
+function toggleSection(sectionId, button) {
+
+    const section =
+        document.getElementById(sectionId);
+
+    if (!section) {
+        return;
+    }
+
+    const arrow =
+        button.querySelector(".section-arrow");
+
+
+    if (section.classList.contains("open")) {
+
+        section.classList.remove("open");
+        section.classList.add("closed");
+
+        if (arrow) {
+            arrow.classList.add("rotated");
+        }
+
+    } else {
+
+        section.classList.remove("closed");
+        section.classList.add("open");
+
+        if (arrow) {
+            arrow.classList.remove("rotated");
+        }
+
+    }
+
+}
+
+</script>
+
+
+<!-- =========================================================
+     LOGOUT JAVASCRIPT
+========================================================= -->
+
 <script>
 
 function openLogoutModal() {
-    const modal = document.getElementById("logout-modal");
 
-    modal.classList.add("show");
+    const modal =
+        document.getElementById("logout-modal");
+
+    if (modal) {
+        modal.classList.add("show");
+    }
+
 }
 
 
@@ -621,21 +1339,462 @@ function closeLogoutModal(event) {
         return;
     }
 
-    const modal = document.getElementById("logout-modal");
+    const modal =
+        document.getElementById("logout-modal");
 
-    modal.classList.remove("show");
+    if (modal) {
+        modal.classList.remove("show");
+    }
+
 }
 
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener(
+    "keydown",
+    function(event) {
 
-    if (event.key === "Escape") {
-        closeLogoutModal();
+        if (event.key === "Escape") {
+            closeLogoutModal();
+        }
+
     }
-
-});
+);
 
 </script>
+
+
+<!-- =========================================================
+     NOTIFICATION JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const button =
+            document.getElementById(
+                "notification-button"
+            );
+
+        const dropdown =
+            document.getElementById(
+                "notification-dropdown"
+            );
+
+        const badge =
+            document.getElementById(
+                "notification-badge"
+            );
+
+        const list =
+            document.getElementById(
+                "notification-list"
+            );
+
+        const headerCount =
+            document.getElementById(
+                "notification-header-count"
+            );
+
+
+        if (
+            !button ||
+            !dropdown ||
+            !badge ||
+            !list ||
+            !headerCount
+        ) {
+            return;
+        }
+
+
+        /*
+         * MUHIM:
+         * Django URL JavaScript if ichida emas.
+         * Shuning uchun VS Code endi error bermaydi.
+         */
+
+        const messagesUrl =
+            "{% if user.role == 'STUDENT' %}{% url 'student_messages' %}{% elif user.role == 'TEACHER' %}{% url 'teacher_messages' %}{% else %}#{% endif %}";
+
+
+        /* =================================================
+           OPEN / CLOSE
+        ================================================= */
+
+        button.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
+
+                const isOpen =
+                    dropdown.classList.contains("show");
+
+
+                if (isOpen) {
+
+                    dropdown.classList.remove("show");
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                } else {
+
+                    dropdown.classList.add("show");
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "true"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           CLICK OUTSIDE
+        ================================================= */
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    !dropdown.contains(event.target) &&
+                    !button.contains(event.target)
+                ) {
+
+                    dropdown.classList.remove("show");
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           ESCAPE
+        ================================================= */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Escape") {
+
+                    dropdown.classList.remove("show");
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           LOAD NOTIFICATIONS
+        ================================================= */
+
+        function loadNotifications() {
+
+            fetch(
+                "{% url 'notification_data' %}",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "X-Requested-With":
+                            "XMLHttpRequest"
+                    }
+                }
+            )
+
+            .then(
+                function(response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Notification request failed"
+                        );
+
+                    }
+
+                    return response.json();
+
+                }
+            )
+
+            .then(
+                function(data) {
+
+                    renderNotifications(data);
+
+                }
+            )
+
+            .catch(
+                function(error) {
+
+                    console.error(
+                        "Notification error:",
+                        error
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           RENDER
+        ================================================= */
+
+        function renderNotifications(data) {
+
+            const notifications =
+                data.notifications ||
+                data.messages ||
+                data.results ||
+                [];
+
+
+            const unreadCount =
+                Number(
+                    data.unread_count ??
+                    data.count ??
+                    notifications.filter(
+                        function(item) {
+                            return !item.is_read;
+                        }
+                    ).length
+                );
+
+
+            /* BADGE */
+
+            if (unreadCount > 0) {
+
+                badge.textContent =
+                    unreadCount > 99
+                        ? "99+"
+                        : unreadCount;
+
+                badge.classList.remove("hidden");
+
+            } else {
+
+                badge.classList.add("hidden");
+
+            }
+
+
+            /* HEADER COUNT */
+
+            headerCount.textContent =
+                unreadCount;
+
+
+            /* EMPTY */
+
+            if (!notifications.length) {
+
+                list.innerHTML = `
+                    <div class="notification-empty">
+
+                        <div class="notification-empty-icon">
+                            🔔
+                        </div>
+
+                        <h3>
+                            No new messages
+                        </h3>
+
+                        <p>
+                            When someone sends you a
+                            message, it will appear here.
+                        </p>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            list.innerHTML = "";
+
+
+            /* =================================================
+               NOTIFICATION ITEMS
+            ================================================= */
+
+            notifications.forEach(
+                function(item) {
+
+                    const sender =
+                        item.sender_name ||
+                        item.sender ||
+                        "Message";
+
+
+                    const content =
+                        item.content ||
+                        item.message ||
+                        "";
+
+
+                    const time =
+                        item.created_at ||
+                        item.time ||
+                        "";
+
+
+                    const isRead =
+                        Boolean(item.is_read);
+
+
+                    /*
+                     * Backend URL bermasa,
+                     * messages sahifasiga o'tadi.
+                     */
+
+                    const url =
+                        item.url ||
+                        item.read_url ||
+                        messagesUrl;
+
+
+                    const avatar =
+                        String(sender)
+                            .trim()
+                            .charAt(0)
+                            .toUpperCase() ||
+                        "M";
+
+
+                    const itemElement =
+                        document.createElement("a");
+
+
+                    itemElement.href = url;
+
+
+                    itemElement.className =
+                        "notification-item" +
+                        (
+                            !isRead
+                                ? " unread"
+                                : ""
+                        );
+
+
+                    itemElement.innerHTML = `
+
+                        <div class="notification-avatar">
+                            ${escapeHtml(avatar)}
+                        </div>
+
+
+                        <div class="notification-content">
+
+                            <div class="notification-top">
+
+                                <span class="notification-sender">
+                                    ${escapeHtml(sender)}
+                                </span>
+
+                                <span class="notification-time">
+                                    ${escapeHtml(time)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="notification-message">
+                                ${escapeHtml(content)}
+                            </div>
+
+                        </div>
+
+
+                        ${
+                            !isRead
+                                ? `
+                                    <span
+                                        class="notification-unread-dot"
+                                    ></span>
+                                  `
+                                : ""
+                        }
+
+                    `;
+
+
+                    list.appendChild(itemElement);
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           SAFE HTML
+        ================================================= */
+
+        function escapeHtml(value) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                String(value);
+
+            return div.innerHTML;
+
+        }
+
+
+        /* =================================================
+           INITIAL LOAD
+        ================================================= */
+
+        loadNotifications();
+
+
+        /* =================================================
+           AUTO REFRESH
+        ================================================= */
+
+        setInterval(
+            loadNotifications,
+            20000
+        );
+
+    }
+);
+
+</script>
+
+
 </body>
 
 </html>
