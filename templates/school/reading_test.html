@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ passage.title }} | LingoRise</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #555;
+            text-decoration: none;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .meta {
+            color: #777;
+        }
+
+        .passage {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        .question {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+        }
+
+        .question h3 {
+            margin-top: 0;
+        }
+
+        .option {
+            display: block;
+            padding: 14px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #f5f7fb;
+        }
+
+        .submit {
+            width: 100%;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            background: #111827;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .submit:hover {
+            opacity: .9;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'reading_practice' %}?level={{ passage.level }}"
+        class="back"
+    >
+        ← Back to Reading Bank
+    </a>
+
+    <div class="header">
+
+        <div class="title">
+            {{ passage.title }}
+        </div>
+
+        <div class="meta">
+            {{ passage.level }}
+            {% if passage.topic %}
+                • {{ passage.topic }}
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <div class="passage">
+
+        {{ passage.text|linebreaks }}
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {% for question in questions %}
+
+            <div class="question">
+
+                <h3>
+                    {{ forloop.counter }}.
+                    {{ question.question }}
+                </h3>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="A"
+                        required
+                    >
+                    <strong>A.</strong>
+                    {{ question.option_a }}
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="B"
+                    >
+                    <strong>B.</strong>
+                    {{ question.option_b }}
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="C"
+                    >
+                    <strong>C.</strong>
+                    {{ question.option_c }}
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="D"
+                    >
+                    <strong>D.</strong>
+                    {{ question.option_d }}
+                </label>
+
+            </div>
+
+        {% endfor %}
+
+
+        <button
+            type="submit"
+            class="submit"
+        >
+            Submit Reading Test
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

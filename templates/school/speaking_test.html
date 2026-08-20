@@ -1,0 +1,951 @@
+{% extends "base.html" %}
+
+{% block title %}
+    LingoRise AI Speaking
+{% endblock %}
+
+{% block page_title %}
+    AI Speaking
+{% endblock %}
+
+{% block content %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LingoRise AI Speaking</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .speaking-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        select,
+        button {
+            border: none;
+            border-radius: 12px;
+            padding: 13px 18px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        select {
+            background: white;
+            border: 1px solid #d1d5db;
+        }
+
+        .start-btn {
+            background: #111827;
+            color: white;
+        }
+
+        .stop-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .mic-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .mic-button {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: none;
+            background: #111827;
+            color: white;
+            font-size: 42px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+        }
+
+        .mic-button.listening {
+            background: #dc2626;
+            box-shadow: 0 0 0 12px rgba(220, 38, 38, 0.12);
+        }
+
+        .status {
+            margin-top: 15px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .message {
+            padding: 16px 18px;
+            border-radius: 16px;
+            max-width: 80%;
+            line-height: 1.6;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: #111827;
+            color: white;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0.65;
+            margin-bottom: 5px;
+        }
+
+        .transcript {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            min-height: 50px;
+        }
+
+        .error {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .thinking {
+            display: none;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+
+            .speaking-container {
+                margin: 15px auto;
+            }
+
+            .message {
+                max-width: 92%;
+            }
+
+            .mic-button {
+                width: 90px;
+                height: 90px;
+                font-size: 34px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="speaking-container">
+
+    <div class="header">
+
+        <h1>🎤 LingoRise AI Speaking</h1>
+
+        <p>
+            Speak naturally with your AI English speaking coach.
+        </p>
+
+    </div>
+
+
+    <div class="controls">
+
+        <select id="level">
+
+            <option value="A1">A1 Beginner</option>
+            <option value="A2">A2 Elementary</option>
+            <option value="B1" selected>B1 Intermediate</option>
+            <option value="B2">B2 Upper-Intermediate</option>
+            <option value="C1">C1 Advanced</option>
+            <option value="C2">C2 Proficient</option>
+
+        </select>
+
+
+        <select id="mode">
+
+            <option value="conversation">
+                Free Conversation
+            </option>
+
+            <option value="ielts_part1">
+                IELTS Speaking Part 1
+            </option>
+
+            <option value="ielts_part2">
+                IELTS Speaking Part 2
+            </option>
+
+            <option value="ielts_part3">
+                IELTS Speaking Part 3
+            </option>
+
+        </select>
+
+
+        <button
+            class="start-btn"
+            id="startConversation"
+        >
+            Start Speaking
+        </button>
+
+
+        <button
+            class="stop-btn"
+            id="stopConversation"
+        >
+            Stop
+        </button>
+
+    </div>
+
+
+    <div class="mic-area">
+
+        <button
+            class="mic-button"
+            id="micButton"
+            title="Speak"
+        >
+            🎤
+        </button>
+
+        <div
+            class="status"
+            id="status"
+        >
+            Click Start Speaking
+        </div>
+
+    </div>
+
+
+    <div
+        class="transcript"
+        id="transcript"
+    >
+        Your speech will appear here...
+    </div>
+
+
+    <div
+        class="thinking"
+        id="thinking"
+    >
+        🤖 AI is thinking...
+    </div>
+
+
+    <div
+        class="error"
+        id="error"
+    ></div>
+
+
+    <div
+        class="conversation"
+        id="conversation"
+    ></div>
+
+</div>
+
+
+<script>
+
+const micButton =
+    document.getElementById("micButton");
+
+const statusElement =
+    document.getElementById("status");
+
+const transcriptElement =
+    document.getElementById("transcript");
+
+const conversationElement =
+    document.getElementById("conversation");
+
+const thinkingElement =
+    document.getElementById("thinking");
+
+const errorElement =
+    document.getElementById("error");
+
+const levelSelect =
+    document.getElementById("level");
+
+const modeSelect =
+    document.getElementById("mode");
+
+const startButton =
+    document.getElementById("startConversation");
+
+const stopButton =
+    document.getElementById("stopConversation");
+
+
+let recognition = null;
+
+let isConversationActive = false;
+
+let isListening = false;
+
+
+/* =========================================
+   SPEECH RECOGNITION
+========================================= */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+if (!SpeechRecognition) {
+
+    showError(
+        "Your browser does not support speech recognition. Please use Google Chrome."
+    );
+
+} else {
+
+    recognition =
+        new SpeechRecognition();
+
+    recognition.lang = "en-US";
+
+    recognition.continuous = false;
+
+    recognition.interimResults = true;
+
+
+    recognition.onstart = function () {
+
+        isListening = true;
+
+        micButton.classList.add("listening");
+
+        statusElement.textContent =
+            "🎤 Listening... Speak now.";
+
+        transcriptElement.textContent = "";
+
+    };
+
+
+    recognition.onresult = function (event) {
+
+        let finalText = "";
+
+        let interimText = "";
+
+
+        for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ) {
+
+            const transcript =
+                event.results[i][0].transcript;
+
+
+            if (
+                event.results[i].isFinal
+            ) {
+
+                finalText += transcript;
+
+            } else {
+
+                interimText += transcript;
+
+            }
+
+        }
+
+
+        transcriptElement.textContent =
+            finalText || interimText;
+
+
+        if (finalText.trim()) {
+
+            sendMessageToAI(
+                finalText.trim()
+            );
+
+        }
+
+    };
+
+
+    recognition.onerror = function (event) {
+
+        isListening = false;
+
+        micButton.classList.remove(
+            "listening"
+        );
+
+
+        if (
+            event.error === "not-allowed"
+        ) {
+
+            showError(
+                "Microphone permission was denied. Please allow microphone access."
+            );
+
+        } else {
+
+            showError(
+                "Microphone error: " +
+                event.error
+            );
+
+        }
+
+
+        statusElement.textContent =
+            "Microphone stopped.";
+
+    };
+
+
+    recognition.onend = function () {
+
+        isListening = false;
+
+        micButton.classList.remove(
+            "listening"
+        );
+
+
+        if (isConversationActive) {
+
+            statusElement.textContent =
+                "Processing your answer...";
+
+        }
+
+    };
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+startButton.addEventListener(
+    "click",
+    function () {
+
+        isConversationActive = true;
+
+        conversationElement.innerHTML = "";
+
+        transcriptElement.textContent =
+            "Conversation started.";
+
+        statusElement.textContent =
+            "🎤 Click the microphone and speak.";
+
+        speakAI(
+            "Hello! I'm your LingoRise speaking coach. Let's practice English together."
+        );
+
+        addAIMessage(
+            "Hello! I'm your LingoRise speaking coach. Let's practice English together."
+        );
+
+    }
+);
+
+
+/* =========================================
+   STOP
+========================================= */
+
+stopButton.addEventListener(
+    "click",
+    function () {
+
+        isConversationActive = false;
+
+        stopListening();
+
+        speechSynthesis.cancel();
+
+        statusElement.textContent =
+            "Conversation stopped.";
+
+    }
+);
+
+
+/* =========================================
+   MICROPHONE
+========================================= */
+
+micButton.addEventListener(
+    "click",
+    function () {
+
+        if (!isConversationActive) {
+
+            showError(
+                "Please click Start Speaking first."
+            );
+
+            return;
+
+        }
+
+
+        if (isListening) {
+
+            stopListening();
+
+        } else {
+
+            startListening();
+
+        }
+
+    }
+);
+
+
+function startListening() {
+
+    if (!recognition) {
+
+        return;
+
+    }
+
+
+    hideError();
+
+    recognition.start();
+
+}
+
+
+function stopListening() {
+
+    if (
+        recognition &&
+        isListening
+    ) {
+
+        recognition.stop();
+
+    }
+
+}
+
+
+/* =========================================
+   SEND TO DJANGO
+========================================= */
+
+async function sendMessageToAI(message) {
+
+    if (!isConversationActive) {
+
+        return;
+
+    }
+
+
+    thinkingElement.style.display =
+        "block";
+
+
+    statusElement.textContent =
+        "🤖 AI is thinking...";
+
+
+    addUserMessage(message);
+
+
+    const level =
+        levelSelect.value;
+
+    const mode =
+        modeSelect.value;
+
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "message",
+        message
+    );
+
+    formData.append(
+        "level",
+        level
+    );
+
+    formData.append(
+        "mode",
+        mode
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                window.location.pathname,
+                {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken":
+                            getCookie("csrftoken")
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        thinkingElement.style.display =
+            "none";
+
+
+        if (data.success) {
+
+            const aiText =
+                data.response;
+
+
+            addAIMessage(aiText);
+
+            speakAI(aiText);
+
+
+            statusElement.textContent =
+                "🎤 Your turn. Click the microphone.";
+
+        } else {
+
+            showError(
+                data.error ||
+                "AI response failed."
+            );
+
+            statusElement.textContent =
+                "Something went wrong.";
+
+        }
+
+
+    } catch (error) {
+
+        thinkingElement.style.display =
+            "none";
+
+
+        showError(
+            "Connection error: " +
+            error.message
+        );
+
+        statusElement.textContent =
+            "Connection failed.";
+
+    }
+
+}
+
+
+/* =========================================
+   ADD USER MESSAGE
+========================================= */
+
+function addUserMessage(text) {
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message user-message";
+
+
+    message.innerHTML =
+
+        '<div class="label">YOU</div>' +
+
+        escapeHTML(text);
+
+
+    conversationElement.appendChild(
+        message
+    );
+
+
+    scrollToBottom();
+
+}
+
+
+/* =========================================
+   ADD AI MESSAGE
+========================================= */
+
+function addAIMessage(text) {
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message ai-message";
+
+
+    message.innerHTML =
+
+        '<div class="label">LINGORISE AI</div>' +
+
+        escapeHTML(text);
+
+
+    conversationElement.appendChild(
+        message
+    );
+
+
+    scrollToBottom();
+
+}
+
+
+/* =========================================
+   AI VOICE
+========================================= */
+
+function speakAI(text) {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        return;
+
+    }
+
+
+    speechSynthesis.cancel();
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    utterance.lang =
+        "en-US";
+
+
+    utterance.rate =
+        0.95;
+
+
+    utterance.pitch =
+        1;
+
+
+    speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+/* =========================================
+   CSRF
+========================================= */
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+
+    if (document.cookie) {
+
+        const cookies =
+            document.cookie.split(";");
+
+
+        for (
+            let cookie of cookies
+        ) {
+
+            cookie =
+                cookie.trim();
+
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) ===
+                (name + "=")
+            ) {
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    return cookieValue;
+
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+function showError(message) {
+
+    errorElement.textContent =
+        message;
+
+    errorElement.style.display =
+        "block";
+
+}
+
+
+function hideError() {
+
+    errorElement.textContent =
+        "";
+
+    errorElement.style.display =
+        "none";
+
+}
+
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+
+function scrollToBottom() {
+
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+    });
+
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+{% endblock %}

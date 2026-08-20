@@ -6,6 +6,11 @@ from django.db import models
 from django.db.models import Q
 from apps.users.models import User
 import requests
+import random
+from django.conf import settings
+from .quiz_ai import generate_quiz_question
+
+
 from .models import (
     Assignment,
     AssignmentSubmission,
@@ -18,6 +23,9 @@ from .models import (
     VocabularyProgress,
     Vocabulary,
     VocabularySet,
+    ReadingPassage,
+    ReadingQuestion,
+    QuizQuestion
 )
 
 
@@ -2439,3 +2447,695 @@ def grammar_checker(request):
     )
 
 
+
+
+
+
+
+
+
+
+# =========================================================
+# READING PRACTICE
+# =========================================================
+
+
+
+
+# =========================================================
+# READING PRACTICE / READING BANK
+# =========================================================
+
+# =========================================================
+# READING PRACTICE
+# =========================================================
+
+@login_required
+def reading_practice(request):
+
+    if request.user.role != User.Role.STUDENT:
+        return redirect("dashboard")
+
+    selected_level = request.GET.get("level", "A1").strip().upper()
+    selected_topic = request.GET.get("topic", "").strip()
+
+    valid_levels = ["A1", "A2", "B1", "B2", "C1"]
+
+    if selected_level not in valid_levels:
+        selected_level = "A1"
+
+    passages = (
+        ReadingPassage.objects
+        .filter(
+            level=selected_level,
+            is_active=True,
+        )
+        .prefetch_related("questions")
+        .order_by("title")
+    )
+
+    if selected_topic:
+        passages = passages.filter(topic=selected_topic)
+
+    topics = (
+        ReadingPassage.objects
+        .filter(
+            level=selected_level,
+            is_active=True,
+        )
+        .exclude(topic="")
+        .values_list("topic", flat=True)
+        .distinct()
+        .order_by("topic")
+    )
+
+    return render(
+        request,
+        "school/reading_practice.html",
+        {
+            "passages": passages,
+            "selected_level": selected_level,
+            "selected_topic": selected_topic,
+            "levels": valid_levels,
+            "topics": topics,
+        },
+    )
+
+
+@login_required
+def reading_test(request, passage_id):
+
+    if request.user.role != User.Role.STUDENT:
+        return redirect("dashboard")
+
+    passage = get_object_or_404(
+        ReadingPassage.objects.prefetch_related("questions"),
+        id=passage_id,
+        is_active=True,
+    )
+
+    questions = list(passage.questions.all())
+
+    if request.method == "POST":
+
+        score = 0
+        results = []
+
+        for question in questions:
+
+            user_answer = request.POST.get(
+                f"question_{question.id}",
+                "",
+            ).strip().upper()
+
+            correct = user_answer == question.correct_answer
+
+            if correct:
+                score += 1
+
+            results.append(
+                {
+                    "question": question,
+                    "user_answer": user_answer,
+                    "correct": correct,
+                }
+            )
+
+        total = len(questions)
+
+        percentage = (
+            round((score / total) * 100)
+            if total
+            else 0
+        )
+
+        return render(
+            request,
+            "school/reading_result.html",
+            {
+                "passage": passage,
+                "results": results,
+                "score": score,
+                "total": total,
+                "percentage": percentage,
+            },
+        )
+
+    return render(
+        request,
+        "school/reading_test.html",
+        {
+            "passage": passage,
+            "questions": questions,
+        },
+    )
+
+
+
+
+@login_required
+def reading_submit(request, passage_id):
+
+    if request.user.role != User.Role.STUDENT:
+        return redirect("dashboard")
+
+    if request.method != "POST":
+        return redirect("reading_practice")
+
+    passage = get_object_or_404(
+        ReadingPassage,
+        id=passage_id,
+        is_active=True,
+    )
+
+    questions = list(
+        passage.questions.all()
+    )
+
+    score = 0
+    results = []
+
+    for question in questions:
+
+        user_answer = request.POST.get(
+            f"question_{question.id}",
+            ""
+        ).strip().upper()
+
+        is_correct = (
+            user_answer == question.correct_answer
+        )
+
+        if is_correct:
+            score += 1
+
+        results.append(
+            {
+                "question": question,
+                "user_answer": user_answer,
+                "correct_answer": question.correct_answer,
+                "is_correct": is_correct,
+            }
+        )
+
+    total = len(questions)
+
+    percentage = (
+        round((score / total) * 100)
+        if total > 0
+        else 0
+    )
+
+    if percentage == 100:
+        result_message = "Perfect score! Excellent work! 🎉"
+
+    elif percentage >= 80:
+        result_message = "Great job! Your reading skills are strong. 👏"
+
+    elif percentage >= 60:
+        result_message = "Good effort! Keep practicing. 💪"
+
+    elif percentage >= 40:
+        result_message = "Keep going! Practice will make you stronger. 📚"
+
+    else:
+        result_message = "Don't give up! Read the passage again and try another one. 🌱"
+
+    return render(
+        request,
+        "school/reading_result.html",
+        {
+            "passage": passage,
+            "results": results,
+            "score": score,
+            "total": total,
+            "percentage": percentage,
+            "result_message": result_message,
+        },
+    )
+
+
+
+
+
+
+
+
+
+
+# =========================================================
+# LISTENING PRACTICE
+# =========================================================
+
+@login_required
+def listening_practice(request):
+
+    if request.user.role != User.Role.STUDENT:
+        return redirect("dashboard")
+
+    return render(
+        request,
+        "school/listening_practice.html",
+    )
+
+
+
+
+
+
+
+@login_required
+def speaking_test(request):
+
+    if request.user.role != User.Role.STUDENT:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+
+        user_message = request.POST.get(
+            "message",
+            ""
+        ).strip()
+
+        level = request.POST.get(
+            "level",
+            "B1"
+        )
+
+        mode = request.POST.get(
+            "mode",
+            "conversation"
+        )
+
+        if not user_message:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Please say something.",
+            })
+
+
+        mode_instruction = {
+
+            "conversation":
+                "Have a natural English conversation.",
+
+            "ielts_part1":
+                "Act as an IELTS Speaking examiner. Ask Part 1 style questions.",
+
+            "ielts_part2":
+                "Act as an IELTS Speaking examiner. Give a Part 2 topic and discuss the student's response.",
+
+            "ielts_part3":
+                "Act as an IELTS Speaking examiner. Ask deeper Part 3 discussion questions.",
+
+        }.get(
+            mode,
+            "Have a natural English conversation."
+        )
+
+
+        system_prompt = f"""
+You are LingoRise AI Speaking Coach.
+
+Student CEFR level: {level}.
+
+{mode_instruction}
+
+Speak naturally and conversationally.
+
+Do not give long explanations.
+
+Respond like a real English speaking partner.
+
+Ask a useful follow-up question when appropriate.
+
+Use English.
+
+Help the student practice speaking naturally.
+"""
+
+
+        url = (
+            f"https://api.cloudflare.com/client/v4/"
+            f"accounts/{settings.CLOUDFLARE_ACCOUNT_ID}/"
+            f"ai/run/@cf/meta/llama-3.1-8b-instruct"
+        )
+
+
+        headers = {
+
+            "Authorization":
+                f"Bearer {settings.CLOUDFLARE_API_TOKEN}",
+
+            "Content-Type":
+                "application/json",
+
+        }
+
+
+        payload = {
+
+            "messages": [
+
+                {
+                    "role": "system",
+                    "content": system_prompt,
+                },
+
+                {
+                    "role": "user",
+                    "content": user_message,
+                },
+
+            ]
+
+        }
+
+
+        try:
+
+            response = requests.post(
+                url,
+                headers=headers,
+                json=payload,
+                timeout=30,
+            )
+
+
+            data = response.json()
+
+
+            if response.ok and data.get("success"):
+
+                result = data.get(
+                    "result",
+                    {}
+                )
+
+
+                ai_response = (
+                    result.get("response")
+                    or result.get("text")
+                    or ""
+                )
+
+
+                return JsonResponse({
+
+                    "success": True,
+
+                    "response":
+                        ai_response,
+
+                })
+
+
+            return JsonResponse({
+
+                "success": False,
+
+                "error":
+                    data.get(
+                        "errors",
+                        data
+                    ),
+
+            })
+
+
+        except requests.RequestException as exc:
+
+            return JsonResponse({
+
+                "success": False,
+
+                "error": str(exc),
+
+            })
+
+
+    return render(
+        request,
+        "school/speaking_test.html",
+    )
+
+
+
+
+@login_required
+def vocabulary_quiz(request):
+    """
+    LingoRise AI Vocabulary Quiz
+
+    GET:
+        Shows a random quiz with 10 questions.
+
+    POST:
+        Checks answers and displays the result.
+    """
+
+    if request.user.role != "STUDENT":
+        return redirect("dashboard")
+
+    # =========================================================
+    # POST — CHECK QUIZ
+    # =========================================================
+
+    if request.method == "POST":
+
+        question_ids = request.POST.getlist("question_ids")
+
+        questions = list(
+            QuizQuestion.objects.filter(
+                id__in=question_ids,
+                is_active=True,
+            )
+        )
+
+        # Keep the same order that was displayed to the student
+        question_map = {
+            str(question.id): question
+            for question in questions
+        }
+
+        ordered_questions = []
+
+        for question_id in question_ids:
+            question = question_map.get(str(question_id))
+
+            if question:
+                ordered_questions.append(question)
+
+        correct_count = 0
+        results = []
+
+        for question in ordered_questions:
+
+            selected_answer = request.POST.get(
+                f"question_{question.id}"
+            )
+
+            is_correct = (
+                selected_answer == question.correct_answer
+            )
+
+            if is_correct:
+                correct_count += 1
+
+            results.append(
+                {
+                    "question": question,
+                    "selected_answer": selected_answer,
+                    "is_correct": is_correct,
+                    "correct_answer": question.correct_answer,
+                }
+            )
+
+        total_questions = len(ordered_questions)
+
+        percentage = (
+            round(
+                (correct_count / total_questions) * 100
+            )
+            if total_questions
+            else 0
+        )
+
+        return render(
+            request,
+            "school/vocabulary_quiz.html",
+            {
+                "show_result": True,
+                "results": results,
+                "correct_count": correct_count,
+                "total_questions": total_questions,
+                "percentage": percentage,
+            },
+        )
+
+    # =========================================================
+    # GET — START NEW QUIZ
+    # =========================================================
+
+    level = request.GET.get("level", "B1").upper()
+
+    allowed_levels = {
+        "A1",
+        "A2",
+        "B1",
+        "B2",
+        "C1",
+        "C2",
+    }
+
+    if level not in allowed_levels:
+        level = "B1"
+
+    topic = request.GET.get(
+        "topic",
+        "General English",
+    )
+
+    # =========================================================
+    # GET EXISTING QUESTIONS
+    # =========================================================
+
+    questions = list(
+        QuizQuestion.objects.filter(
+            level=level,
+            is_active=True,
+        )
+    )
+
+    random.shuffle(questions)
+
+    # =========================================================
+    # GENERATE NEW QUESTIONS IF NEEDED
+    # =========================================================
+
+    target_questions = 10
+
+    if len(questions) < target_questions:
+
+        needed = target_questions - len(questions)
+
+        existing_question_texts = {
+            question.question.strip().lower()
+            for question in questions
+        }
+
+        # Safety limit so one request cannot generate
+        # an unlimited number of questions.
+        max_attempts = needed * 2
+
+        attempts = 0
+
+        while (
+            len(questions) < target_questions
+            and attempts < max_attempts
+        ):
+
+            attempts += 1
+
+            try:
+
+                generated = generate_quiz_question(
+                    level=level,
+                    topic=topic,
+                )
+
+                question_text = str(
+                    generated.get("question", "")
+                ).strip()
+
+                if not question_text:
+                    continue
+
+                # Avoid duplicate questions
+                if (
+                    question_text.lower()
+                    in existing_question_texts
+                ):
+                    continue
+
+                new_question = QuizQuestion.objects.create(
+                    question=question_text,
+
+                    option_a=str(
+                        generated.get("option_a", "")
+                    ).strip(),
+
+                    option_b=str(
+                        generated.get("option_b", "")
+                    ).strip(),
+
+                    option_c=str(
+                        generated.get("option_c", "")
+                    ).strip(),
+
+                    option_d=str(
+                        generated.get("option_d", "")
+                    ).strip(),
+
+                    correct_answer=str(
+                        generated.get("correct_answer", "")
+                    ).strip().upper(),
+
+                    explanation=str(
+                        generated.get("explanation", "")
+                    ).strip(),
+
+                    level=level,
+
+                    topic=str(
+                        generated.get(
+                            "topic",
+                            topic,
+                        )
+                    ).strip(),
+
+                    difficulty=str(
+                        generated.get(
+                            "difficulty",
+                            "MEDIUM",
+                        )
+                    ).strip(),
+
+                    is_active=True,
+                )
+
+                questions.append(new_question)
+
+                existing_question_texts.add(
+                    question_text.lower()
+                )
+
+            except Exception as error:
+
+                print(
+                    "Quiz AI generation error:",
+                    error,
+                )
+
+                break
+
+    # =========================================================
+    # FINAL RANDOM SELECTION
+    # =========================================================
+
+    random.shuffle(questions)
+
+    questions = questions[:target_questions]
+
+    return render(
+        request,
+        "school/vocabulary_quiz.html",
+        {
+            "questions": questions,
+            "quiz_started": bool(questions),
+            "show_result": False,
+            "selected_level": level,
+            "selected_topic": topic,
+        },
+    )

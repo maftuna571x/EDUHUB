@@ -803,17 +803,13 @@
                             <span>Vocabulary</span>
                         </a>
 
-                        <a href="#" class="nav-item">
-                            <span class="nav-icon">◇</span>
-                            <span>Flashcards</span>
-                        </a>
 
-                        <a href="#" class="nav-item">
+                        <a href="{% url 'vocabulary_quiz' %}" class="nav-item">
                             <span class="nav-icon">?</span>
-                            <span>Vocabulary Quiz</span>
+                            <span>Quiz</span>
                         </a>
 
-                
+
                         <a
                             href="{% url 'grammar_checker' %}"
                             class="nav-item"
@@ -822,17 +818,17 @@
                             <span>Grammar</span>
                         </a>
 
-                        <a href="#" class="nav-item">
+                        <a href="{% url 'listening_practice' %}" class="nav-item">
                             <span class="nav-icon">◖</span>
                             <span>Listening</span>
                         </a>
 
-                        <a href="#" class="nav-item">
+                        <a href="{% url 'reading_practice' %}" class="nav-item">
                             <span class="nav-icon">▤</span>
                             <span>Reading</span>
                         </a>
 
-                        <a href="#" class="nav-item">
+                        <a href="{% url 'speaking_test' %}" class="nav-item">
                             <span class="nav-icon">◉</span>
                             <span>Speaking</span>
                         </a>

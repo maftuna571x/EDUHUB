@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}
+    LingoRise AI Speaking
+{% endblock %}
+
+{% block page_title %}
+    AI Speaking
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Listening Practice | LingoRise</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #f6f8fc;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 42px 24px 70px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #111827, #263247);
+            color: white;
+            border-radius: 24px;
+            padding: 38px;
+            margin-bottom: 28px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.12);
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 36px;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 700px;
+            line-height: 1.7;
+            color: #d8deea;
+        }
+
+        .section-title {
+            margin: 35px 0 15px;
+            font-size: 23px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e6eaf1;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(20, 30, 50, .05);
+            transition: .2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(20, 30, 50, .09);
+        }
+
+        .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            margin-bottom: 17px;
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 19px;
+        }
+
+        .card p {
+            color: #697386;
+            line-height: 1.6;
+            font-size: 14px;
+            min-height: 45px;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 11px 17px;
+            border-radius: 11px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .button:hover {
+            opacity: .9;
+        }
+
+        .note {
+            margin-top: 30px;
+            background: white;
+            border: 1px solid #e6eaf1;
+            border-radius: 18px;
+            padding: 20px;
+            color: #697386;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 16px 50px;
+            }
+
+            .hero {
+                padding: 28px 22px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <section class="hero">
+        <div class="badge">🎧 LingoRise Listening</div>
+
+        <h1>Listening Practice</h1>
+
+        <p>
+            Improve your English listening skills with trusted free
+            CEFR and IELTS practice resources.
+        </p>
+    </section>
+
+
+    <!-- CEFR -->
+
+    <h2 class="section-title">CEFR Listening</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <div class="icon">🌱</div>
+
+            <h3>A1 Listening</h3>
+
+            <p>
+                Beginner listening practice for everyday English,
+                simple conversations and familiar topics.
+            </p>
+
+            <a
+                class="button"
+                href="https://learnenglish.britishcouncil.org/free-resources/listening/a1"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Practice A1 →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="icon">📘</div>
+
+            <h3>A2 Listening</h3>
+
+            <p>
+                Elementary listening activities for everyday
+                situations and common conversations.
+            </p>
+
+            <a
+                class="button"
+                href="https://learnenglish.britishcouncil.org/free-resources/listening/a2"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Practice A2 →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="icon">📚</div>
+
+            <h3>B1 Listening</h3>
+
+            <p>
+                Intermediate listening practice with practical
+                conversations and useful topics.
+            </p>
+
+            <a
+                class="button"
+                href="https://learnenglish.britishcouncil.org/free-resources/listening/b1"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Practice B1 →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="icon">🎯</div>
+
+            <h3>B2 Listening</h3>
+
+            <p>
+                Upper-intermediate listening activities for more
+                complex conversations and situations.
+            </p>
+
+            <a
+                class="button"
+                href="https://learnenglish.britishcouncil.org/free-resources/listening/b2"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Practice B2 →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="icon">🏆</div>
+
+            <h3>C1 Listening</h3>
+
+            <p>
+                Advanced listening practice for learners who want
+                more challenging English content.
+            </p>
+
+            <a
+                class="button"
+                href="https://learnenglish.britishcouncil.org/free-resources/listening/c1"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Practice C1 →
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- IELTS -->
+
+    <h2 class="section-title">IELTS Listening</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <div class="icon">🎧</div>
+
+            <h3>IELTS Listening Tests</h3>
+
+            <p>
+                Free IELTS Listening practice from British Council,
+                including the four-part listening test format.
+            </p>
+
+            <a
+                class="button"
+                href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-english-practice-tests/listening"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Start IELTS →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="icon">💻</div>
+
+            <h3>IELTS on Computer</h3>
+
+            <p>
+                Practice listening questions in a computer-based
+                IELTS style environment.
+            </p>
+
+            <a
+                class="button"
+                href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-english-practice-tests/ielts-on-computer/practice-tests/listening"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Practice →
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- CAMBRIDGE -->
+
+    <h2 class="section-title">Cambridge English</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <div class="icon">🎓</div>
+
+            <h3>Cambridge Listening Activities</h3>
+
+            <p>
+                Free listening activities covering different
+                English proficiency levels.
+            </p>
+
+            <a
+                class="button"
+                href="https://www.cambridgeenglish.org/learning-english/activities-for-learners/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Explore Cambridge →
+            </a>
+        </div>
+
+    </div>
+
+
+    <div class="note">
+        <strong>💡 Tip:</strong>
+        Use the CEFR resources to build your listening ability step by step.
+        When you are preparing specifically for IELTS, move to the IELTS
+        practice tests and practise all four parts regularly.
+    </div>
+
+</div>
+
+</body>
+</html>
+
+
+
+{% endblock %}

@@ -12,6 +12,9 @@ from .models import (
     VocabularyFavorite,
     VocabularyProgress,
     VocabularySet,
+    ReadingPassage,
+    ReadingQuestion,
+    QuizQuestion,
 )
 
 from apps.users.models import User
@@ -454,3 +457,139 @@ class VocabularyProgressAdmin(admin.ModelAdmin):
     ordering = (
         "-updated_at",
     )
+
+
+
+
+
+
+# =========================================================
+# READING PRACTICE
+# =========================================================
+
+@admin.register(ReadingPassage)
+class ReadingPassageAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "title",
+        "level",
+        "topic",
+        "question_count",
+        "is_active",
+        "created_at",
+    )
+
+    list_filter = (
+        "level",
+        "is_active",
+        "topic",
+    )
+
+    search_fields = (
+        "title",
+        "topic",
+        "text",
+    )
+
+    ordering = (
+        "level",
+        "title",
+    )
+
+    readonly_fields = (
+        "created_at",
+    )
+
+    def question_count(self, obj):
+        return obj.questions.count()
+
+    question_count.short_description = "Questions"
+
+
+@admin.register(ReadingQuestion)
+class ReadingQuestionAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "passage",
+        "question_type",
+        "question_short",
+        "correct_answer",
+    )
+
+    list_filter = (
+        "question_type",
+        "passage__level",
+        "passage",
+    )
+
+    search_fields = (
+        "question",
+        "option_a",
+        "option_b",
+        "option_c",
+        "option_d",
+        "correct_answer",
+    )
+
+    ordering = (
+        "passage",
+        "id",
+    )
+
+    list_per_page = 50
+
+    def question_short(self, obj):
+        return obj.question[:80]
+
+    question_short.short_description = "Question"
+
+
+
+
+
+
+
+from .models import QuizQuestion
+
+
+@admin.register(QuizQuestion)
+class QuizQuestionAdmin(admin.ModelAdmin):
+    list_display = (
+        "question_short",
+        "level",
+        "topic",
+        "difficulty",
+        "correct_answer",
+        "is_active",
+        "created_at",
+    )
+
+    list_filter = (
+        "level",
+        "difficulty",
+        "topic",
+        "is_active",
+    )
+
+    search_fields = (
+        "question",
+        "option_a",
+        "option_b",
+        "option_c",
+        "option_d",
+        "explanation",
+    )
+
+    list_editable = (
+        "is_active",
+    )
+
+    ordering = (
+        "level",
+        "-created_at",
+    )
+
+    @admin.display(description="Question")
+    def question_short(self, obj):
+        return obj.question[:80]

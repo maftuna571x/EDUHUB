@@ -1,0 +1,1211 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Vocabulary Quiz | LingoRise
+{% endblock %}
+
+{% block page_title %}
+    Vocabulary Quiz
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.quiz-page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 10px 0 50px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.quiz-hero {
+    padding: 30px;
+    margin-bottom: 22px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #635bff,
+            #817aff
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 18px 45px rgba(99, 91, 255, .18);
+}
+
+.quiz-hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.quiz-hero h1 {
+    margin: 0 0 8px;
+
+    font-size: 29px;
+    font-weight: 850;
+}
+
+.quiz-hero p {
+    margin: 0;
+
+    max-width: 620px;
+
+    font-size: 13px;
+    line-height: 1.6;
+
+    opacity: .88;
+}
+
+.quiz-ai-badge {
+    flex-shrink: 0;
+
+    padding: 8px 12px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.15);
+
+    border: 1px solid rgba(255,255,255,.20);
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+.quiz-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 22px;
+}
+
+.quiz-select {
+    padding: 10px 13px;
+
+    border: 1px solid rgba(255,255,255,.25);
+
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.12);
+
+    color: #ffffff;
+
+    outline: none;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.quiz-select option {
+    color: #222222;
+    background: #ffffff;
+}
+
+.quiz-start-btn {
+    padding: 10px 16px;
+
+    border: none;
+    border-radius: 11px;
+
+    background: #ffffff;
+    color: #5a52e8;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    transition: .2s ease;
+}
+
+.quiz-start-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.12);
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.quiz-progress-wrapper {
+    margin-bottom: 18px;
+}
+
+.quiz-progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 8px;
+}
+
+.quiz-progress-label {
+    color: #72768a;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.quiz-progress-count {
+    color: #635bff;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.quiz-progress {
+    width: 100%;
+    height: 7px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #ececf3;
+}
+
+.quiz-progress-bar {
+    width: 10%;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #635bff;
+
+    transition: width .25s ease;
+}
+
+
+/* =========================================================
+   QUESTION CARD
+========================================================= */
+
+.quiz-card {
+    padding: 27px;
+
+    margin-bottom: 17px;
+
+    border: 1px solid #e8e9f1;
+
+    border-radius: 21px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 10px 30px rgba(30,32,60,.045);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.quiz-card:hover {
+    box-shadow:
+        0 14px 35px rgba(30,32,60,.07);
+}
+
+.quiz-number {
+    display: inline-flex;
+
+    padding: 6px 9px;
+
+    margin-bottom: 13px;
+
+    border-radius: 8px;
+
+    background: #f0efff;
+    color: #635bff;
+
+    font-size: 9px;
+    font-weight: 850;
+
+    text-transform: uppercase;
+}
+
+.quiz-question {
+    margin-bottom: 20px;
+
+    color: #181a29;
+
+    font-size: 19px;
+    font-weight: 800;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   OPTIONS
+========================================================= */
+
+.quiz-options {
+    display: grid;
+
+    gap: 10px;
+}
+
+.quiz-option {
+    position: relative;
+}
+
+.quiz-option input {
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+.quiz-option label {
+    display: block;
+
+    padding: 15px 17px;
+
+    border: 1px solid #e5e6ed;
+
+    border-radius: 14px;
+
+    background: #fafbfe;
+
+    color: #45495b;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    cursor: pointer;
+
+    transition:
+        border-color .18s ease,
+        background .18s ease,
+        transform .18s ease;
+}
+
+.quiz-option label:hover {
+    border-color: #bcb8ff;
+
+    background: #f6f5ff;
+
+    transform: translateY(-1px);
+}
+
+.quiz-option input:checked + label {
+    border-color: #635bff;
+
+    background: #f0efff;
+
+    color: #5148df;
+
+    font-weight: 750;
+
+    box-shadow:
+        0 5px 15px rgba(99,91,255,.08);
+}
+
+
+/* =========================================================
+   FINISH BUTTON
+========================================================= */
+
+.quiz-submit {
+    width: 100%;
+
+    margin-top: 4px;
+
+    padding: 16px;
+
+    border: none;
+    border-radius: 15px;
+
+    background: #635bff;
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 850;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.quiz-submit:hover {
+    background: #5148df;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 25px rgba(99,91,255,.18);
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+.result-card {
+    padding: 35px;
+
+    margin-bottom: 22px;
+
+    border: 1px solid #e8e9f1;
+
+    border-radius: 24px;
+
+    background: #ffffff;
+
+    text-align: center;
+
+    box-shadow:
+        0 15px 40px rgba(30,32,60,.07);
+}
+
+.result-icon {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 14px;
+
+    border-radius: 20px;
+
+    background: #f0efff;
+
+    font-size: 28px;
+}
+
+.result-card h2 {
+    margin: 0 0 8px;
+
+    color: #171927;
+
+    font-size: 26px;
+}
+
+.result-score {
+    color: #635bff;
+
+    font-size: 38px;
+    font-weight: 900;
+}
+
+.result-percent {
+    margin-top: 4px;
+
+    color: #7c8091;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESULT DETAILS
+========================================================= */
+
+.result-question {
+    padding: 22px;
+
+    margin-bottom: 13px;
+
+    border: 1px solid #e8e9f1;
+
+    border-radius: 18px;
+
+    background: #ffffff;
+}
+
+.result-question.correct {
+    border-color: #d7efdf;
+    background: #f8fdf9;
+}
+
+.result-question.incorrect {
+    border-color: #f1d7d7;
+    background: #fffafa;
+}
+
+.result-question-title {
+    margin-bottom: 11px;
+
+    color: #1b1d2c;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    line-height: 1.5;
+}
+
+.result-status {
+    margin-bottom: 8px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.result-question.correct .result-status {
+    color: #218a45;
+}
+
+.result-question.incorrect .result-status {
+    color: #c74747;
+}
+
+.result-answer {
+    color: #676b7d;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.result-explanation {
+    margin-top: 11px;
+    padding: 12px 14px;
+
+    border-radius: 11px;
+
+    background: #f4f3ff;
+
+    color: #595d71;
+
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.result-actions {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.result-action {
+    flex: 1;
+
+    padding: 13px;
+
+    border-radius: 13px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.result-action.primary {
+    background: #635bff;
+    color: #ffffff;
+}
+
+.result-action.secondary {
+    background: #f0efff;
+    color: #635bff;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.quiz-empty {
+    padding: 50px 30px;
+
+    text-align: center;
+
+    border: 1px solid #e8e9f1;
+
+    border-radius: 22px;
+
+    background: #ffffff;
+}
+
+.quiz-empty-icon {
+    font-size: 35px;
+
+    margin-bottom: 12px;
+}
+
+.quiz-empty h2 {
+    margin: 0 0 7px;
+
+    color: #222435;
+
+    font-size: 19px;
+}
+
+.quiz-empty p {
+    margin: 0;
+
+    color: #7d8192;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .quiz-page {
+        padding: 5px 0 30px;
+    }
+
+    .quiz-hero {
+        padding: 22px;
+        border-radius: 19px;
+    }
+
+    .quiz-hero-top {
+        flex-direction: column;
+    }
+
+    .quiz-hero h1 {
+        font-size: 24px;
+    }
+
+    .quiz-controls {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .quiz-select,
+    .quiz-start-btn {
+        flex: 1;
+    }
+
+    .quiz-card {
+        padding: 20px;
+    }
+
+    .quiz-question {
+        font-size: 17px;
+    }
+
+    .result-card {
+        padding: 25px 18px;
+    }
+
+    .result-actions {
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+
+<div class="quiz-page">
+
+
+    {% if show_result %}
+
+        <!-- =================================================
+             RESULT HEADER
+        ================================================= -->
+
+        <div class="result-card">
+
+            <div class="result-icon">
+
+                {% if percentage >= 80 %}
+                    🏆
+                {% elif percentage >= 60 %}
+                    🎉
+                {% elif percentage >= 40 %}
+                    💪
+                {% else %}
+                    📚
+                {% endif %}
+
+            </div>
+
+
+            <h2>
+                Quiz Complete!
+            </h2>
+
+
+            <div class="result-score">
+                {{ correct_count }}/{{ total_questions }}
+            </div>
+
+
+            <div class="result-percent">
+                {{ percentage }}% correct
+            </div>
+
+
+            <div class="result-actions">
+
+                <a
+                    href="{% url 'vocabulary_quiz' %}"
+                    class="result-action primary"
+                >
+                    🔄 Try Again
+                </a>
+
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="result-action secondary"
+                >
+                    ← Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ANSWER REVIEW
+        ================================================= -->
+
+        {% for result in results %}
+
+            <div
+                class="
+                    result-question
+                    {% if result.is_correct %}
+                        correct
+                    {% else %}
+                        incorrect
+                    {% endif %}
+                "
+            >
+
+                <div class="result-question-title">
+
+                    {{ forloop.counter }}.
+                    {{ result.question.question }}
+
+                </div>
+
+
+                <div class="result-status">
+
+                    {% if result.is_correct %}
+
+                        ✓ Correct
+
+                    {% else %}
+
+                        ✕ Incorrect
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="result-answer">
+
+                    {% if result.selected_answer == "A" %}
+                        Your answer:
+                        {{ result.question.option_a }}
+
+                    {% elif result.selected_answer == "B" %}
+                        Your answer:
+                        {{ result.question.option_b }}
+
+                    {% elif result.selected_answer == "C" %}
+                        Your answer:
+                        {{ result.question.option_c }}
+
+                    {% elif result.selected_answer == "D" %}
+                        Your answer:
+                        {{ result.question.option_d }}
+
+                    {% else %}
+                        You did not answer this question.
+                    {% endif %}
+
+                </div>
+
+
+                {% if not result.is_correct %}
+
+                    <div class="result-answer">
+
+                        <strong>
+                            Correct answer:
+                        </strong>
+
+                        {% if result.correct_answer == "A" %}
+                            {{ result.question.option_a }}
+
+                        {% elif result.correct_answer == "B" %}
+                            {{ result.question.option_b }}
+
+                        {% elif result.correct_answer == "C" %}
+                            {{ result.question.option_c }}
+
+                        {% elif result.correct_answer == "D" %}
+                            {{ result.question.option_d }}
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if result.question.explanation %}
+
+                    <div class="result-explanation">
+
+                        💡
+                        {{ result.question.explanation }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <!-- =================================================
+             HERO
+        ================================================= -->
+
+        <div class="quiz-hero">
+
+            <div class="quiz-hero-top">
+
+                <div>
+
+                    <h1>
+                        Vocabulary Quiz
+                    </h1>
+
+                    <p>
+                        Test your English knowledge with
+                        AI-powered questions designed for
+                        your level.
+                    </p>
+
+                </div>
+
+
+                <div class="quiz-ai-badge">
+                    🤖 AI Powered
+                </div>
+
+            </div>
+
+
+            <!-- LEVEL SELECT -->
+
+            <form
+                method="get"
+                class="quiz-controls"
+            >
+
+                <select
+                    name="level"
+                    class="quiz-select"
+                >
+
+                    <option
+                        value="A1"
+                        {% if selected_level == "A1" %}
+                            selected
+                        {% endif %}
+                    >
+                        A1 Beginner
+                    </option>
+
+                    <option
+                        value="A2"
+                        {% if selected_level == "A2" %}
+                            selected
+                        {% endif %}
+                    >
+                        A2 Elementary
+                    </option>
+
+                    <option
+                        value="B1"
+                        {% if selected_level == "B1" %}
+                            selected
+                        {% endif %}
+                    >
+                        B1 Intermediate
+                    </option>
+
+                    <option
+                        value="B2"
+                        {% if selected_level == "B2" %}
+                            selected
+                        {% endif %}
+                    >
+                        B2 Upper-Intermediate
+                    </option>
+
+                    <option
+                        value="C1"
+                        {% if selected_level == "C1" %}
+                            selected
+                        {% endif %}
+                    >
+                        C1 Advanced
+                    </option>
+
+                    <option
+                        value="C2"
+                        {% if selected_level == "C2" %}
+                            selected
+                        {% endif %}
+                    >
+                        C2 Proficient
+                    </option>
+
+                </select>
+
+
+                <input
+                    type="hidden"
+                    name="topic"
+                    value="General English"
+                >
+
+
+                <button
+                    type="submit"
+                    class="quiz-start-btn"
+                >
+                    Start Quiz →
+                </button>
+
+            </form>
+
+        </div>
+
+
+        {% if questions %}
+
+            <!-- =================================================
+                 PROGRESS
+            ================================================= -->
+
+            <div class="quiz-progress-wrapper">
+
+                <div class="quiz-progress-top">
+
+                    <span class="quiz-progress-label">
+                        Quiz Progress
+                    </span>
+
+                    <span
+                        class="quiz-progress-count"
+                        id="quiz-progress-count"
+                    >
+                        1 / {{ questions|length }}
+                    </span>
+
+                </div>
+
+
+                <div class="quiz-progress">
+
+                    <div
+                        class="quiz-progress-bar"
+                        id="quiz-progress-bar"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 QUIZ FORM
+            ================================================= -->
+
+            <form method="post">
+
+                {% csrf_token %}
+
+
+                {% for question in questions %}
+
+                    <input
+                        type="hidden"
+                        name="question_ids"
+                        value="{{ question.id }}"
+                    >
+
+
+                    <div class="quiz-card">
+
+                        <div class="quiz-number">
+                            Question {{ forloop.counter }}
+                        </div>
+
+
+                        <div class="quiz-question">
+
+                            {{ question.question }}
+
+                        </div>
+
+
+                        <div class="quiz-options">
+
+
+                            <div class="quiz-option">
+
+                                <input
+                                    type="radio"
+                                    name="question_{{ question.id }}"
+                                    value="A"
+                                    id="q{{ question.id }}a"
+                                    required
+                                >
+
+                                <label for="q{{ question.id }}a">
+
+                                    A.
+                                    {{ question.option_a }}
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="quiz-option">
+
+                                <input
+                                    type="radio"
+                                    name="question_{{ question.id }}"
+                                    value="B"
+                                    id="q{{ question.id }}b"
+                                >
+
+                                <label for="q{{ question.id }}b">
+
+                                    B.
+                                    {{ question.option_b }}
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="quiz-option">
+
+                                <input
+                                    type="radio"
+                                    name="question_{{ question.id }}"
+                                    value="C"
+                                    id="q{{ question.id }}c"
+                                >
+
+                                <label for="q{{ question.id }}c">
+
+                                    C.
+                                    {{ question.option_c }}
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="quiz-option">
+
+                                <input
+                                    type="radio"
+                                    name="question_{{ question.id }}"
+                                    value="D"
+                                    id="q{{ question.id }}d"
+                                >
+
+                                <label for="q{{ question.id }}d">
+
+                                    D.
+                                    {{ question.option_d }}
+
+                                </label>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <button
+                    type="submit"
+                    class="quiz-submit"
+                >
+                    Finish Quiz →
+                </button>
+
+            </form>
+
+
+        {% else %}
+
+            <div class="quiz-empty">
+
+                <div class="quiz-empty-icon">
+                    🤖
+                </div>
+
+                <h2>
+                    No questions available
+                </h2>
+
+                <p>
+                    The AI could not generate questions
+                    right now. Please try again.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const cards =
+            document.querySelectorAll(
+                ".quiz-card"
+            );
+
+        const progressBar =
+            document.getElementById(
+                "quiz-progress-bar"
+            );
+
+        const progressCount =
+            document.getElementById(
+                "quiz-progress-count"
+            );
+
+
+        if (
+            !cards.length ||
+            !progressBar ||
+            !progressCount
+        ) {
+            return;
+        }
+
+
+        const total =
+            cards.length;
+
+
+        function updateProgress() {
+
+            let answered = 0;
+
+
+            cards.forEach(
+                function(card) {
+
+                    if (
+                        card.querySelector(
+                            'input[type="radio"]:checked'
+                        )
+                    ) {
+
+                        answered++;
+
+                    }
+
+                }
+            );
+
+
+            const percentage =
+                total > 0
+                    ? (answered / total) * 100
+                    : 0;
+
+
+            progressBar.style.width =
+                percentage + "%";
+
+
+            progressCount.textContent =
+                answered +
+                " / " +
+                total;
+
+        }
+
+
+        cards.forEach(
+            function(card) {
+
+                const inputs =
+                    card.querySelectorAll(
+                        'input[type="radio"]'
+                    );
+
+
+                inputs.forEach(
+                    function(input) {
+
+                        input.addEventListener(
+                            "change",
+                            updateProgress
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        updateProgress();
+
+    }
+);
+
+</script>
+
+{% endblock %}

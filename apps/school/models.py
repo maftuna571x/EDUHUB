@@ -725,3 +725,180 @@ class VocabularyProgress(models.Model):
             f"{self.user.username} — "
             f"{self.vocabulary.word}"
         )
+
+
+
+
+
+
+# =========================================================
+# READING PRACTICE
+# =========================================================
+
+class ReadingPassage(models.Model):
+
+    class Level(models.TextChoices):
+        A1 = "A1", "A1"
+        A2 = "A2", "A2"
+        B1 = "B1", "B1"
+        B2 = "B2", "B2"
+        C1 = "C1", "C1"
+
+    title = models.CharField(max_length=200)
+
+    level = models.CharField(
+        max_length=2,
+        choices=Level.choices,
+        default=Level.B1,
+    )
+
+    topic = models.CharField(
+        max_length=100,
+        blank=True,
+    )
+
+    text = models.TextField()
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ["level", "title"]
+
+    def __str__(self):
+        return f"{self.title} ({self.level})"
+
+
+
+
+class ReadingQuestion(models.Model):
+
+    class QuestionType(models.TextChoices):
+        MULTIPLE_CHOICE = "MCQ", "Multiple Choice"
+        TRUE_FALSE_NOT_GIVEN = "TFNG", "True / False / Not Given"
+        YES_NO_NOT_GIVEN = "YNNG", "Yes / No / Not Given"
+        SHORT_ANSWER = "SHORT", "Short Answer"
+        SENTENCE_COMPLETION = "SENTENCE", "Sentence Completion"
+        SUMMARY_COMPLETION = "SUMMARY", "Summary Completion"
+        NOTE_COMPLETION = "NOTE", "Note Completion"
+        TABLE_COMPLETION = "TABLE", "Table Completion"
+        MATCHING_HEADINGS = "HEADINGS", "Matching Headings"
+        MATCHING_INFORMATION = "INFORMATION", "Matching Information"
+        MATCHING_FEATURES = "FEATURES", "Matching Features"
+
+    passage = models.ForeignKey(
+        ReadingPassage,
+        on_delete=models.CASCADE,
+        related_name="questions",
+    )
+
+    question_type = models.CharField(
+        max_length=20,
+        choices=QuestionType.choices,
+        default=QuestionType.MULTIPLE_CHOICE,
+    )
+
+    question = models.TextField()
+
+    option_a = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    option_b = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    option_c = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    option_d = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    correct_answer = models.CharField(
+        max_length=300,
+    )
+
+    explanation = models.TextField(
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.question[:80]
+
+
+
+
+class QuizQuestion(models.Model):
+    class Level(models.TextChoices):
+        A1 = "A1", "A1 Beginner"
+        A2 = "A2", "A2 Elementary"
+        B1 = "B1", "B1 Intermediate"
+        B2 = "B2", "B2 Upper-Intermediate"
+        C1 = "C1", "C1 Advanced"
+        C2 = "C2", "C2 Proficient"
+
+    class Difficulty(models.TextChoices):
+        EASY = "EASY", "Easy"
+        MEDIUM = "MEDIUM", "Medium"
+        HARD = "HARD", "Hard"
+
+    question = models.TextField()
+
+    option_a = models.CharField(max_length=255)
+    option_b = models.CharField(max_length=255)
+    option_c = models.CharField(max_length=255)
+    option_d = models.CharField(max_length=255)
+
+    correct_answer = models.CharField(
+        max_length=1,
+        choices=[
+            ("A", "A"),
+            ("B", "B"),
+            ("C", "C"),
+            ("D", "D"),
+        ],
+    )
+
+    explanation = models.TextField(blank=True)
+
+    level = models.CharField(
+        max_length=2,
+        choices=Level.choices,
+        db_index=True,
+    )
+
+    topic = models.CharField(
+        max_length=100,
+        blank=True,
+        db_index=True,
+    )
+
+    difficulty = models.CharField(
+        max_length=10,
+        choices=Difficulty.choices,
+        default=Difficulty.MEDIUM,
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["level", "id"]
+
+    def __str__(self):
+        return f"{self.level} — {self.question[:70]}"

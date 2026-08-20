@@ -288,6 +288,40 @@ urlpatterns = [
         school_views.grammar_checker,
         name="grammar_checker",
     ),
+    path(
+        "reading/",
+        school_views.reading_practice,
+        name="reading_practice",
+    ),
+    path(
+        "reading/<int:passage_id>/submit/",
+        school_views.reading_submit,
+        name="reading_submit",
+    ),
+    path(
+        "reading/<int:passage_id>/test/",
+        school_views.reading_test,
+        name="reading_test",
+    ),
+    # =========================================================
+    # LISTENING
+    # =========================================================
+
+    path(
+        "listening/",
+        school_views.listening_practice,
+        name="listening_practice",
+    ),
+    path(
+        "speaking/test/",
+        school_views.speaking_test,
+        name="speaking_test",
+    ),
+    path(
+        "vocabulary-quiz/",
+        school_views.vocabulary_quiz,
+        name="vocabulary_quiz",
+    ),
 ]
 
 
